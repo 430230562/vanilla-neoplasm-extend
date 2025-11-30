@@ -53,6 +53,8 @@ unitIncubator.buildType = prov(() => extend(UnitFactory.UnitFactoryBuild, unitIn
         
         Draw.z(35.05);
         LiquidBlock.drawTiledFrames(2, this.x, this.y, 0, Liquids.neoplasm, this.a * 0.7)
+        
+        Draw.reset();
     }
 }))
 

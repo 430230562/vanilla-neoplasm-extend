@@ -34,31 +34,51 @@ const cyanidePlant = extend(GenericCrafter, "cyanide-plant", {
     craftEffect: Fx.none,
     craftTime: 150,
     size: 3,
+    liquidCapacity: 30,
     hasPower: true,
     hasLiquids: true,
     hasItems: true,
     configurable: true,
-    attribute: Attribute.get("biomass"),
-    drawer: new DrawMulti(),
+    drawer: new DrawRegion("-bottom"),
     buildVisibility: BuildVisibility.shown,
     category: Category.crafting,
     requirements: ItemStack.with(
     Items.graphite, 70,
-    Items.silicon, 60,
-    Items.tungsten, 25),
+    Items.silicon, 50,
+    Items.oxide, 35,
+    Items.carbide, 25),
     setStats() {
         this.super$setStats();
 
         this.stats.add(Stat.output, StatValues.items(this.craftTime, ItemStack.with(item.protein, 3, item.chitin, 2)));
-    }
+    },
+    icons(){
+		return [Core.atlas.find("vne-cyanide-plant-bottom"),Core.atlas.find("vne-cyanide-plant-rotator0"),Core.atlas.find("vne-cyanide-plant-rotator1"),Core.atlas.find("vne-cyanide-plant")]
+	},
+	drawPlace(x,y,rotation,valid){
+	    this.super$drawPlace(x,y,rotation,valid);
+        
+        
+        
+        
+        Draw.rect(Core.atlas.find("vne-cyanide-plant-rotator0"),x,y,0);
+        Draw.rect(Core.atlas.find("vne-cyanide-plant-rotator1"),x,y,0);
+        
+        
+        Draw.rect(Core.atlas.find("vne-cyanide-plant"),x,y,0)
+	}
 })
 cyanidePlant.buildType = prov(() => extend(GenericCrafter.GenericCrafterBuild, cyanidePlant, {
     style: false,
-    updateTile(){
+    i:0,
+    updateTile() {
         this.super$updateTile();
-        
+
         this.dump(item.chitin)
         this.dump(item.protein)
+        if(!this.style){
+            this.i += Time.delta * this.efficiency
+        }
     },
     craft() {
         this.consume();
@@ -67,25 +87,42 @@ cyanidePlant.buildType = prov(() => extend(GenericCrafter.GenericCrafterBuild, c
             for (let i = 0; i < 2; i++) {
                 this.offload(item.chitin);
             }
-        }else{
+        } else {
             for (let i = 0; i < 3; i++) {
                 this.offload(item.protein);
             }
         }
-        
+
         this.progress %= 1
     },
-    buildConfiguration(table){
+    buildConfiguration(table) {
         table.button(Icon.upOpen, Styles.cleari, run(() => {
             this.style = !this.style
-            
         }))
     },
+    draw(){
+        this.super$draw();
+        
+        Draw.z(35.05);
+        
+        LiquidBlock.drawTiledFrames(3, this.x, this.y, 0, Liquids.neoplasm, this.liquids.get(Liquids.neoplasm) / 30)
+        Draw.rect(Core.atlas.find("vne-cyanide-plant-rotator0"),this.x,this.y,this.i * 3);
+        Draw.rect(Core.atlas.find("vne-cyanide-plant-rotator1"),this.x,this.y,this.i * -4);
+        LiquidBlock.drawTiledFrames(3, this.x, this.y, 0, Liquids.cyanogen, this.liquids.get(Liquids.cyanogen) / 30 * 0.5)
+        
+        Draw.rect(Core.atlas.find("vne-cyanide-plant"),this.x,this.y,0)
+        
+        if(this.style){
+            Draw.rect(Core.atlas.find("vne-cyanide-plant-cell0"),this.x,this.y,0)
+        }else{
+            Draw.rect(Core.atlas.find("vne-cyanide-plant-cell1"),this.x,this.y,0)
+        }
+        Draw.reset();
+    }
 }));
 cyanidePlant.consumeLiquids(LiquidStack.with(
-    Liquids.cyanogen, 0.05,
-    Liquids.neoplasm, 10 / 60
-));
+Liquids.cyanogen, 0.05,
+Liquids.neoplasm, 10 / 60));
 
 
 const ammoniaPlant = new HeatCrafter("ammonia-plant");
@@ -104,6 +141,8 @@ Object.assign(ammoniaPlant, {
     hasLiquids: true,
     drawer: new DrawMulti(
     new DrawRegion("-bottom"),
+    new DrawLiquidTile(Liquids.hydrogen),
+    new DrawLiquidTile(Liquids.nitrogen),
     new DrawLiquidTile(liquid.ammonia),
     Object.assign(new DrawArcSmelt(), {
         flameColor: Color.valueOf("fa7f7f"),

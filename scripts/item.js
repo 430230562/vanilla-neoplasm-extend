@@ -11,6 +11,13 @@ Object.assign(chitin,{
 	healthScaling: 0.3,
 })
 
+const coagulantIngot = new Item("coagulant-ingot",Color.valueOf("8c1225"));
+exports.coagulantIngot = coagulantIngot;
+Object.assign(coagulantIngot,{
+    cost: 1.2,
+    healthScaling: 0.5,
+})
+
 const biomassSteel = new Item("biomass-steel", Color.valueOf("98ba53"));
 exports.biomassSteel = biomassSteel;
 Object.assign(biomassSteel, {

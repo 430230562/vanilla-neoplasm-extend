@@ -4,11 +4,10 @@ require("vne/status");
 
 require("vne/unit");
 
-//require("vne/block/enemy");
+require("vne/block/defense");
 require("vne/block/environment");
 require("vne/block/factory");
 require("vne/block/power");
-require("vne/block/turret");
 require("vne/block/unitFactory");
 
 require("vne/sector");
