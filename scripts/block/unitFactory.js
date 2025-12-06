@@ -1,6 +1,6 @@
 const lib = require("vne/lib/researchlib");
 
-const insect = require('vne/unit');
+const unit = require('vne/unit');
 
 const item = require('vne/item');
 
@@ -14,15 +14,15 @@ Object.assign(unitIncubator, {
 	buildVisibility: BuildVisibility.shown,
 	category: Category.units,
 	plans: Seq.with(
-		new UnitPlan(insect.haploid, 60 * 15, ItemStack.with(
+		new UnitPlan(unit.haploid, 60 * 15, ItemStack.with(
 		    Items.silicon, 5,
 			item.protein, 15,
 		)),
-		new UnitPlan(insect.ribosome, 60 * 20, ItemStack.with(
+		new UnitPlan(unit.ribosome, 60 * 20, ItemStack.with(
 		    Items.silicon, 5,
 			item.protein, 20,
 		)),
-		new UnitPlan(insect.bomber, 60 * 7.5, ItemStack.with(
+		new UnitPlan(unit.bomber, 60 * 7.5, ItemStack.with(
 		    Items.silicon, 3,
 			item.protein, 10,
 		)),
@@ -55,6 +55,12 @@ unitIncubator.buildType = prov(() => extend(UnitFactory.UnitFactoryBuild, unitIn
         LiquidBlock.drawTiledFrames(2, this.x, this.y, 0, Liquids.neoplasm, this.a * 0.7)
         
         Draw.reset();
+    },
+    onDestroyed(){
+        if(this.progress >= 60)unit.neoplasmUnit1.spawn(this.team, this.x,this.y);
+    },
+    onDeconstructed(){
+        if(this.progress >= 60)unit.neoplasmUnit1.spawn(this.team, this.x,this.y);
     }
 }))
 
@@ -62,9 +68,9 @@ lib.addResearch(unitIncubator, {
     parent: "tank-fabricator",
     objectives: Seq.with(Objectives.OnSector(SectorPresets.intersect))
 }, () => {
-    TechTree.node(insect.haploid,() => {}),
-    TechTree.node(insect.ribosome, () => {}),
-    TechTree.node(insect.bomber, () => {})
+    TechTree.node(unit.haploid,() => {}),
+    TechTree.node(unit.ribosome, () => {}),
+    TechTree.node(unit.bomber, () => {})
 });
 
 /*const reincubator = new Reconstructor("reincubator");
@@ -82,9 +88,9 @@ Object.assign(reincubator,{
 		item.manganese, 100,
 	),
 })
-reincubator.addUpgrade(insect.haploid, insect.diploid);
-reincubator.addUpgrade(insect.ribosome, insect.lysosome);
-//reincubator.addUpgrade(insect.glycocalyx, insect.hydrolase)
+reincubator.addUpgrade(unit.haploid, unit.diploid);
+reincubator.addUpgrade(unit.ribosome, unit.lysosome);
+//reincubator.addUpgrade(unit.glycocalyx, unit.hydrolase)
 reincubator.consumePower(2.7);
 reincubator.consumeItems(ItemStack.with(
 	item.biomass, 40,
@@ -127,8 +133,8 @@ Object.assign(hyperplasia,{
 		item.biomassSteel, 400,
 	),
 })
-hyperplasia.addUpgrade(insect.diploid, insect.triploid);
-hyperplasia.addUpgrade(insect.lysosome, insect.trichocyst);
+hyperplasia.addUpgrade(unit.diploid, unit.triploid);
+hyperplasia.addUpgrade(unit.lysosome, unit.trichocyst);
 hyperplasia.consumePower(7.7);
 hyperplasia.consumeItems(ItemStack.with(
 	item.biomass, 80,

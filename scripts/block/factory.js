@@ -124,6 +124,32 @@ cyanidePlant.consumeLiquids(LiquidStack.with(
 Liquids.cyanogen, 0.05,
 Liquids.neoplasm, 10 / 60));
 
+const adsorbent = new GenericCrafter("adsorbent");
+exports.adsorbent = adsorbent;
+Object.assign(adsorbent,{
+    craftEffect: Fx.none,
+    craftTime: 120,
+    outputItem: new ItemStack(item.coagulantIngot, 1),
+    size: 2,
+    liquidCapacity: 40,
+    hasPower: false,
+    hasLiquids: true,
+    hasItems: true,
+    drawer: new DrawMulti(
+        new DrawRegion("-bottom"),
+        new DrawLiquidTile(Liquids.neoplasm),
+        new DrawDefault()
+    ),
+    buildVisibility: BuildVisibility.shown,
+    category: Category.crafting,
+    requirements: ItemStack.with(
+        Items.graphite, 35,
+        Items.silicon, 30,
+        Items.oxide, 25,
+    ),
+})
+adsorbent.consumeLiquid(Liquids.neoplasm, 20 / 60);
+adsorbent.consumeItem(Items.oxide, 1);
 
 const ammoniaPlant = new HeatCrafter("ammonia-plant");
 exports.ammoniaPlant = ammoniaPlant;
@@ -224,15 +250,38 @@ watergasStove.consumeLiquid(Liquids.water, 0.3);
 watergasStove.consumeItem(Items.graphite, 3);
 watergasStove.consumePower(2.5);
 
-
+const laserIncinerator = new ItemIncinerator("laser-incinerator");
+exports.laserIncinerator = laserIncinerator;
+Object.assign(laserIncinerator,{
+    buildVisibility: BuildVisibility.shown,
+    category: Category.crafting,
+    hasPower: true,
+    hasLiquids: false,
+    requirements: ItemStack.with(
+        Items.silicon, 8,
+        Items.tungsten, 12,
+    )
+})
+laserIncinerator.consumePower(5);
 
 lib.addResearch(incubator, {
     parent: "silicon-arc-furnace",
     objectives: Seq.with(Objectives.OnSector(SectorPresets.intersect))
-}, () => {});
+}, () => {
+    TechTree.node(cyanidePlant, () => {})
+});
 
 lib.addResearch(ammoniaPlant, {
     parent: "oxidation-chamber",
 }, () => {
     TechTree.node(watergasStove, () => {})
 });
+
+lib.addResearch(adsorbent, {
+    parent: "oxidation-chamber",
+}, () => {})
+
+lib.addResearch(laserIncinerator, {
+    parent: "slag-incinerator",
+    objectives: Seq.with(Objectives.Research(adsorbent))
+}, () => {})
