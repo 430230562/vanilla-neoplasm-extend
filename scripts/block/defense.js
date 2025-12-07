@@ -295,14 +295,14 @@ item.coagulantIngot, extend(ArtilleryBulletType, 2.5, 240, "shell", {
     rangeChange: -8,
     splashDamage: 120,
     scaledSplashDamage: true,
-    hitColor: Color.valueOf("D6A17C")
-    backColor: Color.valueOf("D6A17C")
+    hitColor: Color.valueOf("D6A17C"),
+    backColor: Color.valueOf("D6A17C"),
     trailColor: Color.valueOf("D6A17C"),
-    frontColor: Color.valueOf("e4ffd6"),
+    frontColor: Color.valueOf("D6A17C"),
     ammoMultiplier: 1,
-    hitSound: Sounds.titanExplosion;
+    hitSound: Sounds.titanExplosion,
 
-    trailLength: 32;
+    trailLength: 32,
     trailWidth: 3.35,
     trailSinScl: 2.5,
     trailSinMag: 0.5,
