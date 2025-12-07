@@ -1,0 +1,11 @@
+{
+"name": "vne",
+"displayName": "Vanilla Neoplasm Extend",
+"subtitle": "Vanilla neoplasm? It must very delicious!",
+"description": "Do you think the original neoplasm solution has a too singular: burned in a slag pool; Such biologically active materials should have other uses: as ammunition, synthesizing new materials, and even building their own biological armies... Please unleash your imagination to the fullest \n\n What? You can't wait any longer, so let's embark on this [accent]bloody[] journey",
+"minGameVersion": 153,
+"author": "pardon",
+"version": 0.12,
+"repo":"430230562/vanilla-neoplasm-extend",
+"hideBrowser":false,
+}

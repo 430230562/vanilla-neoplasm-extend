@@ -1,5 +1,6 @@
 const status = require("vne/status");
 
+Liquids.neoplasm.viscosity = 0.95;
 Liquids.neoplasm.maxSpread = 1.25;
 Liquids.neoplasm.spreadConversion = 2.5;
 Liquids.neoplasm.spreadDamage = 0.1;

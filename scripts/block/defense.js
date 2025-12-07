@@ -165,6 +165,9 @@ Object.assign(biomassWall, {
     health: 1200,
     armor: 20,
     size: 1,
+    insulated: true,
+    absorbLasers: true,
+    schematicPriority: 10,
     buildVisibility: BuildVisibility.shown,
     category: Category.defense,
     requirements: ItemStack.with(
@@ -187,6 +190,9 @@ Object.assign(biomassWallLarge, {
     health: 1200 * 4,
     armor: 20,
     size: 2,
+    insulated: true,
+    absorbLasers: true,
+    schematicPriority: 10,
     buildVisibility: BuildVisibility.shown,
     category: Category.defense,
     requirements: ItemStack.with(
@@ -293,7 +299,7 @@ item.coagulantIngot, extend(ArtilleryBulletType, 2.5, 240, "shell", {
     reloadMultiplier: 0.65,
     splashDamageRadius: 110,
     rangeChange: -8,
-    splashDamage: 120,
+    splashDamage: 40,
     scaledSplashDamage: true,
     hitColor: Color.valueOf("D6A17C"),
     backColor: Color.valueOf("D6A17C"),
@@ -325,7 +331,7 @@ item.coagulantIngot, extend(ArtilleryBulletType, 2.5, 240, "shell", {
         let tile = Vars.world.tileWorld(b.x, b.y);
         if (tile != null) {
             tile.circle(11, cons(other => {
-                if (other != null) Puddles.deposit(other, Liquids.neoplasm, b.damage);
+                if (other != null) Puddles.deposit(other, Liquids.neoplasm, 40);
             }))
         }
     }
