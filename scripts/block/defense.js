@@ -221,7 +221,7 @@ lib.addResearch(oxideWall, {
 
 //撕裂
 Blocks.breach.ammoTypes.put(
-item.coagulantIngot, extend(BasicBulletType, 7.5, 72, {
+item.coagulantIngot, extend(BasicBulletType, 7.5, 85, {
     width: 12,
     hitSize: 7,
     height: 20,
@@ -231,11 +231,12 @@ item.coagulantIngot, extend(BasicBulletType, 7.5, 72, {
     pierceCap: 3,
     lifetime: 27.5,
     rangeChange: 2 * 8,
+    reloadMultiplier: 0.75,
     pierce: true,
     pierceBuilding: true,
-    hitColor: Color.valueOf("D6A17C"),
-    backColor: Color.valueOf("D6A17C"),
-    trailColor: Color.valueOf("D6A17C"),
+    hitColor: Color.valueOf("c33e2b"),
+    backColor: Color.valueOf("c33e2b"),
+    trailColor: Color.valueOf("c33e2b"),
     frontColor: Color.white,
     trailWidth: 2.1,
     trailLength: 10,
@@ -296,15 +297,15 @@ item.coagulantIngot, extend(ArtilleryBulletType, 2.5, 240, "shell", {
     lifetime: 190,
     height: 19,
     width: 17,
-    reloadMultiplier: 0.65,
     splashDamageRadius: 110,
     rangeChange: -8,
     splashDamage: 40,
+    reloadMultiplier: 0.6,
     scaledSplashDamage: true,
-    hitColor: Color.valueOf("D6A17C"),
-    backColor: Color.valueOf("D6A17C"),
-    trailColor: Color.valueOf("D6A17C"),
-    frontColor: Color.valueOf("D6A17C"),
+    hitColor: Color.valueOf("c33e2b"),
+    backColor: Color.valueOf("c33e2b"),
+    trailColor: Color.valueOf("c33e2b"),
+    frontColor: Color.valueOf("c33e2b"),
     ammoMultiplier: 1,
     hitSound: Sounds.titanExplosion,
 
@@ -333,6 +334,63 @@ item.coagulantIngot, extend(ArtilleryBulletType, 2.5, 240, "shell", {
             tile.circle(11, cons(other => {
                 if (other != null) Puddles.deposit(other, Liquids.neoplasm, 40);
             }))
+        }
+    }
+}))
+
+//驱离
+Blocks.disperse.ammoTypes.put(
+item.coagulantIngot, extend(BasicBulletType, 8, 45, {
+    width: 16,
+    height: 16,
+    shrinkY: 0.3,
+    backSprite: "large-bomb-back",
+    sprite: "mine-bullet",
+    velocityRnd: 0.1,
+    collidesGround: false,
+    collidesTiles: false,
+    shootEffect: Fx.shootBig2,
+    smokeEffect: Fx.shootSmokeDisperse,
+    frontColor: Color.white,
+    backColor: Color.valueOf("c33e2b"),
+    trailColor: Color.valueOf("c33e2b"),
+    hitColor: Color.valueOf("c33e2b"),
+    trailChance: 0.44,
+    ammoMultiplier: 4,
+    rangeChange: 20,
+    lifetime: 44,
+
+    rotationOffset: 90,
+    trailRotation: true,
+    trailEffect: Fx.disperseTrail,
+
+    hitEffect: Fx.hitBulletColor,
+    despawnEffect: Fx.hitBulletColor,
+    status: status.neoplasmSlow,
+    statusDuration: 120,
+    despawned(b) {
+        this.super$despawned(b);
+
+        let tile = Vars.world.tileWorld(b.x, b.y);
+        if (tile != null) {
+            Puddles.deposit(tile, Liquids.neoplasm, b.damage);
+        }
+    },
+    hit(b, x, y) {
+        this.super$hit(b, x, y);
+
+        //记忆中这样写会爆栈，其实不会
+        let tile = Vars.world.tileWorld(x, y);
+        if (tile != null) {
+            Puddles.deposit(tile, Liquids.neoplasm, b.damage);
+        }
+    },
+    update(b){
+        this.super$update(b);
+        
+        let tile = Vars.world.tileWorld(b.x, b.y);
+        if(b.time >= 12 && tile != null){
+            Puddles.deposit(tile, Liquids.neoplasm, 5);
         }
     }
 }))
