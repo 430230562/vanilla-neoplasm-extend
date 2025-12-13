@@ -209,6 +209,47 @@ biomassWallLarge.buildType = prov(() => extend(Building, {
     }
 }))
 
+const explosive = new Wall("explosive");
+exports.explosive = explosive;
+Object.assign(explosive, {
+    health: 240,
+    baseExplosiveness: 160,
+    size: 1,
+    configurable: true,
+    hasItems: true,
+    itemCapacity: 36,
+    buildVisibility: BuildVisibility.shown,
+    category: Category.effect,
+    requirements: ItemStack.with(
+    Items.beryllium, 10,
+    Items.oxide, 5),
+})
+explosive.buildType = prov(() => extend(Building, {
+    exploreItem: item.coagulantIngot,
+    buildConfiguration(table) {
+        table.button(Icon.upOpen, Styles.cleari, run(() => {
+            this.kill()
+        }))
+    },
+    drawSelect() {
+        this.super$drawSelect();
+        Drawf.dashCircle(this.x, this.y, 39, Color.red);
+    },
+    acceptItem(source, item) {
+        return (item == this.exploreItem && this.items.get(this.exploreItem) < 36)
+    },
+    onDestroyed() {
+        this.super$onDestroyed();
+
+        if (this.tile != null) this.tile.circle(5, cons(other => {
+            if (other != null) Puddles.deposit(other, Liquids.neoplasm, this.items.get(this.exploreItem) * 5);
+        }))
+    },
+    onDeconstructed() {
+        if (this.tile != null) Puddles.deposit(this.tile, Liquids.neoplasm, 60 * this.items.get(this.exploreItem));
+    }
+}))
+
 lib.addResearch(oxideWall, {
     parent: "beryllium-wall",
 }, () => {
@@ -216,7 +257,8 @@ lib.addResearch(oxideWall, {
         TechTree.node(biomassWall, () => {
             TechTree.node(biomassWallLarge, () => {})
         })
-    })
+    }),
+    TechTree.node(explosive, () => {})
 });
 
 //撕裂
@@ -385,11 +427,11 @@ item.coagulantIngot, extend(BasicBulletType, 8, 45, {
             Puddles.deposit(tile, Liquids.neoplasm, b.damage);
         }
     },
-    update(b){
+    update(b) {
         this.super$update(b);
-        
+
         let tile = Vars.world.tileWorld(b.x, b.y);
-        if(b.time >= 12 && tile != null){
+        if (b.time >= 12 && tile != null) {
             Puddles.deposit(tile, Liquids.neoplasm, 5);
         }
     }

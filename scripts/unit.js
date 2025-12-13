@@ -771,6 +771,36 @@ neoplasmUnit1.abilities.add(
 )
 neoplasmUnit1.immunities.add(status.neoplasmSlow)
 
+const neoplasmUnit2 = new UnitType("neoplasm-unit-2");
+exports.neoplasmUnit2 = neoplasmUnit2;
+Object.assign(neoplasmUnit2,{
+	constructor: () => new CrawlUnit.create(),
+	speed: 0.8,
+	hitSize: 14,
+	targetPriority: 1,
+	health: 1200,
+	omniMovement: false,
+	rotateSpeed: 2,
+	segments: 3,
+	drawBody: false,
+	aiController: () => new HugAI(),
+
+	segmentScl: 3,
+	segmentPhase: 5,
+	segmentMag: 0.5,
+	outlineColor: Pal.neoplasmOutline,
+	envDisabled: Env.none,
+	healFlash: true,
+	healColor: Pal.neoplasm1,
+	lightRadius: 0,
+})
+neoplasmUnit2.abilities.add(
+	new DeathNeoplasmAbility(40,2400),
+	new MoveLiquidAbility(Liquids.neoplasm,16,5,1),
+	new SpawnDeathAbility(neoplasmUnit1, 3,40)
+)
+neoplasmUnit2.immunities.add(status.neoplasmSlow)
+
 
 const s = new StatusEffect("s");
 s.healthMultiplier = 5;
