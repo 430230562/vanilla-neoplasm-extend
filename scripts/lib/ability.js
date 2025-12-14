@@ -135,6 +135,15 @@ function MoveLiquidAbility(liquid,range,amount,healthPercent){
     				if(tile != null)Puddles.deposit(tile,liquid,amount);
     			}))
 			}
+		},
+		localized(){
+			return Core.bundle.format("ability.moveLiquid");
+		},
+		addStats(t){
+		    this.super$addStats(t);
+		    t.add("" + liquid.localizedName));
+		    t.row();
+		    t.add(Core.bundle.format("bullet.range", Strings.autoFixed(range / 8, 2)));
 		}
 	})
 }
