@@ -123,6 +123,7 @@ biomassReactor.buildType = prov(() => extend(ConsumeGenerator.ConsumeGeneratorBu
 exports.biomassReactor = biomassReactor;
 biomassReactor.consumeItem(item.protein, 1);
 biomassReactor.consumeLiquid(liquid.ammonia, 0.1).optional = true;
+
 lib.addResearch(biomassReactor, { 
     parent: "chemical-combustion-chamber",
     objectives: Seq.with(Objectives.Research(factory.ammoniaPlant))

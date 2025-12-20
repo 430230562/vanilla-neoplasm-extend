@@ -47,86 +47,6 @@ function MendFieldAbility(amount,reload,range){
 }
 exports.MendFieldAbility = MendFieldAbility;
 
-function ReflectFieldAbility(regen,max,range){
-    return extend(ForceFieldAbility,{
-        update(unit){
-            if(unit.shield > 0 && !this.wasBroken){
-                var seq = Groups.bullet.intersect(unit.x - range, unit.y - range, range * 2, range * 2)
-                seq.each(b => {
-                    if(b.team != unit.team){
-                        this.alpha = 0.8;
-
-                        if(b.type.hittable && b.type.absorbable){
-                            b.team = unit.team;
-                            
-							Fx.absorb.at(b)
-                            if(b.vel.x <= b.vel.y){
-                                b.vel.x *= -1
-                            }else{
-                                b.vel.y *= -1
-                            }
-                            
-                            unit.shield -= b.damage
-                            
-                        }else{
-                            b.absorb();
-                            Fx.absorb.at(b)
-                            
-                            unit.shield -= b.damage * 3
-                        }
-                    }
-                })
-            }
-			this.alpha = Math.max(this.alpha - Time.delta / 10, 0);
-
-            if(!this.wasBroken){
-                unit.shield = Math.min(Time.delta * regen + unit.shield, max)
-            }
-
-			if(unit.shield <= 0 && !wasBroken){
-            	unit.shield -= 40 * 60 * regen;
-
-            	Fx.shieldBreak.at(unit.x, unit.y, range, unit.type.shieldColor(unit), this);
-        	}
-
-        	wasBroken = unit.shield <= 0;
-        },
-
-        draw(unit){
-            Draw.color(Color.valueOf("7e8ae6"), unit.team.color, this.alpha);
-            
-            if(unit.shield >= 0 && unit.health >= unit.type.health){
-                if(Vars.renderer.animateShields){
-                    Draw.z(125);
-                    Fill.poly(unit.x, unit.y, 4, range * 1.414, 45);
-                }else{
-                    Draw.z(125);
-                    Lines.stroke(1.5);
-                    Draw.alpha(0.09);
-                    Fill.poly(unit.x, unit.y, 4, range * 1.414, 45);
-                    Draw.alpha(1);
-                    Lines.poly(unit.x, unit.y, 4, range * 1.414, 45);
-                }
-            }
-        },
-        localized(){
-			return Core.bundle.format("ability.reflectField");
-		},
-		addStats(t){
-            this.super$addStats(t);
-            t.add(Core.bundle.format("bullet.range", Strings.autoFixed(range / 8, 2)));
-            t.row();
-            t.add(Core.bundle.format("ability.stat.shield", Strings.autoFixed(max, 2)));
-            t.row();
-            t.add(Core.bundle.format("ability.stat.repairspeed", Strings.autoFixed(regen * 60, 2)));
-        },
-        displayBars(unit,bars){
-            bars.add(new Bar("stat.shieldhealth", unit.team.color, () => unit.shield / max)).row();
-        }
-    })
-}
-exports.ReflectFieldAbility = ReflectFieldAbility
-
 function MoveLiquidAbility(liquid,range,amount,healthPercent){
 	return extend(Ability,{
 		update(unit){
@@ -141,7 +61,8 @@ function MoveLiquidAbility(liquid,range,amount,healthPercent){
 		},
 		addStats(t){
 		    this.super$addStats(t);
-		    t.add("" + liquid.localizedName));
+		    
+		    t.add("" + liquid.localizedName);
 		    t.row();
 		    t.add(Core.bundle.format("bullet.range", Strings.autoFixed(range / 8, 2)));
 		}

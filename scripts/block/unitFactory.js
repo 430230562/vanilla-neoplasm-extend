@@ -3,6 +3,7 @@ const lib = require("vne/lib/researchlib");
 const unit = require('vne/unit');
 
 const item = require('vne/item');
+const liquid = require("vne/liquid");
 
 const UnitPlan = UnitFactory.UnitPlan;
 const AssemblerUnitPlan = UnitAssembler.AssemblerUnitPlan;
@@ -11,22 +12,22 @@ const unitIncubator = new UnitFactory("unit-incubator");
 exports.unitIncubator = unitIncubator;
 Object.assign(unitIncubator, {
 	size: 3,
-	buildVisibility: BuildVisibility.shown,
-	category: Category.units,
 	plans: Seq.with(
 		new UnitPlan(unit.haploid, 60 * 15, ItemStack.with(
 		    Items.silicon, 5,
 			item.protein, 15,
 		)),
-		new UnitPlan(unit.ribosome, 60 * 20, ItemStack.with(
+		new UnitPlan(unit.ribosome, 60 * 18, ItemStack.with(
 		    Items.silicon, 5,
 			item.protein, 20,
 		)),
-		new UnitPlan(unit.bomber, 60 * 7.5, ItemStack.with(
+		new UnitPlan(unit.bomber, 60 * 8, ItemStack.with(
 		    Items.silicon, 3,
 			item.protein, 10,
 		)),
 	),
+	buildVisibility: BuildVisibility.shown,
+	category: Category.units,
 	requirements: ItemStack.with(
 	    Items.graphite, 60,
 		Items.silicon, 70,
@@ -64,13 +65,96 @@ unitIncubator.buildType = prov(() => extend(UnitFactory.UnitFactoryBuild, unitIn
     }
 }))
 
+const shaper = new UnitFactory("shaper");
+exports.shaper = shaper;
+Object.assign(shaper, {
+	size: 3,
+	plans: Seq.with(
+		new UnitPlan(unit.haploid, 60 * 10, ItemStack.with(
+		    Items.silicon, 5,
+			item.protein, 15,
+		)),
+		new UnitPlan(unit.ribosome, 60 * 12, ItemStack.with(
+		    Items.silicon, 5,
+			item.protein, 20,
+		)),
+		new UnitPlan(unit.bomber, 60 * 5, ItemStack.with(
+		    Items.silicon, 3,
+			item.protein, 10,
+		)),
+		new UnitPlan(unit.diploid, 60 * 20, ItemStack.with(
+		    Items.silicon, 12,
+			item.protein, 35,
+		)),
+		new UnitPlan(unit.lysosome, 60 * 25, ItemStack.with(
+		    Items.silicon, 12,
+			item.protein, 45,
+		)),
+		new UnitPlan(unit.cytoderm, 60 * 25, ItemStack.with(
+		    Items.silicon, 20,
+			item.protein, 35,
+		)),
+	),
+	buildVisibility: BuildVisibility.shown,
+	category: Category.units,
+	requirements: ItemStack.with(
+	    Items.beryllium, 150,
+	    Items.tungsten, 75,
+	    Items.silicon, 100
+	),
+})
+shaper.consumePower(1.8);
+shaper.consumeLiquid(liquid.ammonia, 0.1);
+shaper.buildType = prov(() => extend(UnitFactory.UnitFactoryBuild, shaper,{
+    a: 0,
+    draw(){
+        this.super$draw()
+        
+        if(this.currentPlan != -1){
+            var plan = this.block.plans.get(this.currentPlan);
+        }
+        
+        if(this.progress <= 60){
+            this.a = (this.progress / 60)
+        }else if(this.progress >= plan.time - 60){
+            this.a = (plan.time - this.progress) / 60
+        }else{
+            this.a = 1
+        }
+        
+        Draw.z(35.05);
+        LiquidBlock.drawTiledFrames(2, this.x, this.y, 0, Liquids.neoplasm, this.a * 0.7)
+        
+        Draw.reset();
+    },
+    onDestroyed(){
+        if(this.currentPlan < 3 && this.progress >= 45){
+            unit.neoplasmUnit1.spawn(this.team, this.x,this.y);
+        }else if(this.progress >= 90){
+            unit.neoplasmUnit2.spawn(this.team, this.x,this.y);
+        }
+    },
+    onDeconstructed(){
+        if(this.currentPlan < 3 && this.progress >= 45){
+            unit.neoplasmUnit1.spawn(this.team, this.x,this.y);
+        }else if(this.progress >= 90){
+            unit.neoplasmUnit2.spawn(this.team, this.x,this.y);
+        }
+    }
+}))
+
 lib.addResearch(unitIncubator, { 
     parent: "tank-fabricator",
     objectives: Seq.with(Objectives.OnSector(SectorPresets.intersect))
 }, () => {
     TechTree.node(unit.haploid,() => {}),
     TechTree.node(unit.ribosome, () => {}),
-    TechTree.node(unit.bomber, () => {})
+    TechTree.node(unit.bomber, () => {}),
+    TechTree.node(shaper, Seq.with(), () => {
+        TechTree.node(unit.diploid, () => {}),
+        TechTree.node(unit.lysosome, () => {}),
+        TechTree.node(unit.cytoderm, () => {})
+    })
 });
 
 /*const reincubator = new Reconstructor("reincubator");

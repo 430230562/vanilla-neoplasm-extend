@@ -215,6 +215,7 @@ Object.assign(explosive, {
     health: 240,
     baseExplosiveness: 160,
     size: 1,
+    buildCostMultiplier: 12,
     configurable: true,
     hasItems: true,
     itemCapacity: 36,

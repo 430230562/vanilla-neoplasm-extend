@@ -789,8 +789,9 @@ Object.assign(neoplasmUnit2, {
 neoplasmUnit2.abilities.add(
 new DeathNeoplasmAbility(40, 2400),
 new MoveLiquidAbility(Liquids.neoplasm, 16, 5, 1),
-new SpawnDeathAbility(neoplasmUnit1, 3, 40)()
-neoplasmUnit2.immunities.add(status.neoplasmSlow);
+new SpawnDeathAbility(neoplasmUnit1, 3, 40)
+)
+neoplasmUnit2.immunities.add(status.neoplasmSlow)
 neoplasmUnit2.weapons.add(
 Object.assign(new Weapon(), {
     top: false,
