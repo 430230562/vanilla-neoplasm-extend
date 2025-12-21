@@ -107,7 +107,15 @@ oxideWall.buildType = prov(() => extend(Building, {
     onDeconstructed() {
         if (this.tile != null) Puddles.deposit(this.tile, Liquids.neoplasm, this.noep);
         this.neop = 0
-    }
+    },
+    write(write) {
+		this.super$write(write);
+		write.f(this.neop);
+	},
+	read(read, revision) {
+		this.super$read(read, revision);
+		this.neop = read.f();
+	}
 }))
 
 const oxideWallLarge = new Wall("oxide-wall-large");
@@ -156,7 +164,15 @@ oxideWallLarge.buildType = prov(() => extend(Building, {
     onDeconstructed() {
         if (this.tile != null) Puddles.deposit(this.tile, Liquids.neoplasm, this.noep);
         this.neop = 0
-    }
+    },
+    write(write) {
+		this.super$write(write);
+		write.f(this.neop);
+	},
+	read(read, revision) {
+		this.super$read(read, revision);
+		this.neop = read.f();
+	}
 }))
 
 const biomassWall = new Wall("biomass-wall");
