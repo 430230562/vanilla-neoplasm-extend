@@ -138,7 +138,7 @@ Object.assign(new Weapon(), {
         shotDelay: 4,
     }),
     inaccuracy: 1,
-    shootSound: Sounds.artillery,
+    shootSound: Sounds.shootArtillerySmall,
     heatColor: Color.valueOf("84a94b"),
     bullet: Object.assign(new ArtilleryBulletType(3, 20), {
         knockback: 0.8,
@@ -265,7 +265,7 @@ for (let i = 0; i < 3; i++) {
 }
 triploid.weapons.add(Object.assign(
 new Weapon("vne-triploid-weapon"), {
-    shootSound: Sounds.missileLarge,
+    shootSound: Sounds.shootMissileLarge,
     x: 29 / 4,
     y: -11 / 4,
     shootY: 1.5,
@@ -325,7 +325,7 @@ Object.assign(new Weapon("vne-bivalents-weapon"), {
     shoot: new ShootSpread(2, 15),
     shootCone: 60,
     cooldownTime: 42,
-    shootSound: Sounds.shotgun,
+    shootSound: Sounds.shootFuse,
     bullet: Object.assign(new ShrapnelBulletType(), {
         length: 40,
         damage: 90,
@@ -659,7 +659,7 @@ Object.assign(new Weapon(), {
     reload: 24,
     shootCone: 180,
     ejectEffect: Fx.none,
-    shootSound: Sounds.explosion,
+    shootSound: Sounds.blockExplodeFlammable,
     x: 0,
     shootY: 0,
     mirror: false,
@@ -697,6 +697,7 @@ Object.assign(new PointDefenseWeapon("vne-cytoderm-weapon"), {
     reload: 6,
     targetInterval: 10,
     targetSwitchInterval: 15,
+    shootSound: Sounds.shootMerui,
 
     bullet: Object.assign(new BulletType(), {
         shootEffect: new Effect(32, 80, e => {
@@ -795,7 +796,7 @@ neoplasmUnit2.immunities.add(status.neoplasmSlow)
 neoplasmUnit2.weapons.add(
 Object.assign(new Weapon(), {
     top: false,
-    shootSound: Sounds.flame,
+    shootSound: Sounds.shootFlame,
     reload: 15,
     recoil: 1,
     ejectEffect: Fx.none,

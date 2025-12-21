@@ -1,3 +1,5 @@
+const lib = require("vne/lib/researchlib");
+
 const protein = new Item("protein", Color.valueOf("d6dbe7"));
 exports.protein = protein;
 Object.assign(protein, {
@@ -23,3 +25,20 @@ Object.assign(biomassSteel, {
 	cost: 2.5,
 	healthScaling: 1.2,
 })
+
+lib.addResearch(protein, {
+    parent: "beryllium",
+    objectives: Seq.with(
+        Objectives.Produce(protein),
+    )
+}, () => {
+    TechTree.nodeProduce(chitin, () => {}),
+    TechTree.nodeProduce(biomassSteel, () => {})
+})
+
+lib.addResearch(coagulantIngot, {
+    parent: "oxide",
+    objectives: Seq.with(
+        Objectives.Produce(coagulantIngot),
+    )
+}, () => {})

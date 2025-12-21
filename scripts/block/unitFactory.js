@@ -1,6 +1,7 @@
 const lib = require("vne/lib/researchlib");
 
 const unit = require('vne/unit');
+const sector = require("vne/sector");
 
 const item = require('vne/item');
 const liquid = require("vne/liquid");
@@ -145,7 +146,9 @@ shaper.buildType = prov(() => extend(UnitFactory.UnitFactoryBuild, shaper,{
 
 lib.addResearch(unitIncubator, { 
     parent: "tank-fabricator",
-    objectives: Seq.with(Objectives.OnSector(SectorPresets.intersect))
+    objectives: Seq.with(
+        Objectives.OnSector(sector.fumarole)
+    )
 }, () => {
     TechTree.node(unit.haploid,() => {}),
     TechTree.node(unit.ribosome, () => {}),

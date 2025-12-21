@@ -155,7 +155,7 @@ const ammoniaPlant = new HeatCrafter("ammonia-plant");
 exports.ammoniaPlant = ammoniaPlant;
 Object.assign(ammoniaPlant, {
     craftEffect: Fx.none,
-    ambientSound: Sounds.extractLoop,
+    ambientSound: Sounds.loopSmelter,
     ambientSoundVolume: 0.06,
     outputLiquid: new LiquidStack(liquid.ammonia, 0.1),
     heatRequirement: 5,
@@ -213,7 +213,7 @@ const watergasStove = new HeatCrafter("watergas-stove");
 exports.watergasStove = watergasStove;
 Object.assign(watergasStove, {
     craftEffect: Fx.none,
-    ambientSound: Sounds.smelter,
+    ambientSound: Sounds.loopSmelter,
     ambientSoundVolume: 0.12,
     outputLiquid: new LiquidStack(Liquids.hydrogen, 0.45),
     heatRequirement: 8,

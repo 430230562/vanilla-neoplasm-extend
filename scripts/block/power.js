@@ -6,7 +6,7 @@ const liquid = require("vne/liquid")
 const factory = require("vne/block/factory");
 
 const biomassReactor = extend(ConsumeGenerator,"biomass-reactor",{
-    ambientSound: Sounds.hum,
+    ambientSound: Sounds.loopBio,
     ambientSoundVolume: 0.24,
     size: 5,
     health: 700,

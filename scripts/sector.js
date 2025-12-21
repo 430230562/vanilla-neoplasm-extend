@@ -11,6 +11,5 @@ lib.addResearch(fumarole, {
     parent: "intersect",
     objectives: Seq.with(
         Objectives.SectorComplete(SectorPresets.intersect),
-        Objectives.Research(unitFactory.unitIncubator)
-        )
+    )
 }, () => {});

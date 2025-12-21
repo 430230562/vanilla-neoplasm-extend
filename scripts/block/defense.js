@@ -350,7 +350,7 @@ item.coagulantIngot, extend(ArtilleryBulletType, 2.5, 240, "shell", {
     trailColor: Color.valueOf("c33e2b"),
     frontColor: Color.valueOf("c33e2b"),
     ammoMultiplier: 1,
-    hitSound: Sounds.titanExplosion,
+    hitSound: Sounds.explosionTitan,
 
     trailLength: 32,
     trailWidth: 3.35,
