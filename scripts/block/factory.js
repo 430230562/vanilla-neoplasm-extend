@@ -123,6 +123,7 @@ cyanidePlant.buildType = prov(() => extend(GenericCrafter.GenericCrafterBuild, c
 cyanidePlant.consumeLiquids(LiquidStack.with(
 Liquids.cyanogen, 0.05,
 Liquids.neoplasm, 10 / 60));
+cyanidePlant.consumePower(1);
 
 const adsorbent = new GenericCrafter("adsorbent");
 exports.adsorbent = adsorbent;
