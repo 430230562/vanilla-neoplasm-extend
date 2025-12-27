@@ -191,11 +191,11 @@ Object.assign(biomassWall, {
 })
 biomassWall.buildType = prov(() => extend(Building, {
     collision(bullet) {
+        bullet.pierce = false;
+        bullet.pierceBuilding = false;
+        bullet.pierceDamageFactor = 0
+        
         this.super$collision(bullet);
-
-        //神秘的抗穿透方法
-        bullet.remove();
-
         return true
     }
 }))
@@ -216,11 +216,11 @@ Object.assign(biomassWallLarge, {
 })
 biomassWallLarge.buildType = prov(() => extend(Building, {
     collision(bullet) {
+        bullet.pierce = false;
+        bullet.pierceBuilding = false;
+        bullet.pierceDamageFactor = 0
+        
         this.super$collision(bullet);
-
-        //神秘的抗穿透方法
-        bullet.remove();
-
         return true
     }
 }))

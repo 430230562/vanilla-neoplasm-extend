@@ -24,9 +24,11 @@ exports.corroding = corroding;
 
 const neoplasmSlow = new extend(StatusEffect,"neoplasm-slow",{
     speedMultiplier: 0.25,
-    update(unit, time){
-        if(Mathf.chanceDelta(0.05) && unit.tileOn() != null){
-			Puddles.deposit(unit.tileOn(),Liquids.neoplasm,1);
+    update(unit, entry){
+        this.super$update(unit, entry);
+        
+        if(Mathf.chanceDelta(0.1) && unit.tileOn() != null){
+			Puddles.deposit(unit.tileOn(),Liquids.neoplasm,2);
         }
     }
 })

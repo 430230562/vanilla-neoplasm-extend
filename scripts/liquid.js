@@ -7,6 +7,7 @@ Liquids.neoplasm.spreadConversion = 2.5;
 Liquids.neoplasm.spreadDamage = 0.1;
 Liquids.neoplasm.removeScaling = 0.05;
 Liquids.neoplasm.effect = status.neoplasmSlow;
+Liquids.neoplasm.canStayOn.addAll(Liquids.neoplasm)
 
 const acid = extend(Liquid,"acid",Color.valueOf("84a94b"),{
 	update(puddle){
@@ -57,8 +58,8 @@ const ammonia = new Liquid("ammonia",Color.valueOf("57c3c2"));
 exports.ammonia = ammonia
 Object.assign(ammonia,{
     gas: true,
-	flammability: 0.7,
-	explosiveness: 0.5,
+	flammability: 0.8,
+	explosiveness: 0.6,
 	coolant: false,
 })
 

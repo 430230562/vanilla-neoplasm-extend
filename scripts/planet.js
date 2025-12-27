@@ -34,7 +34,7 @@ Object.assign(ochre,{
 	accessible: false,
 	alwaysUnlocked: false,
 	startSector: 0,
-	orbitRadius: 70
+	orbitRadius: 110
 })
 
 const p = extend(Planet, "ochre-rim", ochre, 0.1, {

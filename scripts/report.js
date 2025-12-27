@@ -8,7 +8,7 @@ Events.on(EventType.ClientLoadEvent, () => {
 	const remind = new BaseDialog("Vanilla Neoplasm Extend");
 	
 	remind.cont.pane(table => {
-		table.image(Core.atlas.find("vne-icon")).size(64,64).pad(3).row();
+		table.image(Core.atlas.find("vne-icon")).size(256,144).pad(3).row();
 		table.add(Core.bundle.get("vne.para1") + version).left().growX().wrap().width(420).maxWidth(420).pad(4).labelAlign(Align.left).row();
 
 		table.button(Core.bundle.get("vne.changelog"), run(() => { 
