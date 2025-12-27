@@ -50,7 +50,7 @@ const cyanidePlant = extend(GenericCrafter, "cyanide-plant", {
     setStats() {
         this.super$setStats();
 
-        this.stats.add(Stat.output, StatValues.items(this.craftTime, ItemStack.with(item.protein, 3, item.chitin, 2)));
+        this.stats.add(Stat.output, StatValues.items(this.craftTime, ItemStack.with(item.protein, 7, item.chitin, 2)));
     },
     icons(){
 		return [Core.atlas.find("vne-cyanide-plant-bottom"),Core.atlas.find("vne-cyanide-plant-rotator0"),Core.atlas.find("vne-cyanide-plant-rotator1"),Core.atlas.find("vne-cyanide-plant")]
@@ -88,7 +88,7 @@ cyanidePlant.buildType = prov(() => extend(GenericCrafter.GenericCrafterBuild, c
                 this.offload(item.chitin);
             }
         } else {
-            for (let i = 0; i < 3; i++) {
+            for (let i = 0; i < 7; i++) {
                 this.offload(item.protein);
             }
         }
@@ -121,8 +121,9 @@ cyanidePlant.buildType = prov(() => extend(GenericCrafter.GenericCrafterBuild, c
     }
 }));
 cyanidePlant.consumeLiquids(LiquidStack.with(
-Liquids.cyanogen, 0.05,
-Liquids.neoplasm, 10 / 60));
+    Liquids.cyanogen, 0.05,
+    Liquids.neoplasm, 10 / 60
+));
 cyanidePlant.consumePower(1);
 
 const adsorbent = new GenericCrafter("adsorbent");
