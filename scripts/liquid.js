@@ -6,6 +6,7 @@ Liquids.neoplasm.maxSpread = 1.25;
 Liquids.neoplasm.spreadConversion = 2.5;
 Liquids.neoplasm.spreadDamage = 0.1;
 Liquids.neoplasm.removeScaling = 0.05;
+Liquids.neoplasm.incinerable = false;
 Liquids.neoplasm.effect = status.neoplasmSlow;
 Liquids.neoplasm.canStayOn.addAll(Liquids.neoplasm)
 

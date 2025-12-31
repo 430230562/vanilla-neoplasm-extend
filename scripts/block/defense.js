@@ -191,11 +191,12 @@ Object.assign(biomassWall, {
 })
 biomassWall.buildType = prov(() => extend(Building, {
     collision(bullet) {
-        bullet.pierce = false;
-        bullet.pierceBuilding = false;
-        bullet.pierceDamageFactor = 0
+        bullet.type.pierce = false;
+        bullet.type.pierceBuilding = false;
+        bullet.type.pierceDamageFactor = 0
         
-        this.super$collision(bullet);
+        this.super$collision(bullet)
+        
         return true
     }
 }))
@@ -216,11 +217,12 @@ Object.assign(biomassWallLarge, {
 })
 biomassWallLarge.buildType = prov(() => extend(Building, {
     collision(bullet) {
-        bullet.pierce = false;
-        bullet.pierceBuilding = false;
-        bullet.pierceDamageFactor = 0
+        bullet.type.pierce = false;
+        bullet.type.pierceBuilding = false;
+        bullet.type.pierceDamageFactor = 0
         
-        this.super$collision(bullet);
+        this.super$collision(bullet)
+        
         return true
     }
 }))

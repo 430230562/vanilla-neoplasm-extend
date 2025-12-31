@@ -1,20 +1,36 @@
 const item = require("vne/item");
 
-const turbopump = new Pump("turbopump");
-exports.turbopump = turbopump;
-Object.assign(turbopump, {
+const turbopump = extend(Pump,"turbopump",{
     hasPower: true,
     consumesPower: true,
     size: 3,
     pumpAmount: 20 / 60,
-    liquidCapacity: 200,
+    liquidCapacity: 360,
     buildVisibility: BuildVisibility.shown,
     category: Category.liquid,
     requirements: ItemStack.with(
-    item.biomassSteel, 20,
-    Items.silicon, 50,
-    Items.tungsten, 75)
-})
+        item.biomassSteel, 20,
+        Items.silicon, 50,
+        Items.tungsten, 75
+    ),
+    setStats(){
+        this.super$setStats();
+        
+        let consumer = this.findConsumer(f => f instanceof ConsumeLiquidBase);
+        if(consumer instanceof ConsumeLiquidBase){
+            let consBase = consumer;
+            
+            this.stats.remove(Stat.input);
+            this.stats.add(Stat.booster,
+                StatValues.speedBoosters("{0}" + StatUnit.timesSpeed.localized(),
+                consBase.amount, 1.5, 
+                false, liquid => consBase.consumes(liquid))
+            )
+        
+        }
+    }
+});
+exports.turbopump = turbopump;
 turbopump.buildType = prov(() => extend(Pump.PumpBuild, turbopump, {
     mul: 1,
     updateTile() {
@@ -44,6 +60,7 @@ exports.biomassConduit = biomassConduit;
 Object.assign(biomassConduit, {
     hasPower: true,
     consumesPower: true,
+    outputsPower: true,
     conductivePower: true,
 
     underBullets: true,
@@ -51,9 +68,75 @@ Object.assign(biomassConduit, {
     liquidCapacity: 50,
     buildVisibility: BuildVisibility.shown,
     category: Category.liquid,
-    requirements: ItemStack.with(item.biomassSteel, 1)
+    requirements: ItemStack.with(
+        Items.beryllium, 1,
+        item.biomassSteel, 1
+    )
 })
-biomassConduit.buildType = prov(() => extend(ArmoredConduit.ArmoredConduitBuild, biomassConduit, {}))
+biomassConduit.buildType = prov(() => extend(ArmoredConduit.ArmoredConduitBuild, biomassConduit, {
+    status(){
+        if(Mathf.equal(this.power.status, 0, 0.001)) return BlockStatus.noInput;
+        if(Mathf.equal(this.power.status, 1, 0.001)) return BlockStatus.active;
+        return BlockStatus.noOutput;
+    }
+}))
+biomassConduit.consumePowerBuffered(250)
+
+const biomassLiquidRouter = new LiquidRouter("biomass-liquid-router");
+exports.biomassLiquidRouter = biomassLiquidRouter;
+Object.assign(biomassLiquidRouter, {
+	buildVisibility: BuildVisibility.shown,
+	category: Category.liquid,
+	requirements: ItemStack.with(
+		Items.beryllium, 3,
+        item.biomassSteel, 1
+	),
+	liquidCapacity: 75,
+	hasPower: true,
+    consumesPower: true,
+    outputsPower: true,
+    conductivePower: true,
+
+    underBullets: true,
+    health: 500,
+});
+biomassLiquidRouter.consumePowerBuffered(750)
+
+const biomassLiquidJunction = new LiquidJunction("biomass-liquid-junction");
+exports.biomassLiquidJunction = biomassLiquidJunction;
+Object.assign(biomassLiquidJunction, {
+	buildVisibility: BuildVisibility.shown,
+	category: Category.liquid,
+	requirements: ItemStack.with(
+		Items.beryllium, 3,
+        item.biomassSteel, 1
+	),
+	hasPower: true,
+    consumesPower: true,
+    outputsPower: true,
+    conductivePower: true,
+
+    underBullets: true,
+    health: 500,
+})
+biomassLiquidJunction.consumePowerBuffered(750)
+
+/*电路角色判断
+if(build.block.outputsPower && build.block.consumesPower && !build.block.consPower.buffered){
+    冲击反应堆
+    producers.add(build);
+    consumers.add(build);
+}else if(build.block.outputsPower && build.block.consumesPower){
+    电池
+    batteries.add(build);
+}else if(build.block.outputsPower){
+    发电机
+    producers.add(build);
+}else if(build.block.consumesPower && build.block.consPower != null){
+    用电器
+    consumers.add(build);
+}
+*/
 
 //未来发光贴图
 /*draw(){
