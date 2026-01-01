@@ -59,9 +59,13 @@ unitIncubator.buildType = prov(() => extend(UnitFactory.UnitFactoryBuild, unitIn
         Draw.reset();
     },
     onDestroyed(){
+        this.super$onDestroyed();
+    
         if(this.progress >= 60)unit.neoplasmUnit1.spawn(this.team, this.x,this.y);
     },
     onDeconstructed(){
+        this.super$onDeconstructed();
+    
         if(this.progress >= 60)unit.neoplasmUnit1.spawn(this.team, this.x,this.y);
     }
 }))
@@ -129,6 +133,8 @@ shaper.buildType = prov(() => extend(UnitFactory.UnitFactoryBuild, shaper,{
         Draw.reset();
     },
     onDestroyed(){
+        this.super$onDestroyed();
+        
         if(this.currentPlan < 3 && this.progress >= 45){
             unit.neoplasmUnit1.spawn(this.team, this.x,this.y);
         }else if(this.progress >= 90){
@@ -136,6 +142,8 @@ shaper.buildType = prov(() => extend(UnitFactory.UnitFactoryBuild, shaper,{
         }
     },
     onDeconstructed(){
+        this.super$onDeconstructed();
+    
         if(this.currentPlan < 3 && this.progress >= 45){
             unit.neoplasmUnit1.spawn(this.team, this.x,this.y);
         }else if(this.progress >= 90){
