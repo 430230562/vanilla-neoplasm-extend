@@ -47,6 +47,34 @@ function MendFieldAbility(amount,reload,range){
 }
 exports.MendFieldAbility = MendFieldAbility;
 
+function NeoplasmRegenAbility(slurpSpeed,regenPerSlurp,slurpEffectChance){
+    return extend(Ability,{
+		wasHealed: false,
+		update(unit){
+			if(unit.damaged()){
+				this.wasHealed = false;
+				unit.tileOn().circle(unit.type.hitSize / 8,cons(tile => {
+    				if(tile != null){
+						let puddle = Puddles.get(tile)
+						if(puddle != null && puddle.liquid == Liquids.neoplasm){
+							puddle.amount -= slurpSpeed
+							unit.heal(slurpSpeed * regenPerSlurp)
+							this.wasHealed = true;
+						}
+
+						if(puddle.amount <= 0){
+							puddle.remove()
+						}
+					}
+    			}))
+			}
+			if(this.wasHealed && Mathf.chanceDelta(slurpEffectChance)){
+				Fx.neoplasmHeal.at(unit)
+			}
+		}
+	})
+}
+
 function MoveLiquidAbility(liquid,range,amount,healthPercent){
 	return extend(Ability,{
 		update(unit){

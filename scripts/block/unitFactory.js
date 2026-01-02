@@ -161,7 +161,10 @@ lib.addResearch(unitIncubator, {
     TechTree.node(unit.haploid,() => {}),
     TechTree.node(unit.ribosome, () => {}),
     TechTree.node(unit.bomber, () => {}),
-    TechTree.node(shaper, Seq.with(), () => {
+    TechTree.node(shaper, Seq.with(
+        Objectives.OnSector(sector.faultline),
+        Objectives.Research(factory.ammoniaPlant)
+    ), () => {
         TechTree.node(unit.diploid, () => {}),
         TechTree.node(unit.lysosome, () => {}),
         TechTree.node(unit.cytoderm, () => {})

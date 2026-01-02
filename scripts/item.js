@@ -19,7 +19,7 @@ Object.assign(coagulantIngot,{
     buildable:false
 })
 
-const biomassSteel = new Item("biomass-steel", Color.valueOf("98ba53"));
+const biomassSteel = new Item("biomass-steel", Color.valueOf("7EA341"));
 exports.biomassSteel = biomassSteel;
 Object.assign(biomassSteel, {
 	cost: 2.5,
