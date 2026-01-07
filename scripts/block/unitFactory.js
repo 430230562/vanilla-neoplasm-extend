@@ -1,10 +1,9 @@
-const lib = require("vne/lib/researchlib");
-
 const unit = require('vne/unit');
 const sector = require("vne/sector");
 
 const item = require('vne/item');
 const liquid = require("vne/liquid");
+const factory = require("vne/block/factory");
 
 const UnitPlan = UnitFactory.UnitPlan;
 const AssemblerUnitPlan = UnitAssembler.AssemblerUnitPlan;
@@ -151,25 +150,6 @@ shaper.buildType = prov(() => extend(UnitFactory.UnitFactoryBuild, shaper,{
         }
     }
 }))
-
-lib.addResearch(unitIncubator, { 
-    parent: "tank-fabricator",
-    objectives: Seq.with(
-        Objectives.OnSector(sector.fumarole)
-    )
-}, () => {
-    TechTree.node(unit.haploid,() => {}),
-    TechTree.node(unit.ribosome, () => {}),
-    TechTree.node(unit.bomber, () => {}),
-    TechTree.node(shaper, Seq.with(
-        Objectives.OnSector(sector.faultline),
-        Objectives.Research(factory.ammoniaPlant)
-    ), () => {
-        TechTree.node(unit.diploid, () => {}),
-        TechTree.node(unit.lysosome, () => {}),
-        TechTree.node(unit.cytoderm, () => {})
-    })
-});
 
 /*const reincubator = new Reconstructor("reincubator");
 exports.reincubator = reincubator;

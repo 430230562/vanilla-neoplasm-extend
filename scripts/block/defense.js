@@ -1,5 +1,3 @@
-const lib = require("vne/lib/researchlib");
-
 const liquid = require("vne/liquid");
 const item = require("vne/item");
 const status = require("vne/status");
@@ -102,10 +100,10 @@ oxideWall.buildType = prov(() => extend(Building, {
     },
     //想卡掉血浆？没门!
     onDestroyed() {
-        if (this.tile != null) Puddles.deposit(this.tile, Liquids.neoplasm, this.noep);
+        if (this.tile != null) Puddles.deposit(this.tile, Liquids.neoplasm, this.neop);
     },
     onDeconstructed() {
-        if (this.tile != null) Puddles.deposit(this.tile, Liquids.neoplasm, this.noep);
+        if (this.tile != null) Puddles.deposit(this.tile, Liquids.neoplasm, this.neop);
         this.neop = 0
     },
     write(write) {
@@ -159,10 +157,10 @@ oxideWallLarge.buildType = prov(() => extend(Building, {
     },
     //想卡掉血浆？没门!
     onDestroyed() {
-        if (this.tile != null) Puddles.deposit(this.tile, Liquids.neoplasm, this.noep);
+        if (this.tile != null) Puddles.deposit(this.tile, Liquids.neoplasm, this.neop);
     },
     onDeconstructed() {
-        if (this.tile != null) Puddles.deposit(this.tile, Liquids.neoplasm, this.noep);
+        if (this.tile != null) Puddles.deposit(this.tile, Liquids.neoplasm, this.neop);
         this.neop = 0
     },
     write(write) {
@@ -259,26 +257,16 @@ explosive.buildType = prov(() => extend(Building, {
     },
     onDestroyed() {
         this.super$onDestroyed();
-
-        if (this.tile != null) this.tile.circle(5, cons(other => {
+        
+        //很奇怪，即使puddle.amount为0，地块依旧判断为存在血浆
+        if (this.tile != null && this.items.get(this.exploreItem) > 0) this.tile.circle(5, cons(other => {
             if (other != null) Puddles.deposit(other, Liquids.neoplasm, this.items.get(this.exploreItem) * 5);
         }))
     },
     onDeconstructed() {
-        if (this.tile != null) Puddles.deposit(this.tile, Liquids.neoplasm, 60 * this.items.get(this.exploreItem));
+        if (this.tile != null && this.items.get(this.exploreItem) > 0) Puddles.deposit(this.tile, Liquids.neoplasm, 60 * this.items.get(this.exploreItem));
     }
 }))
-
-lib.addResearch(oxideWall, {
-    parent: "beryllium-wall",
-}, () => {
-    TechTree.node(oxideWallLarge, () => {
-        TechTree.node(biomassWall, () => {
-            TechTree.node(biomassWallLarge, () => {})
-        })
-    }),
-    TechTree.node(explosive, () => {})
-});
 
 //撕裂
 Blocks.breach.ammoTypes.put(

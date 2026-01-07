@@ -1,5 +1,4 @@
 const status = require("vne/status");
-const lib = require("vne/lib/researchlib");
 
 Liquids.neoplasm.viscosity = 0.95;
 Liquids.neoplasm.maxSpread = 1.25;
@@ -63,10 +62,3 @@ Object.assign(ammonia,{
 	explosiveness: 0.6,
 	coolant: false,
 })
-
-lib.addResearch(ammonia, {
-    parent: "nitrogen",
-    objectives: Seq.with(
-        Objectives.Produce(ammonia),
-    )
-}, () => {})

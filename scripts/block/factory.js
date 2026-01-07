@@ -1,5 +1,3 @@
-const lib = require("vne/lib/researchlib");
-
 const item = require("vne/item");
 const liquid = require("vne/liquid")
 
@@ -56,6 +54,7 @@ const cyanidePlant = extend(GenericCrafter, "cyanide-plant", {
 		return [Core.atlas.find("vne-cyanide-plant")]
 	},
 })
+exports.cyanidePlant = cyanidePlant;
 cyanidePlant.buildType = prov(() => extend(GenericCrafter.GenericCrafterBuild, cyanidePlant, {
     style: false,
     i:0,
@@ -264,25 +263,3 @@ Object.assign(laserIncinerator,{
     )
 })
 laserIncinerator.consumePower(5);
-
-lib.addResearch(incubator, {
-    parent: "silicon-arc-furnace",
-    objectives: Seq.with(Objectives.OnSector(SectorPresets.intersect))
-}, () => {
-    TechTree.node(cyanidePlant, () => {})
-});
-
-lib.addResearch(ammoniaPlant, {
-    parent: "oxidation-chamber",
-}, () => {
-    TechTree.node(watergasStove, () => {})
-});
-
-lib.addResearch(adsorbent, {
-    parent: "oxidation-chamber",
-}, () => {})
-
-lib.addResearch(laserIncinerator, {
-    parent: "slag-incinerator",
-    objectives: Seq.with(Objectives.Research(adsorbent))
-}, () => {})

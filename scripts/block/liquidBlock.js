@@ -61,6 +61,7 @@ Object.assign(biomassConduit, {
     conductivePower: true,
 
     underBullets: true,
+    solid: false,
     health: 400,
     liquidCapacity: 50,
     buildVisibility: BuildVisibility.shown,
@@ -93,6 +94,7 @@ Object.assign(biomassLiquidRouter, {
     conductivePower: true,
 
     underBullets: true,
+    solid: false,
     health: 500,
 });
 biomassLiquidRouter.buildType = prov(() => extend(LiquidRouter.LiquidRouterBuild, biomassLiquidRouter, {
@@ -118,6 +120,7 @@ Object.assign(biomassLiquidJunction, {
     conductivePower: true,
 
     underBullets: true,
+    solid: false,
     health: 500,
 })
 biomassLiquidJunction.buildType = prov(() => extend(LiquidJunction.LiquidJunctionBuild, biomassLiquidJunction, {

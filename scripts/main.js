@@ -13,4 +13,7 @@ require("vne/block/unitFactory");
 
 require("vne/sector");
 require("vne/planet");
-require("vne/report")
+
+require("vne/tree");
+
+require("vne/report");

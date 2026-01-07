@@ -1,9 +1,5 @@
-const lib = require("vne/lib/researchlib");
-
 const item = require("vne/item");
 const liquid = require("vne/liquid");
-const factory = require("vne/block/factory");
-const sector = require("vne/sector");
 
 const biomassReactor = extend(ConsumeGenerator,"biomass-reactor",{
     ambientSound: Sounds.loopBio,
@@ -119,15 +115,6 @@ biomassReactor.buildType = prov(() => extend(ConsumeGenerator.ConsumeGeneratorBu
         this.volatility = read.f();
     }
 }))
-
 exports.biomassReactor = biomassReactor;
 biomassReactor.consumeItem(item.protein, 1);
 biomassReactor.consumeLiquid(liquid.ammonia, 0.1).optional = true;
-
-lib.addResearch(biomassReactor, { 
-    parent: "chemical-combustion-chamber",
-    objectives: Seq.with(
-        Objectives.Research(factory.ammoniaPlant),
-        Objectives.SectorComplete(sector.faultline)
-    )
-}, () => {});
