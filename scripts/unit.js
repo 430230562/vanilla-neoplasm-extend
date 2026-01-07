@@ -26,7 +26,7 @@ function Insect(name) {
             Object.assign(new LiquidRegenAbility(), {
                 liquid: Liquids.neoplasm,
                 slurpEffect: Fx.neoplasmHeal,
-                regenPerSlurp: 3.2
+                regenPerSlurp: 6
             }));
             this.immunities.add(status.neoplasmSlow)
         }
