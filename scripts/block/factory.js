@@ -1,5 +1,6 @@
 const item = require("vne/item");
-const liquid = require("vne/liquid")
+const liquid = require("vne/liquid");
+const {ammoniaTurbine} = require("vne/effect");
 
 const incubator = new AttributeCrafter("incubator");
 exports.incubator = incubator;
@@ -263,3 +264,39 @@ Object.assign(laserIncinerator,{
     )
 })
 laserIncinerator.consumePower(5);
+
+const ammoniaCollector = new AttributeCrafter("ammonia-collector");
+exports.ammoniaCollector = ammoniaCollector;
+Object.assign(ammoniaCollector,{
+    attribute: Attribute.get("ammonia"),
+    group: BlockGroup.liquids,
+    minEfficiency: 9 - 0.0001,
+    baseEfficiency: 0,
+    displayEfficiency: false,
+    craftEffect: ammoniaTurbine,
+    drawer: new DrawMulti(
+        new DrawRegion("-bottom"),
+        new DrawRegion("-rotator", 6),
+        new DrawRegion("-mid"),
+        new DrawLiquidTile(liquid.ammonia),
+        new DrawDefault()
+    ),
+    craftTime: 120,
+    size: 3,
+    ambientSound: Sounds.loopHum,
+    ambientSoundVolume: 0.06,
+    hasLiquids: true,
+    boostScale: 1 / 9,
+    itemCapacity: 0,
+    outputLiquid: new LiquidStack(liquid.ammonia, 6 / 60),
+    liquidCapacity: 30,
+    
+    buildVisibility: BuildVisibility.shown,
+	category: Category.production,
+	requirements: ItemStack.with(
+		Items.graphite, 40,
+		Items.silicon, 75,
+        Items.oxide, 55
+    )
+})
+ammoniaCollector.consumePower(1);

@@ -214,6 +214,9 @@ biomassConduitBridge.buildType = prov(() => extend(LiquidBridge.LiquidBridgeBuil
 biomassConduitBridge.consumePowerBuffered(250)
 //biomassConduitBridge.consumePower(0.3);
 
+biomassConduit.junctionReplacement = biomassLiquidJunction;
+biomassConduit.bridgeReplacement = biomassConduitBridge;
+
 /*电路角色判断
 if(build.block.outputsPower && build.block.consumesPower && !build.block.consPower.buffered){
     冲击反应堆

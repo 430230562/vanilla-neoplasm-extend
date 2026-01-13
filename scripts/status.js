@@ -27,8 +27,8 @@ const neoplasmSlow = new extend(StatusEffect,"neoplasm-slow",{
     update(unit, entry){
         this.super$update(unit, entry);
         
-        if(Mathf.chanceDelta(0.1) && unit.tileOn() != null){
-			Puddles.deposit(unit.tileOn(),Liquids.neoplasm,2);
+        if(unit.tileOn() != null){
+			Puddles.deposit(unit.tileOn(),Liquids.neoplasm,0);
         }
     }
 })

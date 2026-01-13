@@ -801,7 +801,7 @@ Object.assign(new Weapon(), {
     recoil: 1,
     ejectEffect: Fx.none,
     bullet: extend(BulletType, 4, 40, {
-        hitSize: 7,
+        hitSize: 11,
         lifetime: 12,
         pierce: true,
         pierceBuilding: true,
