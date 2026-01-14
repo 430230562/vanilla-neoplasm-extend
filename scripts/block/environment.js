@@ -20,6 +20,8 @@ const neoplasmWall = new StaticWall("neoplasm-wall");
 
 const neoplasmStone = new Floor("neoplasm-stone");
 neoplasmStone.variants = 5;
+neoplasmStone.attributes.set(Attribute.get("biomass"), 0.08);
+neoplasmStone.attributes.set(Attribute.water, -1);
 
 const neoplasmVent = new SteamVent("neoplasm-vent");
 Object.assign(neoplasmVent,{
@@ -28,7 +30,6 @@ Object.assign(neoplasmVent,{
     effectColor: Color.valueOf("57c3c2")
 })
 neoplasmVent.attributes.set(Attribute.get("ammonia"), 1);
-
 
 const neoplasmSand = new Floor("neoplasm-sand")
 Object.assign(neoplasmSand, {

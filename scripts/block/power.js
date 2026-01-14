@@ -3,13 +3,6 @@ const liquid = require("vne/liquid");
 const {ammoniaTurbine} = require("vne/effect")
 
 const oxidationChamber = extend(ThermalGenerator, "oxidation-chamber", {
-    setStats() {
-        this.super$setStats();
-
-        this.stats.remove(Stat.input);
-
-        this.stats.add(Stat.input, StatValues.liquid(Liquids.ozone, 8, true))
-    },
     setBars() {
         this.super$setBars();
         
@@ -47,22 +40,23 @@ const oxidationChamber = extend(ThermalGenerator, "oxidation-chamber", {
     powerProduction: 15 / 9,
     displayEfficiency: false,
     generateEffect: ammoniaTurbine,
-    effectChance: 0.06,
+    effectChance: 0.04,
     size: 3,
     ambientSound: Sounds.loopHum,
     ambientSoundVolume: 0.06,
 
     drawer: new DrawMulti(
-    new DrawRegion("-bottom"),
-    Object.assign(new DrawArcSmelt(), {
-        flameColor: Color.valueOf("fa7f7f"),
-        midColor: Color.valueOf("ff9999")
-    }),
     new DrawDefault(),
+    Object.assign(new DrawWarmupRegion(),{
+        color: Color.valueOf("57c3c2"),
+        sinScl: 8 * 9
+    }),
+    new DrawBlurSpin("-rotator0",0.4),
+    new DrawBlurSpin("-rotator1",-0.4)
     ),
 
     hasLiquids: true,
-    outputLiquid: new LiquidStack(Liquids.water, 9 / 60 / 9),
+    outputLiquid: new LiquidStack(Liquids.water, 10 / 60 / 9),
     liquidCapacity: 30,
     fogRadius: 3,
 
@@ -98,7 +92,7 @@ oxidationChamber.buildType = prov(() => extend(ThermalGenerator.ThermalGenerator
 		this.workTime = read.f();
 	}
 }))
-oxidationChamber.consumeLiquid(Liquids.ozone, 8 / 60);
+oxidationChamber.consumeLiquid(Liquids.ozone, 4 / 60);
 
 const biomassReactor = extend(ConsumeGenerator, "biomass-reactor", {
     ambientSound: Sounds.loopBio,
@@ -192,7 +186,7 @@ biomassReactor.buildType = prov(() => extend(ConsumeGenerator.ConsumeGeneratorBu
         this.super$draw();
 
         Draw.color(Color.red);
-        Draw.alpha(this.volatility)
+        Draw.alpha(this.volatility * 0.75)
         Fill.rect(this.x, this.y, 40, 40);
 
         Draw.reset();

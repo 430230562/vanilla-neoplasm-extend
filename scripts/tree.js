@@ -123,6 +123,10 @@ addResearch(factory.laserIncinerator, {
     objectives: Seq.with(Objectives.Research(factory.adsorbent))
 }, () => {})
 
+addResearch(factory.ammoniaCollector,{
+    parent: "vent-condenser",
+},() => {})
+
 //liquid
 addResearch(liquidBlock.turbopump,{
     parent: "reinforced-pump",
@@ -138,6 +142,10 @@ addResearch(liquidBlock.biomassConduit, {
 })
 
 //power
+addResearch(power.oxidationChamber,{
+    parent: "turbine-condenser"
+},() => {});
+
 addResearch(power.biomassReactor, { 
     parent: "chemical-combustion-chamber",
     objectives: Seq.with(
