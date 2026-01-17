@@ -69,7 +69,7 @@ addResearch(item.protein, {
         Objectives.Produce(item.protein),
     )
 }, () => {
-    TechTree.nodeProduce(item.chitin, () => {}),
+    TechTree.nodeProduce(Items.dormantCyst, () => {}),
     TechTree.nodeProduce(item.biomassSteel, () => {})
 })
 

@@ -172,9 +172,13 @@ biomassReactor.buildType = prov(() => extend(ConsumeGenerator.ConsumeGeneratorBu
 
         if (this.productionEfficiency > 0) {
             if (this.liquids.get(this.coolantLiquid) < 0.001) {
-                this.volatility += fullness * 0.0025 * Math.min(Time.delta, 4);
+                this.volatility += fullness * 0.005 * Math.min(Time.delta, 4);
             } else if (this.volatility >= 0) {
-                this.volatility -= 0.005 * Math.min(Time.delta, 4);
+                this.volatility -= 0.01 * Math.min(Time.delta, 4);
+            }
+            
+            if(Mathf.chance(0.05)){
+                Fx.reactorsmoke.at(this.x + Mathf.range(20),this.y + Mathf.range(20))
             }
         }
 
@@ -193,6 +197,10 @@ biomassReactor.buildType = prov(() => extend(ConsumeGenerator.ConsumeGeneratorBu
     },
     shouldExplode() {
         return this.super$shouldExplode() && (this.items.get(this.fuelItem) >= 5 || this.volatility >= 0.25);
+    },
+    //听说有人会在快爆了的时候拆掉防爆
+    onDeconstructed() {
+        if(this.volatility >= 0.5)this.onDestroyed();
     },
     write(write) {
         this.super$write(write);

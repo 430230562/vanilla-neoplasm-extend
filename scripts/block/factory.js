@@ -2,6 +2,66 @@ const item = require("vne/item");
 const liquid = require("vne/liquid");
 const {ammoniaTurbine} = require("vne/effect");
 
+const microHeatRedirector = new HeatConductor("micro-heat-redirector")
+exports.microHeatRedirector = microHeatRedirector;
+Object.assign(microHeatRedirector, {
+	buildVisibility: BuildVisibility.shown,
+	category: Category.crafting,
+	requirements: ItemStack.with(
+		Items.graphite, 3,
+		item.biomassSteel, 1,
+	),
+	size: 1,
+	drawer: new DrawMulti(
+		new DrawDefault(),
+		new DrawHeatOutput(),
+		new DrawHeatInput("-heat")
+	),
+	regionRotated1: 1,
+})
+
+const smallHeatRouter = new HeatConductor("small-heat-router");
+exports.smallHeatRouter = smallHeatRouter;
+Object.assign(smallHeatRouter,{
+	buildVisibility: BuildVisibility.shown,
+	category: Category.crafting,
+	requirements: ItemStack.with(
+		Items.graphite, 8,
+		Items.surgeAlloy, 8,
+	),
+	size: 2,
+	drawer: new DrawMulti(
+		new DrawDefault(),
+		new DrawHeatOutput(-1, false),
+		new DrawHeatOutput(),
+		new DrawHeatOutput(1, false),
+		new DrawHeatInput("-heat")
+	),
+	regionRotated1: 1,
+	splitHeat: true
+})
+
+const microHeatRouter = new HeatConductor("micro-heat-router");
+exports.microHeatRouter = microHeatRouter;
+Object.assign(microHeatRouter,{
+	buildVisibility: BuildVisibility.shown,
+	category: Category.crafting,
+	requirements: ItemStack.with(
+		Items.graphite, 3,
+		item.biomassSteel, 1,
+	),
+	size: 1,
+	drawer: new DrawMulti(
+		new DrawDefault(),
+		new DrawHeatOutput(-1, false),
+		new DrawHeatOutput(),
+		new DrawHeatOutput(1, false),
+		new DrawHeatInput("-heat")
+	),
+	regionRotated1: 1,
+	splitHeat: true
+})
+
 const incubator = new AttributeCrafter("incubator");
 exports.incubator = incubator;
 Object.assign(incubator, {
@@ -29,6 +89,42 @@ Object.assign(incubator, {
 incubator.consumePower(1.2);
 incubator.consumeLiquid(Liquids.water, 18 / 60);
 
+const vaporDepositeChamber = new Separator("vapor-deposite-chamber");
+exports.vaporDepositeChamber = vaporDepositeChamber;
+Object.assign(vaporDepositeChamber,{
+    results: ItemStack.with(
+        Items.graphite, 4,
+        item.protein, 6
+    ),
+	craftTime: 20,
+	size: 3,
+	hasPower: true,
+	drawer: new DrawMulti(
+	    new DrawRegion("-bottom"),
+	    Object.assign(new DrawParticles(), {
+        alpha: 0.70,
+        particleRad: 10,
+        particleSize: 9,
+        particleLife: 60,
+        particles: 8,
+        rotateScl: -3,
+        reverse: true,
+        color: Color.valueOf("84a94b"),
+        }),
+		new DrawDefault()
+	),
+	buildVisibility: BuildVisibility.shown,
+	category: Category.crafting,
+	requirements: ItemStack.with(
+	    Items.graphite, 60,
+        Items.silicon, 60,
+        Items.tungsten, 25,
+        Items.oxide, 25,
+	)
+})
+vaporDepositeChamber.consumePower(3);
+vaporDepositeChamber.consumeLiquid(Liquids.arkycite, 40 / 60);
+
 const cyanidePlant = extend(GenericCrafter, "cyanide-plant", {
     craftEffect: Fx.none,
     craftTime: 150,
@@ -49,7 +145,7 @@ const cyanidePlant = extend(GenericCrafter, "cyanide-plant", {
     setStats() {
         this.super$setStats();
 
-        this.stats.add(Stat.output, StatValues.items(this.craftTime, ItemStack.with(item.protein, 7, item.chitin, 2)));
+        this.stats.add(Stat.output, StatValues.items(this.craftTime, ItemStack.with(item.protein, 7, Items.dormantCyst, 2)));
     },
     icons(){
 		return [Core.atlas.find("vne-cyanide-plant")]
@@ -62,7 +158,7 @@ cyanidePlant.buildType = prov(() => extend(GenericCrafter.GenericCrafterBuild, c
     updateTile() {
         this.super$updateTile();
 
-        this.dump(item.chitin)
+        this.dump(Items.dormantCyst)
         this.dump(item.protein)
         if(!this.style){
             this.i += Time.delta * this.efficiency
@@ -73,7 +169,7 @@ cyanidePlant.buildType = prov(() => extend(GenericCrafter.GenericCrafterBuild, c
 
         if (this.style) {
             for (let i = 0; i < 2; i++) {
-                this.offload(item.chitin);
+                this.offload(Items.dormantCyst);
             }
         } else {
             for (let i = 0; i < 7; i++) {
@@ -152,6 +248,174 @@ Object.assign(adsorbent,{
 adsorbent.consumeLiquid(Liquids.neoplasm, 20 / 60);
 adsorbent.consumeItem(Items.oxide, 1);
 
+const siliconCarbideFurnace = new GenericCrafter("silicon-carbide-furnace");
+exports.siliconCarbideFurnace = siliconCarbideFurnace;
+Object.assign(siliconCarbideFurnace,{
+    ambientSound: Sounds.loopSmelter,
+	ambientSoundVolume: 0.11,
+    craftEffect: Fx.none,
+    craftTime: 60,
+    outputItem: new ItemStack(item.siliconCarbide, 1),
+    size: 3,
+    itemCapacity: 15,
+    hasPower: true,
+    hasLiquids: false,
+    hasItems: true,
+    drawer: new DrawMulti(
+        new DrawRegion("-bottom"),
+        new DrawArcSmelt(),
+        new DrawDefault()
+    ),
+    buildVisibility: BuildVisibility.shown,
+    category: Category.crafting,
+    requirements: ItemStack.with(
+        Items.silicon, 120,
+        Items.tungsten, 80,
+        Items.carbide, 75,
+    )
+})
+siliconCarbideFurnace.consumeItems(ItemStack.with(
+	Items.graphite, 2, 
+	Items.sand, 4,
+));
+siliconCarbideFurnace.consumePower(10);//没错600电力
+
+const biomassSmelter = extend(GenericCrafter,"biomass-smelter",{
+    setBars() {
+        this.super$setBars();
+
+        this.addBar("instability", func(e => new Bar(
+        prov(() => Core.bundle.get("bar.instability")),
+        prov(() => Pal.sap),
+        floatp(() => e.getInstability()))));
+    },
+    health: 360,
+	craftEffect: Fx.smeltsmoke,
+	outputItem: new ItemStack(item.biomassSteel, 3),
+	craftTime: 120,
+	itemCapacity: 30,
+	size: 3,
+	baseExplosiveness: 360,
+	hasPower: true,
+	hasLiquids: false,
+	drawer: new DrawMulti(
+		new DrawDefault(),
+		new DrawFlame(Color.valueOf("c7d9a3"))
+	),
+	ambientSound: Sounds.loopSmelter,
+	ambientSoundVolume: 0.55,//一定很吵，但这是我想要的
+	buildVisibility: BuildVisibility.shown,
+	category: Category.crafting,
+	requirements: ItemStack.with(
+		Items.silicon, 50,
+		Items.carbide, 35,
+        Items.oxide, 25,
+		item.siliconCarbide, 20,
+	)
+});
+exports.biomassSmelter = biomassSmelter;
+biomassSmelter.buildType = prov(() => extend(GenericCrafter.GenericCrafterBuild, biomassSmelter, {
+    volatility: 0,
+    coolantLiquid: Liquids.water,
+
+    getInstability() {
+        return this.volatility;
+    },
+    updateTile(){
+        this.super$updateTile();
+        
+        if (this.efficiency > 0) {
+            if (this.liquids.get(this.coolantLiquid) < 0.001) {
+                this.volatility += 0.005 * Math.min(Time.delta, 4);
+            } else if (this.volatility >= 0) {
+                this.volatility -= 0.01 * Math.min(Time.delta, 4);
+            }
+            
+            if(Mathf.chance(0.05)){
+                Fx.reactorsmoke.at(this.x + Mathf.range(12),this.y + Mathf.range(12))
+            }
+        }
+
+        if (this.volatility >= 0.999) {
+            this.kill();
+        }
+    },
+    draw() {
+        this.super$draw();
+
+        Draw.color(Color.red);
+        Draw.alpha(this.volatility * 0.75)
+        Fill.rect(this.x, this.y, 24, 24);
+
+        Draw.reset();
+    },
+    onDestroyed() {
+        if (this.tile != null)this.tile.circle(8,cons(tile => {
+    		if(tile != null)Puddles.deposit(tile, Liquids.neoplasm, this.maxHealth * this.volatility);
+    	}))
+    	
+        Fx.reactorExplosion.at(this.x,this.y,0,Color.valueOf("c33e2b"));
+        Sounds.explosionReactor.at(this);
+    	
+    	this.super$onDestroyed();
+    },
+    //听说有人会在快爆了的时候拆掉防爆
+    onDeconstructed() {
+        if(this.volatility >= 0.5)this.onDestroyed();
+    },
+    write(write) {
+        this.super$write(write);
+
+        write.f(this.volatility);
+    },
+    read(read, revision) {
+        this.super$read(read, revision);
+
+        this.volatility = read.f();
+    }
+}))
+biomassSmelter.consumeItems(ItemStack.with(
+	Items.carbide, 2,
+    Items.oxide, 3,
+    item.protein, 7,
+));
+biomassSmelter.consumePower(3);
+biomassSmelter.consumeLiquid(Liquids.water, 0.1)
+    .optional = true;
+
+const stableBiomassSmelter = new GenericCrafter("stable-biomass-smelter");
+exports.stableBiomassSmelter = stableBiomassSmelter;
+Object.assign(stableBiomassSmelter,{
+	health: 1180,
+	craftEffect: Fx.smeltsmoke,
+	outputItem: new ItemStack(item.biomassSteel, 3),
+	craftTime: 180,
+	itemCapacity: 30,
+	size: 5,
+	hasPower: true,
+	hasLiquids: false,
+	drawer: new DrawMulti(
+		new DrawDefault(),
+		new DrawFlame(Color.valueOf("c7d9a3"))
+	),
+	ambientSound: Sounds.loopSmelter,
+	ambientSoundVolume: 0.1,
+	buildVisibility: BuildVisibility.shown,
+	category: Category.crafting,
+	requirements: ItemStack.with(
+		Items.silicon, 120,
+		Items.carbide, 150,
+        Items.oxide, 110,
+		item.biomassSteel, 100,
+	)
+})
+stableBiomassSmelter.consumeItems(ItemStack.with(
+	Items.carbide, 2,
+    Items.oxide, 3,
+    item.protein, 7,
+));
+stableBiomassSmelter.consumePower(5);
+
 const ammoniaPlant = new HeatCrafter("ammonia-plant");
 exports.ammoniaPlant = ammoniaPlant;
 Object.assign(ammoniaPlant, {
@@ -171,10 +435,6 @@ Object.assign(ammoniaPlant, {
     new DrawLiquidTile(Liquids.hydrogen),
     new DrawLiquidTile(Liquids.nitrogen),
     new DrawLiquidTile(liquid.ammonia),
-    Object.assign(new DrawArcSmelt(), {
-        flameColor: Color.valueOf("fa7f7f"),
-        midColor: Color.valueOf("ff9999")
-    }),
     Object.assign(new DrawParticles(), {
         alpha: 0.10,
         particleRad: 10,

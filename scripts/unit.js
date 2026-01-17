@@ -34,6 +34,89 @@ function Insect(name) {
 }
 exports.Insect = Insect;
 
+/*
+const alter = new UnitType("alter");
+exports.alter = alter;
+Object.assign(alter, {
+	targetPriority: -1.5,
+	outlineColor: Color.valueOf("464a59"),
+	outlineRadius: 3,
+	envDisabled: Env.none,
+	healFlash: true,
+	squareShape: true,
+	omniMovement: false,
+	rotateMoveFirst: true,
+	speed: 0.9,
+	hitSize: 11,
+	treadRects: [new Rect(4, -20, 21, 80)],
+	treadFrames: 8,
+	treadPullOffset: 3,
+	rotateSpeed: 3.3,
+	health: 420,
+	armor: 1,
+	itemCapacity: 0,
+	constructor: () => new TankUnit.create()
+})
+alter.weapons.add(
+Object.assign(new StatWeapon("zerg-alter-weapon","alter",100), {
+	layerOffset: 0.0001,
+	reload: 60,
+	shootY: 2,
+	recoil: 0,
+	rotate: true,
+	rotateSpeed: 5.7,
+	mirror: false,
+	x: 0,
+	y: 0,
+	heatColor: Color.valueOf("f9350f"),
+	cooldownTime: 90,
+	shootSound: Sounds.lasershoot,
+	
+	bullet: extend(BasicBulletType, {
+		hitEntity(b, entity, health) {
+			if(entity instanceof Unit) {
+				if (entity.health <= 100) {
+					entity.remove();
+					
+    			let u = entity.type.create(b.team);
+                u.set(unit.x, unit.y);
+                u.rotation = entity.rotation;
+                u.health = u.maxHealth / 4
+                u.add();
+            }
+				}
+			}
+			
+			this.super$hitEntity(b, entity, health);
+		},
+		hitTile(b,build,x,y,initialHealth,direct){
+			if(build.team != b.team && build.health <= 100){
+				build.changeTeam(b.team)
+				
+				build.heal(build.maxHealth / 4)
+			}
+			
+			this.super$hitTile(b,build,x,y,initialHealth,direct);
+		},
+		speed: 3.5,
+		damage: 50,
+		sprite: "zerg-wave",
+		width: 10,
+		height: 13,
+		lifetime: 52,
+		despawnEffect: Ef.interfere,
+		hitEffect: Ef.interfere,
+		backColor: Color.valueOf("bf92f9"),
+		frontColor: Color.valueOf("ffffff"),
+		hittable: false,
+		pierceArmor: true,
+		homingRange: 60,
+		homingPower: 0.1,
+	})
+})
+)
+*/
+
 const haploid = new Insect("haploid");
 exports.haploid = haploid;
 Object.assign(haploid, {
@@ -66,7 +149,7 @@ Object.assign(haploid, {
 
     shadowElevation: 0.1,
     groundLayer: 74,
-
+    
     constructor: () => new LegsUnit.create()
 })
 haploid.weapons.add(
@@ -790,7 +873,7 @@ Object.assign(neoplasmUnit2, {
 neoplasmUnit2.abilities.add(
 new DeathNeoplasmAbility(40, 2400),
 new MoveLiquidAbility(Liquids.neoplasm, 16, 5, 1),
-new SpawnDeathAbility(neoplasmUnit1, 3, 40)
+new SpawnDeathAbility(neoplasmUnit1, 3, 12)
 )
 neoplasmUnit2.immunities.add(status.neoplasmSlow)
 neoplasmUnit2.weapons.add(
@@ -799,6 +882,7 @@ Object.assign(new Weapon(), {
     shootSound: Sounds.shootFlame,
     reload: 15,
     recoil: 1,
+    rotateSpeed: 12,
     ejectEffect: Fx.none,
     bullet: extend(BulletType, 4, 40, {
         hitSize: 11,

@@ -78,7 +78,7 @@ function NeoplasmRegenAbility(slurpSpeed,regenPerSlurp,slurpEffectChance){
 function MoveLiquidAbility(liquid,range,amount,healthPercent){
 	return extend(Ability,{
 		update(unit){
-		    if(unit.health / unit.maxHealth <= healthPercent){
+		    if(unit.health / unit.maxHealth <= healthPercent && unit.tileOn() != null){
     			unit.tileOn().circle(range / 8,cons(tile => {
     				if(tile != null)Puddles.deposit(tile,liquid,amount);
     			}))
@@ -101,9 +101,18 @@ exports.MoveLiquidAbility = MoveLiquidAbility;
 function DeathNeoplasmAbility(range,amount){
 	return extend(Ability,{
 		death(unit){
-		    if(unit.tileOn() != null)unit.tileOn().circle(range / 8,cons(tile => {
-				if(tile != null)Puddles.deposit(tile,Liquids.neoplasm,amount);
-			}))
+		    //喜欢开毁灭难度吗？
+		    if(unit.tileOn() != null){
+    		    if(Vars.state.rules.unitHealth(unit.team) > 1){
+        		    unit.tileOn().circle(range * Vars.state.rules.unitHealth(unit.team) / 8,cons(tile => {
+        				if(tile != null)Puddles.deposit(tile,Liquids.neoplasm,amount * Vars.state.rules.unitHealth(unit.team));
+        			}))
+    			}else{
+    			    unit.tileOn().circle(range / 8,cons(tile => {
+        				if(tile != null)Puddles.deposit(tile,Liquids.neoplasm,amount * Vars.state.rules.unitHealth(unit.team));
+        			}))
+    			}
+			}
 		},
 		localized(){
 			return Core.bundle.format("ability.deathNeoplasm");
