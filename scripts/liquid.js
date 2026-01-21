@@ -8,8 +8,8 @@ Liquids.neoplasm.removeScaling = 0.05;
 Liquids.neoplasm.incinerable = false;
 Liquids.neoplasm.effect = status.neoplasmSlow;
 Liquids.neoplasm.canStayOn.addAll(Liquids.neoplasm)
-//我不清楚这行是否有效
-Puddles.maxLiquid = Infinity;
+//我不清楚这行是否有效 2＾16
+Puddles.maxLiquid = 65536;
 
 const acid = extend(Liquid,"acid",Color.valueOf("84a94b"),{
 	update(puddle){

@@ -2,6 +2,58 @@ const liquid = require("vne/liquid");
 const item = require("vne/item");
 const status = require("vne/status");
 
+const reinforcedForceProjector = new ForceProjector("reinforced-force-projector");
+exports.reinforcedForceProjector = reinforcedForceProjector;
+Object.assign(reinforcedForceProjector, {
+	radius: 56 * 1.414,
+	sides: 4,
+	shieldHealth: 1200,
+	consumeCoolant: false,
+	hasLiquids: false,
+	cooldownNormal: 40 / 60,
+	cooldownBrokenBase: 50 / 60,
+	phaseRadiusBoost: 0,
+    phaseShieldBoost: 400,
+    phaseUseTime: 600,
+	size: 2,
+	itemConsumer: new ConsumeItems([new ItemStack(item.siliconCarbide, 1)]),
+	buildVisibility: BuildVisibility.shown,
+	category: Category.effect,
+	requirements: ItemStack.with(
+		Items.silicon, 120,
+        Items.oxide, 80,
+		item.siliconCarbide, 120,
+	)
+})
+reinforcedForceProjector.consumePower(2);
+
+const reinforcedForceProjectorLarge = new ForceProjector("reinforced-force-projector-large");
+exports.reinforcedForceProjectorLarge = reinforcedForceProjectorLarge;
+Object.assign(reinforcedForceProjectorLarge, {
+	radius: 56 * 1.414 * 1.7725,
+	sides: 8,
+	shieldRotation: 22.5,
+	shieldHealth: 3600,
+	consumeCoolant: false,
+	hasLiquids: false,
+	cooldownNormal: 80 / 60,
+	cooldownBrokenBase: 100 / 60,
+	phaseRadiusBoost: 0,
+    phaseShieldBoost: 800,
+    phaseUseTime: 400,
+	itemConsumer: new ConsumeItems([new ItemStack(item.siliconCarbide, 1)]),
+	size: 3,
+	buildVisibility: BuildVisibility.shown,
+	category: Category.effect,
+	requirements: ItemStack.with(
+		Items.silicon, 250,
+        Items.oxide, 175,
+        Items.carbide, 105,
+		item.siliconCarbide, 230,
+	)
+})
+reinforcedForceProjectorLarge.consumePower(6);
+
 const coagulantIngotWall = new Wall("coagulant-ingot-wall");
 exports.coagulantIngotWall = coagulantIngotWall;
 Object.assign(coagulantIngotWall, {

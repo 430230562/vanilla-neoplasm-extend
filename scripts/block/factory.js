@@ -536,10 +536,12 @@ Object.assign(ammoniaCollector,{
     craftEffect: ammoniaTurbine,
     drawer: new DrawMulti(
         new DrawRegion("-bottom"),
-        new DrawRegion("-rotator", 6),
-        new DrawRegion("-mid"),
-        new DrawLiquidTile(liquid.ammonia),
-        new DrawDefault()
+        new DrawBlurSpin("-rotator",3.6),
+        Object.assign(new DrawLiquidTile(liquid.ammonia),{
+            alpha: 0.75
+        }),
+        new DrawDefault(),
+        new DrawRegion("-top"),
     ),
     craftTime: 120,
     size: 3,
