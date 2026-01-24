@@ -2,6 +2,30 @@ const environment = require("vne/block/environment")
 const status = require("vne/status")
 const item = require("vne/item")
 
+function UnlimitedPuddle(tile,liquid,amount){
+    //不包括太空及液体当场蒸发的情况
+    if(tile != null){
+        let other = Puddles.get(tile);
+        if(other != null && other.liquid == liquid){
+            other.amount += amount
+            if(other.lastRipple <= Time.time - 40){
+                Fx.ripple.at(other.x * 8, other.y * 8, 1, liquid.color);
+            }
+        }else{
+            let puddle = Puddle.create();
+            puddle.tile = tile;
+            puddle.liquid = liquid;
+            puddle.amount = amount;
+            puddle.set(tile.x, tile.y);
+            Puddles.register(puddle);
+            puddle.add();
+        }
+    }
+    //我觉得作为一个function还是要return一下吧
+    return;
+}
+exports.UnlimitedPuddle = UnlimitedPuddle
+
 function MendFieldAbility(amount,reload,range){
 	return extend(Ability,{
 		i: 0,
@@ -47,40 +71,12 @@ function MendFieldAbility(amount,reload,range){
 }
 exports.MendFieldAbility = MendFieldAbility;
 
-function NeoplasmRegenAbility(slurpSpeed,regenPerSlurp,slurpEffectChance){
-    return extend(Ability,{
-		wasHealed: false,
-		update(unit){
-			if(unit.damaged()){
-				this.wasHealed = false;
-				unit.tileOn().circle(unit.type.hitSize / 8,cons(tile => {
-    				if(tile != null){
-						let puddle = Puddles.get(tile)
-						if(puddle != null && puddle.liquid == Liquids.neoplasm){
-							puddle.amount -= slurpSpeed
-							unit.heal(slurpSpeed * regenPerSlurp)
-							this.wasHealed = true;
-						}
-
-						if(puddle.amount <= 0){
-							puddle.remove()
-						}
-					}
-    			}))
-			}
-			if(this.wasHealed && Mathf.chanceDelta(slurpEffectChance)){
-				Fx.neoplasmHeal.at(unit)
-			}
-		}
-	})
-}
-
 function MoveLiquidAbility(liquid,range,amount,healthPercent){
 	return extend(Ability,{
 		update(unit){
-		    if(unit.health / unit.maxHealth <= healthPercent && unit.tileOn() != null){
+		    if(unit.health / unit.maxHealth <= healthPercent && unit.tileOn() != null && unit.getDuration(status.antagonistic) > 0){
     			unit.tileOn().circle(range / 8,cons(tile => {
-    				if(tile != null)Puddles.deposit(tile,liquid,amount);
+    				UnlimitedPuddle(tile,liquid,amount);
     			}))
 			}
 		},
@@ -101,17 +97,10 @@ exports.MoveLiquidAbility = MoveLiquidAbility;
 function DeathNeoplasmAbility(range,amount){
 	return extend(Ability,{
 		death(unit){
-		    //喜欢开毁灭难度吗？
-		    if(unit.tileOn() != null){
-    		    if(Vars.state.rules.unitHealth(unit.team) > 1){
-        		    unit.tileOn().circle(range * Vars.state.rules.unitHealth(unit.team) / 8,cons(tile => {
-        				if(tile != null)Puddles.deposit(tile,Liquids.neoplasm,amount * Vars.state.rules.unitHealth(unit.team));
-        			}))
-    			}else{
-    			    unit.tileOn().circle(range / 8,cons(tile => {
-        				if(tile != null)Puddles.deposit(tile,Liquids.neoplasm,amount * Vars.state.rules.unitHealth(unit.team));
-        			}))
-    			}
+		    if(unit.tileOn() != null && unit.getDuration(status.antagonistic) > 0){
+			    unit.tileOn().circle(range / 8,cons(tile => {
+    				UnlimitedPuddle(tile,Liquids.neoplasm,amount * Vars.state.rules.unitHealth(unit.team));
+    			}))
 			}
 		},
 		localized(){

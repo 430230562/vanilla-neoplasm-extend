@@ -19,7 +19,7 @@ function Insect(name) {
             this.super$init();
 
             this.abilities.add(
-            new DeathNeoplasmAbility(this.hitSize * 2, this.health),
+            new DeathNeoplasmAbility(this.hitSize * 1.2, this.health * 0.75),
             Object.assign(new RegenAbility(), {
                 percentAmount: 1 / (90 * 60) * 100,
             }),
@@ -922,11 +922,6 @@ Object.assign(new Weapon(), {
     })
 }))
 
-
-const s = new StatusEffect("s");
-s.healthMultiplier = 5;
-s.show = false;
-
 const primeFruitingBody = extend(UnitType, "prime-fruiting-body", {
     u: [bomber, bomber, haploid, haploid, haploid, ribosome, ribosome],
     update(unit) {
@@ -936,8 +931,8 @@ const primeFruitingBody = extend(UnitType, "prime-fruiting-body", {
 
             unit.remove();
         }
-        if (unit.getDuration(s) <= 10) {
-            unit.apply(s, 20 * 60);
+        if (unit.getDuration(StatusEffects.shielded) <= 10) {
+            unit.apply(StatusEffects.shielded, 20 * 60);
         }
     }
 })
@@ -973,8 +968,8 @@ const seniorFruitingBody = extend(UnitType, "senior-fruiting-body", {
 
             unit.remove();
         }
-        if (unit.getDuration(s) <= 10) {
-            unit.apply(s, 20 * 60);
+        if (unit.getDuration(StatusEffects.shielded) <= 10) {
+            unit.apply(StatusEffects.shielded, 20 * 60);
         }
     }
 })

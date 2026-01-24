@@ -1,56 +1,128 @@
-const liquid = require("vne/liquid");
 const item = require("vne/item");
 const status = require("vne/status");
+const { UnlimitedPuddle } = require("vne/lib/ability");
+
+const neoplasmCollecter = extend(Radar, "neoplasm-collecter", {
+    outlineColor: Color.valueOf("4a4b53"),
+    fogRadius: 14,
+    hasLiquids: true,
+    liquidCapacity: 300,
+    hasPower: true,
+    buildVisibility: BuildVisibility.shown,
+    category: Category.effect,
+    requirements: ItemStack.with(
+        Items.silicon, 40,
+        item.siliconNitride, 10
+    ),
+    setBars() {
+        this.super$setBars();
+
+        this.addBar("liquid", func(e => new Bar(
+        prov(() => {
+            if (e.getLiquid() != null) {
+                return e.getLiquid()
+                    .liquid.localizedName
+            } else {
+                return Core.bundle.get("bar.liquid")
+            }
+        }),
+        prov(() => {
+            if (e.getLiquid() != null) {
+                return e.getLiquid()
+                    .liquid.color
+            } else {
+                return Color.white
+            }
+        }),
+        floatp(() => {
+            if (e.getLiquid() != null) {
+                return e.getLiquid()
+                    .amount / this.liquidCapacity
+            } else {
+                return 0
+            }
+        })
+
+        )))
+    }
+});
+exports.neoplasmCollecter = neoplasmCollecter;
+neoplasmCollecter.consumePower(1);
+neoplasmCollecter.buildType = prov(() => extend(Radar.RadarBuild, neoplasmCollecter, {
+    getLiquid() {
+        return {
+            liquid: Liquids.neoplasm,
+            amount: this.liquids.get(Liquids.neoplasm)
+        }
+    },
+    updateTile(){
+        this.super$updateTile();
+        
+        this.dumpLiquid(Liquids.neoplasm);
+        
+        this.tile.circle(this.fogRadius(),cons(tile => {
+            let other = Puddles.get(tile);
+            if (other != null && other.liquid == Liquids.neoplasm && this.liquids.get(Liquids.neoplasm) < this.block.liquidCapacity) {
+                if(other.amount >= 1 * this.power.status){
+                    this.liquids.add(Liquids.neoplasm, 1 * this.power.status);
+                    other.amount -= 1 * this.power.status
+                }else{
+                    this.liquids.add(Liquids.neoplasm, other.amount);
+                    other.remove();
+                }
+            }
+        }))
+    }
+}))
 
 const reinforcedForceProjector = new ForceProjector("reinforced-force-projector");
 exports.reinforcedForceProjector = reinforcedForceProjector;
 Object.assign(reinforcedForceProjector, {
-	radius: 56 * 1.414,
-	sides: 4,
-	shieldHealth: 1200,
-	consumeCoolant: false,
-	hasLiquids: false,
-	cooldownNormal: 40 / 60,
-	cooldownBrokenBase: 50 / 60,
-	phaseRadiusBoost: 0,
+    radius: 70.34,
+    sides: 4,
+    shieldRotation: 45,
+    shieldHealth: 1200,
+    consumeCoolant: false,
+    hasLiquids: false,
+    cooldownNormal: 40 / 60,
+    cooldownBrokenBase: 50 / 60,
+    phaseRadiusBoost: 0,
     phaseShieldBoost: 400,
     phaseUseTime: 600,
-	size: 2,
-	itemConsumer: new ConsumeItems([new ItemStack(item.siliconCarbide, 1)]),
-	buildVisibility: BuildVisibility.shown,
-	category: Category.effect,
-	requirements: ItemStack.with(
-		Items.silicon, 120,
-        Items.oxide, 80,
-		item.siliconCarbide, 120,
-	)
+    size: 1,
+    itemConsumer: new ConsumeItems([new ItemStack(item.siliconNitride, 1)]),
+    buildVisibility: BuildVisibility.shown,
+    category: Category.effect,
+    requirements: ItemStack.with(
+    Items.silicon, 120,
+    Items.oxide, 80,
+    item.siliconNitride, 120, )
 })
 reinforcedForceProjector.consumePower(2);
 
 const reinforcedForceProjectorLarge = new ForceProjector("reinforced-force-projector-large");
 exports.reinforcedForceProjectorLarge = reinforcedForceProjectorLarge;
 Object.assign(reinforcedForceProjectorLarge, {
-	radius: 56 * 1.414 * 1.7725,
-	sides: 8,
-	shieldRotation: 22.5,
-	shieldHealth: 3600,
-	consumeCoolant: false,
-	hasLiquids: false,
-	cooldownNormal: 80 / 60,
-	cooldownBrokenBase: 100 / 60,
-	phaseRadiusBoost: 0,
+    radius: 70.34 * 1.7725,
+    sides: 8,
+    shieldRotation: 22.5,
+    shieldHealth: 3600,
+    consumeCoolant: false,
+    hasLiquids: false,
+    cooldownNormal: 80 / 60,
+    cooldownBrokenBase: 100 / 60,
+    phaseRadiusBoost: 0,
     phaseShieldBoost: 800,
     phaseUseTime: 400,
-	itemConsumer: new ConsumeItems([new ItemStack(item.siliconCarbide, 1)]),
-	size: 3,
-	buildVisibility: BuildVisibility.shown,
-	category: Category.effect,
-	requirements: ItemStack.with(
-		Items.silicon, 250,
-        Items.oxide, 175,
-        Items.carbide, 105,
-		item.siliconCarbide, 230,
-	)
+    itemConsumer: new ConsumeItems([new ItemStack(item.siliconNitride, 1)]),
+    size: 3,
+    buildVisibility: BuildVisibility.shown,
+    category: Category.effect,
+    requirements: ItemStack.with(
+    Items.silicon, 250,
+    Items.oxide, 175,
+    Items.carbide, 105,
+    item.siliconNitride, 230, )
 })
 reinforcedForceProjectorLarge.consumePower(6);
 
@@ -70,16 +142,16 @@ Object.assign(coagulantIngotWall, {
 coagulantIngotWall.buildType = prov(() => extend(Building, {
     collision(bullet) {
         this.super$collision(bullet);
-
-        if (this.tile != null) Puddles.deposit(this.tile, Liquids.neoplasm, bullet.damage);
+        
+        UnlimitedPuddle(this.tile, Liquids.neoplasm, bullet.damage);
 
         return true
     },
     onDestroyed() {
-        if (this.tile != null) Puddles.deposit(this.tile, Liquids.neoplasm, this.maxHealth);
+        UnlimitedPuddle(this.tile, Liquids.neoplasm, this.maxHealth);
     },
     onDeconstructed() {
-        if (this.tile != null) Puddles.deposit(this.tile, Liquids.neoplasm, this.maxHealth);
+        UnlimitedPuddle(this.tile, Liquids.neoplasm, this.maxHealth);
     }
 }))
 
@@ -102,16 +174,16 @@ coagulantIngotWallLarge.buildType = prov(() => extend(Building, {
         this.super$collision(bullet);
 
         if (this.tile != null) this.tile.getLinkedTiles(cons(tile => {
-            Puddles.deposit(tile, Liquids.neoplasm, bullet.damage * 1 / 4);
+            UnlimitedPuddle(tile, Liquids.neoplasm, bullet.damage * 1 / 4);
         }))
 
         return true
     },
     onDestroyed() {
-        if (this.tile != null) Puddles.deposit(this.tile, Liquids.neoplasm, this.maxHealth);
+        UnlimitedPuddle(this.tile, Liquids.neoplasm, this.maxHealth);
     },
     onDeconstructed() {
-        if (this.tile != null) Puddles.deposit(this.tile, Liquids.neoplasm, this.maxHealth);
+        UnlimitedPuddle(this.tile, Liquids.neoplasm, this.maxHealth);
     }
 }))
 
@@ -152,20 +224,20 @@ oxideWall.buildType = prov(() => extend(Building, {
     },
     //想卡掉血浆？没门!
     onDestroyed() {
-        if (this.tile != null) Puddles.deposit(this.tile, Liquids.neoplasm, this.neop);
+        UnlimitedPuddle(this.tile, Liquids.neoplasm, this.neop);
     },
     onDeconstructed() {
-        if (this.tile != null) Puddles.deposit(this.tile, Liquids.neoplasm, this.neop);
+        UnlimitedPuddle(this.tile, Liquids.neoplasm, this.neop);
         this.neop = 0
     },
     write(write) {
-		this.super$write(write);
-		write.f(this.neop);
-	},
-	read(read, revision) {
-		this.super$read(read, revision);
-		this.neop = read.f();
-	}
+        this.super$write(write);
+        write.f(this.neop);
+    },
+    read(read, revision) {
+        this.super$read(read, revision);
+        this.neop = read.f();
+    }
 }))
 
 const oxideWallLarge = new Wall("oxide-wall-large");
@@ -209,20 +281,20 @@ oxideWallLarge.buildType = prov(() => extend(Building, {
     },
     //想卡掉血浆？没门!
     onDestroyed() {
-        if (this.tile != null) Puddles.deposit(this.tile, Liquids.neoplasm, this.neop);
+        UnlimitedPuddle(this.tile, Liquids.neoplasm, this.neop);
     },
     onDeconstructed() {
-        if (this.tile != null) Puddles.deposit(this.tile, Liquids.neoplasm, this.neop);
+        UnlimitedPuddle(this.tile, Liquids.neoplasm, this.neop);
         this.neop = 0
     },
     write(write) {
-		this.super$write(write);
-		write.f(this.neop);
-	},
-	read(read, revision) {
-		this.super$read(read, revision);
-		this.neop = read.f();
-	}
+        this.super$write(write);
+        write.f(this.neop);
+    },
+    read(read, revision) {
+        this.super$read(read, revision);
+        this.neop = read.f();
+    }
 }))
 
 const biomassWall = new Wall("biomass-wall");
@@ -244,9 +316,9 @@ biomassWall.buildType = prov(() => extend(Building, {
         bullet.type.pierce = false;
         bullet.type.pierceBuilding = false;
         bullet.type.pierceDamageFactor = 0
-        
+
         this.super$collision(bullet)
-        
+
         return true
     }
 }))
@@ -270,9 +342,9 @@ biomassWallLarge.buildType = prov(() => extend(Building, {
         bullet.type.pierce = false;
         bullet.type.pierceBuilding = false;
         bullet.type.pierceDamageFactor = 0
-        
+
         this.super$collision(bullet)
-        
+
         return true
     }
 }))
@@ -309,16 +381,18 @@ explosive.buildType = prov(() => extend(Building, {
     },
     onDestroyed() {
         this.super$onDestroyed();
-        
+
         //很奇怪，即使puddle.amount为0，地块依旧判断为存在血浆
         if (this.tile != null && this.items.get(this.exploreItem) > 0) this.tile.circle(5, cons(other => {
-            if (other != null) Puddles.deposit(other, Liquids.neoplasm, this.items.get(this.exploreItem) * 5);
+            UnlimitedPuddle(other, Liquids.neoplasm, this.items.get(this.exploreItem) * 5);
         }))
     },
     onDeconstructed() {
-        if (this.tile != null && this.items.get(this.exploreItem) > 0) Puddles.deposit(this.tile, Liquids.neoplasm, 60 * this.items.get(this.exploreItem));
+        if (this.items.get(this.exploreItem) > 0) UnlimitedPuddle(this.tile, Liquids.neoplasm, 60 * this.items.get(this.exploreItem));
     }
 }))
+
+const defuse = new ItemTurret("defuse");
 
 //撕裂
 Blocks.breach.ammoTypes.put(
@@ -350,18 +424,14 @@ item.coagulantIngot, extend(BasicBulletType, 7.5, 85, {
         this.super$despawned(b);
 
         let tile = Vars.world.tileWorld(b.x, b.y);
-        if (tile != null) {
-            Puddles.deposit(tile, Liquids.neoplasm, b.damage);
-        }
+        UnlimitedPuddle(tile, Liquids.neoplasm, b.damage * 0.5);
     },
     hit(b, x, y) {
         this.super$hit(b, x, y);
 
         //记忆中这样写会爆栈，其实不会
         let tile = Vars.world.tileWorld(x, y);
-        if (tile != null) {
-            Puddles.deposit(tile, Liquids.neoplasm, b.damage);
-        }
+        UnlimitedPuddle(tile, Liquids.neoplasm, b.damage * 0.5);
     }
 }))
 
@@ -433,7 +503,7 @@ item.coagulantIngot, extend(ArtilleryBulletType, 2.5, 240, "shell", {
         let tile = Vars.world.tileWorld(b.x, b.y);
         if (tile != null) {
             tile.circle(11, cons(other => {
-                if (other != null) Puddles.deposit(other, Liquids.neoplasm, 40);
+                UnlimitedPuddle(other, Liquids.neoplasm, 30);
             }))
         }
     }
@@ -473,25 +543,21 @@ item.coagulantIngot, extend(BasicBulletType, 8, 45, {
         this.super$despawned(b);
 
         let tile = Vars.world.tileWorld(b.x, b.y);
-        if (tile != null) {
-            Puddles.deposit(tile, Liquids.neoplasm, b.damage);
-        }
+        UnlimitedPuddle(tile, Liquids.neoplasm, b.damage);
     },
     hit(b, x, y) {
         this.super$hit(b, x, y);
 
         //记忆中这样写会爆栈，其实不会
         let tile = Vars.world.tileWorld(x, y);
-        if (tile != null) {
-            Puddles.deposit(tile, Liquids.neoplasm, b.damage);
-        }
+        UnlimitedPuddle(tile, Liquids.neoplasm, b.damage);
     },
     update(b) {
         this.super$update(b);
 
         let tile = Vars.world.tileWorld(b.x, b.y);
-        if (b.time >= 12 && tile != null) {
-            Puddles.deposit(tile, Liquids.neoplasm, 5);
+        if (b.time >= 12) {
+            UnlimitedPuddle(tile, Liquids.neoplasm, 5);
         }
     }
 }))

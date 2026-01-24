@@ -1,4 +1,5 @@
 let armorDamage = Stat("armorDamage");
+const { UnlimitedPuddle } = require("vne/lib/ability");
 
 const corroding = extend(StatusEffect,"corroding",{
 	update(unit, time){
@@ -19,6 +20,7 @@ const corroding = extend(StatusEffect,"corroding",{
 	    })
 	},
 	damage: 0.2,
+	transitionDamage: 17,
 });
 exports.corroding = corroding;
 
@@ -27,15 +29,20 @@ const neoplasmSlow = new extend(StatusEffect,"neoplasm-slow",{
     update(unit, entry){
         this.super$update(unit, entry);
         
-        if(unit.tileOn() != null){
-			Puddles.deposit(unit.tileOn(),Liquids.neoplasm,0);
-        }
+		UnlimitedPuddle(unit.tileOn(),Liquids.neoplasm,0);
     }
 })
 exports.neoplasmSlow = neoplasmSlow;
 
-let scope = new Packages.rhino.TopLevel();
+const antagonistic = extend(StatusEffect,"antagonistic",{
+    init(){
+	    this.opposite(StatusEffects.burning, neoplasmSlow)
+	}
+});
+exports.antagonistic = antagonistic;
+
+/*let scope = new Packages.rhino.TopLevel();
 new Packages.rhino.ClassCache().associate(scope);
 let n = new Packages.rhino.NativeJavaObject(scope, StatusEffects.shocked, StatusEffect, true)
 
-n.affinity(corroding, (unit, result, time) => {})
+n.affinity(corroding, (unit, result, time) => {})*/

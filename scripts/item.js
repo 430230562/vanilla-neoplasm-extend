@@ -12,9 +12,9 @@ Object.assign(coagulantIngot,{
     buildable:false
 })
 
-const siliconCarbide = new Item("silicon-carbide", Color.valueOf("404040"));
-exports.siliconCarbide = siliconCarbide;
-Object.assign(siliconCarbide, {
+const siliconNitride = new Item("silicon-nitride", Color.valueOf("959CA5"));
+exports.siliconNitride = siliconNitride;
+Object.assign(siliconNitride, {
 	cost: 1.7,
 	healthScaling: 1.4,
 })
@@ -26,4 +26,4 @@ Object.assign(biomassSteel, {
 	healthScaling: 2.2,
 })
 
-Items.erekirItems.addAll(protein,coagulantIngot,siliconCarbide,biomassSteel)
+Items.erekirItems.addAll(protein,coagulantIngot,siliconNitride,biomassSteel)

@@ -1,6 +1,9 @@
 const item = require("vne/item");
 const liquid = require("vne/liquid");
 const {ammoniaTurbine} = require("vne/effect")
+const {
+    UnlimitedPuddle
+} = require("vne/lib/ability")
 
 const oxidationChamber = extend(ThermalGenerator, "oxidation-chamber", {
     setBars() {
@@ -172,12 +175,12 @@ biomassReactor.buildType = prov(() => extend(ConsumeGenerator.ConsumeGeneratorBu
 
         if (this.productionEfficiency > 0) {
             if (this.liquids.get(this.coolantLiquid) < 0.001) {
-                this.volatility += fullness * 0.005 * Math.min(Time.delta, 4);
+                this.volatility += fullness * 0.0025 * Math.min(Time.delta, 4);
             } else if (this.volatility >= 0) {
-                this.volatility -= 0.01 * Math.min(Time.delta, 4);
+                this.volatility -= 0.005 * Math.min(Time.delta, 4);
             }
             
-            if(Mathf.chance(0.05)){
+            if(Mathf.chance(0.5 * this.volatility)){
                 Fx.reactorsmoke.at(this.x + Mathf.range(20),this.y + Mathf.range(20))
             }
         }
