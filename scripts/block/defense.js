@@ -1,4 +1,5 @@
 const item = require("vne/item");
+const liquid = require("vne/liquid")
 const status = require("vne/status");
 const { UnlimitedPuddle } = require("vne/lib/ability");
 
@@ -137,7 +138,7 @@ Object.assign(coagulantIngotWall, {
     category: Category.defense,
     requirements: ItemStack.with(
     Items.tungsten, 2,
-    item.coagulantIngot, 4, ),
+    item.coagulantIngot, 6, ),
 })
 coagulantIngotWall.buildType = prov(() => extend(Building, {
     collision(bullet) {
@@ -167,7 +168,7 @@ Object.assign(coagulantIngotWallLarge, {
     category: Category.defense,
     requirements: ItemStack.with(
     Items.tungsten, 2 * 4,
-    item.coagulantIngot, 4 * 4, ),
+    item.coagulantIngot, 6 * 4, ),
 })
 coagulantIngotWallLarge.buildType = prov(() => extend(Building, {
     collision(bullet) {
@@ -199,7 +200,7 @@ Object.assign(oxideWall, {
     category: Category.defense,
     requirements: ItemStack.with(
     Items.tungsten, 2,
-    Items.oxide, 4, ),
+    Items.oxide, 6, ),
 })
 oxideWall.buildType = prov(() => extend(Building, {
     neop: 0,
@@ -253,7 +254,7 @@ Object.assign(oxideWallLarge, {
     category: Category.defense,
     requirements: ItemStack.with(
     Items.tungsten, 2 * 4,
-    Items.oxide, 4 * 4, ),
+    Items.oxide, 6 * 4, ),
 })
 oxideWallLarge.buildType = prov(() => extend(Building, {
     neop: 0,
@@ -296,6 +297,38 @@ oxideWallLarge.buildType = prov(() => extend(Building, {
         this.neop = read.f();
     }
 }))
+
+const siliconNitrideWall = new Wall("silicon-nitride-wall");
+exports.siliconNitrideWall = siliconNitrideWall;
+Object.assign(siliconNitrideWall,{
+    health: 920,
+    insulated: true,
+    absorbLasers: true,
+    schematicPriority: 10,
+    update: false,
+    size: 1,
+    buildVisibility: BuildVisibility.shown,
+    category: Category.defense,
+    requirements: ItemStack.with(
+        item.siliconNitride, 6
+    ),
+})
+
+const siliconNitrideWallLarge = new Wall("silicon-nitride-wall-large");
+exports.siliconNitrideWallLarge = siliconNitrideWallLarge;
+Object.assign(siliconNitrideWallLarge,{
+    health: 920 * 4,
+    insulated: true,
+    absorbLasers: true,
+    schematicPriority: 10,
+    update: false,
+    size: 2,
+    buildVisibility: BuildVisibility.shown,
+    category: Category.defense,
+    requirements: ItemStack.with(
+        item.siliconNitride, 6 * 4
+    ),
+})
 
 const biomassWall = new Wall("biomass-wall");
 exports.biomassWall = biomassWall;
@@ -392,7 +425,148 @@ explosive.buildType = prov(() => extend(Building, {
     }
 }))
 
+const targetBullet = extend(BulletType, {
+    speed: 0.01,
+    damage: 0,
+    collidesGround: false,
+    collidesAir: false,
+    collides: false,
+    absorbable: false,
+    hittable: false,
+    lifetime: 60,
+    hitEffect: Fx.none,
+    despawnEffect: Fx.none,
+    lightOpacity: 0,
+})
+
 const defuse = new ItemTurret("defuse");
+exports.defuse = defuse;
+Object.assign(defuse,{
+    shoot: new ShootSpread(15, 4),
+
+    coolantMultiplier: 45,
+
+    inaccuracy: 0.2,
+    velocityRnd: 0.02,
+    shake: 1,
+    ammoPerShot: 2,
+    maxAmmo: 30,
+    consumeAmmoOnce: true,
+    targetUnderBlocks: false,
+    
+    shootSound: Sounds.shootDiffuse,
+    
+    shootY: 5,
+    outlineColor: Pal.darkOutline,
+    size: 3,
+    reload: 90,
+    recoil: 2,
+    range: 125,
+    shootCone: 40,
+    scaledHealth: 210,
+    rotateSpeed: 3,
+
+    coolant: new ConsumeLiquid(Liquids.nitrogen, 4 / 60),
+    
+    buildVisibility: BuildVisibility.shown,
+    category: Category.turret,
+    requirements: ItemStack.with(
+    Items.graphite, 200,
+    Items.silicon, 200,
+    Items.oxide, 125,
+    item.siliconNitride, 100,
+    ),
+})
+defuse.ammo(
+    Items.graphite, extend(BasicBulletType, {
+        speed: 4,
+        damage: 0,
+        knockback: 3,
+        width: 25,
+        hitSize: 7,
+        height: 20,
+        shootEffect: Fx.shootBigColor,
+        smokeEffect: Fx.shootSmokeSquareSparse,
+        ammoMultiplier: 1,
+        reloadMultiplier: 0.34,
+        hitColor: Pal.graphiteAmmoBack,
+        backColor: Pal.graphiteAmmoBack,
+        trailColor: Pal.graphiteAmmoBack,
+        frontColor: Pal.graphiteAmmoFront,
+        trailWidth: 6,
+        trailLength: 6,
+        hitEffect: Fx.hitSquaresColor,
+        despawnEffect: Fx.hitSquaresColor,
+        status: status.antagonistic,
+        statusDuration: 300,
+        update(b) {
+            this.super$update(b);
+
+            let tile = Vars.world.tileWorld(b.x, b.y);
+            let puddle = Puddles.get(tile);
+            if(puddle != null && puddle.liquid == Liquids.neoplasm){
+                puddle.remove();
+                b.type.despawnEffect.at(b.x,b.y);
+            }
+        }
+    }),
+    Items.oxide, extend(BasicBulletType,{
+        speed: 4,
+        damage: 0,
+        knockback: 3,
+        width: 25,
+        hitSize: 7,
+        height: 20,
+        shootEffect: Fx.shootBigColor,
+        smokeEffect: Fx.shootSmokeSquareSparse,
+        ammoMultiplier: 2,
+        hitColor: Color.valueOf("a0b380"),
+        backColor: Color.valueOf("a0b380"),
+        trailColor: Color.valueOf("a0b380"),
+        frontColor: Color.valueOf("e4ffd6"),
+        trailWidth: 6,
+        trailLength: 6,
+        hitEffect: Fx.hitSquaresColor,
+        despawnEffect: Fx.hitSquaresColor,
+        status: status.antagonistic,
+        statusDuration: 300,
+        update(b) {
+            this.super$update(b);
+
+            let tile = Vars.world.tileWorld(b.x, b.y);
+            let puddle = Puddles.get(tile);
+            if(puddle != null && puddle.liquid == Liquids.neoplasm){
+                puddle.remove();
+                b.type.despawnEffect.at(b.x,b.y);
+            }
+        }
+    })
+)
+defuse.buildType = prov(() => extend(ItemTurret.ItemTurretBuild, defuse, {
+    findTarget() {
+        this.super$findTarget()
+
+        if (this.target == null) {
+            this.tile.circle((this.block.range - 1) / 8, cons(tile => {
+                let other = Puddles.get(tile);
+                if (other != null && other.liquid == Liquids.neoplasm && this.target == null) {
+                    this.target = targetBullet.create(this, Team.derelict, tile.worldx(), tile.worldy(), this.rotation - 180)
+                }
+            }))
+        }
+    }
+}))
+defuse.drawer = new DrawTurret("reinforced-");
+//defuse.drawer.parts.add();
+/*drawer = new DrawTurret("reinforced-"){{
+    parts.add(new RegionPart("-front"){{
+        progress = PartProgress.warmup;
+        moveRot = -10f;
+        mirror = true;
+        moves.add(new PartMove(PartProgress.recoil, 0f, -3f, -5f));
+        heatColor = Color.red;
+    }});
+}};*/
 
 //撕裂
 Blocks.breach.ammoTypes.put(

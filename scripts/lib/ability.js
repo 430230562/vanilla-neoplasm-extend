@@ -10,6 +10,7 @@ function UnlimitedPuddle(tile,liquid,amount){
             other.amount += amount
             if(other.lastRipple <= Time.time - 40){
                 Fx.ripple.at(other.x * 8, other.y * 8, 1, liquid.color);
+                other.lastRipple = Time.time
             }
         }else{
             let puddle = Puddle.create();
@@ -74,7 +75,7 @@ exports.MendFieldAbility = MendFieldAbility;
 function MoveLiquidAbility(liquid,range,amount,healthPercent){
 	return extend(Ability,{
 		update(unit){
-		    if(unit.health / unit.maxHealth <= healthPercent && unit.tileOn() != null && unit.getDuration(status.antagonistic) > 0){
+		    if(unit.health / unit.maxHealth <= healthPercent && unit.tileOn() != null && unit.getDuration(status.antagonistic) == 0){
     			unit.tileOn().circle(range / 8,cons(tile => {
     				UnlimitedPuddle(tile,liquid,amount);
     			}))
@@ -97,7 +98,7 @@ exports.MoveLiquidAbility = MoveLiquidAbility;
 function DeathNeoplasmAbility(range,amount){
 	return extend(Ability,{
 		death(unit){
-		    if(unit.tileOn() != null && unit.getDuration(status.antagonistic) > 0){
+		    if(unit.tileOn() != null && unit.getDuration(status.antagonistic) == 0){
 			    unit.tileOn().circle(range / 8,cons(tile => {
     				UnlimitedPuddle(tile,Liquids.neoplasm,amount * Vars.state.rules.unitHealth(unit.team));
     			}))

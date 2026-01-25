@@ -35,6 +35,7 @@ const neoplasmSlow = new extend(StatusEffect,"neoplasm-slow",{
 exports.neoplasmSlow = neoplasmSlow;
 
 const antagonistic = extend(StatusEffect,"antagonistic",{
+    speedMultiplier: 0.98,
     init(){
 	    this.opposite(StatusEffects.burning, neoplasmSlow)
 	}
