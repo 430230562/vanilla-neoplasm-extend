@@ -1,7 +1,6 @@
 const item = require("vne/item");
 const liquid = require("vne/liquid")
 const status = require("vne/status");
-const { UnlimitedPuddle } = require("vne/lib/ability");
 
 const neoplasmCollecter = extend(Radar, "neoplasm-collecter", {
     outlineColor: Color.valueOf("4a4b53"),
@@ -144,15 +143,15 @@ coagulantIngotWall.buildType = prov(() => extend(Building, {
     collision(bullet) {
         this.super$collision(bullet);
         
-        UnlimitedPuddle(this.tile, Liquids.neoplasm, bullet.damage);
+        Puddles.deposit(this.tile, Liquids.neoplasm, bullet.damage);
 
         return true
     },
     onDestroyed() {
-        UnlimitedPuddle(this.tile, Liquids.neoplasm, this.maxHealth);
+        Puddles.deposit(this.tile, Liquids.neoplasm, this.maxHealth);
     },
     onDeconstructed() {
-        UnlimitedPuddle(this.tile, Liquids.neoplasm, this.maxHealth);
+        Puddles.deposit(this.tile, Liquids.neoplasm, this.maxHealth);
     }
 }))
 
@@ -175,16 +174,16 @@ coagulantIngotWallLarge.buildType = prov(() => extend(Building, {
         this.super$collision(bullet);
 
         if (this.tile != null) this.tile.getLinkedTiles(cons(tile => {
-            UnlimitedPuddle(tile, Liquids.neoplasm, bullet.damage * 1 / 4);
+            Puddles.deposit(tile, Liquids.neoplasm, bullet.damage * 1 / 4);
         }))
 
         return true
     },
     onDestroyed() {
-        UnlimitedPuddle(this.tile, Liquids.neoplasm, this.maxHealth);
+        Puddles.deposit(this.tile, Liquids.neoplasm, this.maxHealth);
     },
     onDeconstructed() {
-        UnlimitedPuddle(this.tile, Liquids.neoplasm, this.maxHealth);
+        Puddles.deposit(this.tile, Liquids.neoplasm, this.maxHealth);
     }
 }))
 
@@ -225,10 +224,10 @@ oxideWall.buildType = prov(() => extend(Building, {
     },
     //想卡掉血浆？没门!
     onDestroyed() {
-        UnlimitedPuddle(this.tile, Liquids.neoplasm, this.neop);
+        Puddles.deposit(this.tile, Liquids.neoplasm, this.neop);
     },
     onDeconstructed() {
-        UnlimitedPuddle(this.tile, Liquids.neoplasm, this.neop);
+        Puddles.deposit(this.tile, Liquids.neoplasm, this.neop);
         this.neop = 0
     },
     write(write) {
@@ -282,10 +281,10 @@ oxideWallLarge.buildType = prov(() => extend(Building, {
     },
     //想卡掉血浆？没门!
     onDestroyed() {
-        UnlimitedPuddle(this.tile, Liquids.neoplasm, this.neop);
+        Puddles.deposit(this.tile, Liquids.neoplasm, this.neop);
     },
     onDeconstructed() {
-        UnlimitedPuddle(this.tile, Liquids.neoplasm, this.neop);
+        Puddles.deposit(this.tile, Liquids.neoplasm, this.neop);
         this.neop = 0
     },
     write(write) {
@@ -301,7 +300,7 @@ oxideWallLarge.buildType = prov(() => extend(Building, {
 const siliconNitrideWall = new Wall("silicon-nitride-wall");
 exports.siliconNitrideWall = siliconNitrideWall;
 Object.assign(siliconNitrideWall,{
-    health: 920,
+    health: 960,
     insulated: true,
     absorbLasers: true,
     schematicPriority: 10,
@@ -317,7 +316,7 @@ Object.assign(siliconNitrideWall,{
 const siliconNitrideWallLarge = new Wall("silicon-nitride-wall-large");
 exports.siliconNitrideWallLarge = siliconNitrideWallLarge;
 Object.assign(siliconNitrideWallLarge,{
-    health: 920 * 4,
+    health: 960 * 4,
     insulated: true,
     absorbLasers: true,
     schematicPriority: 10,
@@ -391,7 +390,7 @@ Object.assign(explosive, {
     buildCostMultiplier: 12,
     configurable: true,
     hasItems: true,
-    itemCapacity: 36,
+    itemCapacity: 15,
     buildVisibility: BuildVisibility.shown,
     category: Category.effect,
     requirements: ItemStack.with(
@@ -417,11 +416,11 @@ explosive.buildType = prov(() => extend(Building, {
 
         //很奇怪，即使puddle.amount为0，地块依旧判断为存在血浆
         if (this.tile != null && this.items.get(this.exploreItem) > 0) this.tile.circle(5, cons(other => {
-            UnlimitedPuddle(other, Liquids.neoplasm, this.items.get(this.exploreItem) * 5);
+            Puddles.deposit(other, Liquids.neoplasm, this.items.get(this.exploreItem) * 5);
         }))
     },
     onDeconstructed() {
-        if (this.items.get(this.exploreItem) > 0) UnlimitedPuddle(this.tile, Liquids.neoplasm, 60 * this.items.get(this.exploreItem));
+        if (this.items.get(this.exploreItem) > 0) Puddles.deposit(this.tile, Liquids.neoplasm, 60 * this.items.get(this.exploreItem));
     }
 }))
 
@@ -489,6 +488,8 @@ defuse.ammo(
         smokeEffect: Fx.shootSmokeSquareSparse,
         ammoMultiplier: 1,
         reloadMultiplier: 0.34,
+        pierce: true,
+        pierceBuilding: true,
         hitColor: Pal.graphiteAmmoBack,
         backColor: Pal.graphiteAmmoBack,
         trailColor: Pal.graphiteAmmoBack,
@@ -526,6 +527,8 @@ defuse.ammo(
         frontColor: Color.valueOf("e4ffd6"),
         trailWidth: 6,
         trailLength: 6,
+        pierce: true,
+        pierceBuilding: true,
         hitEffect: Fx.hitSquaresColor,
         despawnEffect: Fx.hitSquaresColor,
         status: status.antagonistic,
@@ -544,8 +547,6 @@ defuse.ammo(
 )
 defuse.buildType = prov(() => extend(ItemTurret.ItemTurretBuild, defuse, {
     findTarget() {
-        this.super$findTarget()
-
         if (this.target == null) {
             this.tile.circle((this.block.range - 1) / 8, cons(tile => {
                 let other = Puddles.get(tile);
@@ -553,6 +554,8 @@ defuse.buildType = prov(() => extend(ItemTurret.ItemTurretBuild, defuse, {
                     this.target = targetBullet.create(this, Team.derelict, tile.worldx(), tile.worldy(), this.rotation - 180)
                 }
             }))
+        }else{
+            this.super$findTarget()
         }
     }
 }))
@@ -598,16 +601,100 @@ item.coagulantIngot, extend(BasicBulletType, 7.5, 85, {
         this.super$despawned(b);
 
         let tile = Vars.world.tileWorld(b.x, b.y);
-        UnlimitedPuddle(tile, Liquids.neoplasm, b.damage * 0.5);
+        Puddles.deposit(tile, Liquids.neoplasm, b.damage * 0.5);
     },
     hit(b, x, y) {
         this.super$hit(b, x, y);
 
         //记忆中这样写会爆栈，其实不会
         let tile = Vars.world.tileWorld(x, y);
-        UnlimitedPuddle(tile, Liquids.neoplasm, b.damage * 0.5);
+        Puddles.deposit(tile, Liquids.neoplasm, b.damage * 0.5);
     }
 }))
+Blocks.breach.ammoTypes.put(
+item.siliconNitride, Object.assign(new BasicBulletType(8,60),{
+    width: 12,
+    hitSize: 7,
+    height: 20,
+    shootEffect: new MultiEffect(Fx.shootBigColor, Fx.colorSparkBig),
+    smokeEffect: Fx.shootBigSmoke,
+    ammoMultiplier: 4,
+    pierceCap: 1,
+    knockback: 6,
+    lifetime: 22.5,
+    rangeChange: 4 * 8,
+    reloadMultiplier: 0.8,
+    pierce: true,
+    pierceBuilding: true,
+    hitColor: Color.valueOf("8D79C8"),
+    backColor: Color.valueOf("8D79C8"),
+    trailColor: Color.valueOf("8D79C8"),
+    frontColor: Color.white,
+    trailWidth: 2.1,
+    trailLength: 10,
+    hitEffect: Fx.hitBulletColor,
+    despawnEffect: Fx.hitBulletColor,
+    buildingDamageMultiplier: 0.3,
+    status: StatusEffects.slow,
+    statusDuration: 10,
+    fragBullets:3,
+    fragRandomSpread: 0,
+    fragSpread: 30 / 2,
+    fragVelocityMin: 6,
+    fragVelocityMax: 6,
+    fragLifeMin: 1,
+    fragLifeMax: 1,
+    fragBullet: Object.assign(new BasicBulletType(),{
+        damage: 40,
+        width: 12,
+        hitSize: 7,
+        height: 20,
+        shootEffect: new MultiEffect(Fx.shootBigColor, Fx.colorSparkBig),
+        smokeEffect: Fx.shootBigSmoke,
+        lifetime: 10,
+        pierce: true,
+        pierceBuilding: true,
+        hitColor: Color.valueOf("8D79C8"),
+        backColor: Color.valueOf("8D79C8"),
+        trailColor: Color.valueOf("8D79C8"),
+        frontColor: Color.white,
+        trailWidth: 2.1,
+        trailLength: 10,
+        hitEffect: Fx.hitBulletColor,
+        despawnEffect: Fx.hitBulletColor,
+        buildingDamageMultiplier: 0.3,
+        status: StatusEffects.slow,
+        statusDuration: 10,
+    })
+})
+)
+Blocks.breach.ammoTypes.put(
+item.biomassSteel, Object.assign(new ReduceArmorBulletType(8,400,4),{
+    width: 12,
+    hitSize: 12,
+    height: 20,
+    shootEffect: new MultiEffect(Fx.shootBigColor, Fx.colorSparkBig),
+    smokeEffect: Fx.shootBigSmoke,
+    ammoMultiplier: 4,
+    pierceCap: 1,
+    knockback: 6,
+    lifetime: 30,
+    rangeChange: 8 * 8,
+    reloadMultiplier: 0.5,
+    pierce: true,
+    pierceBuilding: true,
+    hitColor: Color.valueOf("7EA341"),
+    backColor: Color.valueOf("7EA341"),
+    trailColor: Color.valueOf("7EA341"),
+    frontColor: Color.white,
+    trailWidth: 2.1,
+    trailLength: 10,
+    hitEffect: Fx.hitBulletColor,
+    despawnEffect: Fx.hitBulletColor,
+    shootSound: Sounds.shootBreachCarbide,
+    buildingDamageMultiplier: 0.3,
+})
+)
 
 //升华
 Blocks.sublimate.ammoTypes.put(
@@ -642,7 +729,7 @@ item.coagulantIngot, extend(ArtilleryBulletType, 2.5, 240, "shell", {
     lifetime: 190,
     height: 19,
     width: 17,
-    splashDamageRadius: 110,
+    splashDamageRadius: 88,
     rangeChange: -8,
     splashDamage: 40,
     reloadMultiplier: 0.6,
@@ -677,7 +764,7 @@ item.coagulantIngot, extend(ArtilleryBulletType, 2.5, 240, "shell", {
         let tile = Vars.world.tileWorld(b.x, b.y);
         if (tile != null) {
             tile.circle(11, cons(other => {
-                UnlimitedPuddle(other, Liquids.neoplasm, 30);
+                Puddles.deposit(other, Liquids.neoplasm, 30);
             }))
         }
     }
@@ -717,21 +804,21 @@ item.coagulantIngot, extend(BasicBulletType, 8, 45, {
         this.super$despawned(b);
 
         let tile = Vars.world.tileWorld(b.x, b.y);
-        UnlimitedPuddle(tile, Liquids.neoplasm, b.damage);
+        Puddles.deposit(tile, Liquids.neoplasm, b.damage);
     },
     hit(b, x, y) {
         this.super$hit(b, x, y);
 
         //记忆中这样写会爆栈，其实不会
         let tile = Vars.world.tileWorld(x, y);
-        UnlimitedPuddle(tile, Liquids.neoplasm, b.damage);
+        Puddles.deposit(tile, Liquids.neoplasm, b.damage);
     },
     update(b) {
         this.super$update(b);
 
         let tile = Vars.world.tileWorld(b.x, b.y);
         if (b.time >= 12) {
-            UnlimitedPuddle(tile, Liquids.neoplasm, 5);
+            Puddles.deposit(tile, Liquids.neoplasm, 3);
         }
     }
 }))

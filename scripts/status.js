@@ -1,5 +1,4 @@
 let armorDamage = Stat("armorDamage");
-const { UnlimitedPuddle } = require("vne/lib/ability");
 
 const corroding = extend(StatusEffect,"corroding",{
 	update(unit, time){
@@ -29,7 +28,7 @@ const neoplasmSlow = new extend(StatusEffect,"neoplasm-slow",{
     update(unit, entry){
         this.super$update(unit, entry);
         
-		UnlimitedPuddle(unit.tileOn(),Liquids.neoplasm,0);
+		Puddles.deposit(unit.tileOn(),Liquids.neoplasm,0);
     }
 })
 exports.neoplasmSlow = neoplasmSlow;

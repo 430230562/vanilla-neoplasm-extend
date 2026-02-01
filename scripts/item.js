@@ -12,7 +12,7 @@ Object.assign(coagulantIngot,{
     buildable:false
 })
 
-const siliconNitride = new Item("silicon-nitride", Color.valueOf("959CA5"));
+const siliconNitride = new Item("silicon-nitride", Color.valueOf("8D79C8"));
 exports.siliconNitride = siliconNitride;
 Object.assign(siliconNitride, {
 	cost: 1.7,

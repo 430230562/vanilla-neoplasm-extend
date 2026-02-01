@@ -1,9 +1,6 @@
 const item = require("vne/item");
 const liquid = require("vne/liquid");
 const {ammoniaTurbine} = require("vne/effect")
-const {
-    UnlimitedPuddle
-} = require("vne/lib/ability")
 
 const oxidationChamber = extend(ThermalGenerator, "oxidation-chamber", {
     setBars() {

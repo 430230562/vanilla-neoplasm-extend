@@ -3,9 +3,6 @@ const liquid = require("vne/liquid");
 const {
     ammoniaTurbine
 } = require("vne/effect");
-const {
-    UnlimitedPuddle
-} = require("vne/lib/ability")
 
 const microHeatRedirector = new HeatConductor("micro-heat-redirector")
 exports.microHeatRedirector = microHeatRedirector;
@@ -242,7 +239,7 @@ Object.assign(adsorbent, {
 adsorbent.consumeLiquid(Liquids.neoplasm, 20 / 60);
 adsorbent.consumeItem(Items.oxide, 1);
 
-const siliconNitrideFurnace = new HeatCrafter("silicon-nitride-furnace");
+const siliconNitrideFurnace = new HeatProducer("silicon-nitride-furnace");
 exports.siliconNitrideFurnace = siliconNitrideFurnace;
 Object.assign(siliconNitrideFurnace, {
     ambientSound: Sounds.loopSmelter,
@@ -250,26 +247,31 @@ Object.assign(siliconNitrideFurnace, {
     craftEffect: Fx.none,
     craftTime: 60,
     outputItem: new ItemStack(item.siliconNitride, 2),
-    heatRequirement: 10,
-    maxEfficiency: 4,
-    size: 3,
     itemCapacity: 15,
-    hasPower: false,
+    hasPower: true,
     hasLiquids: true,
     hasItems: true,
+    rotateDraw: false,
+    regionRotated1: 2,
+    liquidCapacity: 30,
+    heatOutput: 12,
     drawer: new DrawMulti(
     new DrawRegion("-bottom"),
     new DrawArcSmelt(),
-    new DrawDefault()),
+    new DrawDefault(),
+    new DrawHeatOutput()
+    ),
     buildVisibility: BuildVisibility.shown,
     category: Category.crafting,
     requirements: ItemStack.with(
-    Items.silicon, 120,
-    Items.tungsten, 80,
-    Items.carbide, 75, )
+        Items.silicon, 120,
+        Items.tungsten, 80,
+        Items.carbide, 75,
+    )
 });
 siliconNitrideFurnace.consumeItem(Items.silicon, 3)
 siliconNitrideFurnace.consumeLiquid(Liquids.nitrogen, 8 / 60)
+siliconNitrideFurnace.consumePower(1.5);
 
 const biomassSmelter = extend(GenericCrafter, "biomass-smelter", {
     setBars() {
@@ -339,8 +341,8 @@ biomassSmelter.buildType = prov(() => extend(GenericCrafter.GenericCrafterBuild,
         Draw.reset();
     },
     onDestroyed() {
-        if (this.tile != null) this.tile.circle(7, cons(tile => {
-            UnlimitedPuddle(tile, Liquids.neoplasm, this.maxHealth * this.volatility);
+        if (this.tile != null) this.tile.circle(8 * this.volatility, cons(tile => {
+            Puddles.deposit(tile, Liquids.neoplasm, 70);
         }))
 
         Fx.reactorExplosion.at(this.x, this.y, 0, Color.valueOf("c33e2b"));

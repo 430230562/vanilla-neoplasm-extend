@@ -2,6 +2,7 @@ const environment = require("vne/block/environment")
 const status = require("vne/status")
 const item = require("vne/item")
 
+/*没用，还会导致渲染错误
 function UnlimitedPuddle(tile,liquid,amount){
     //不包括太空及液体当场蒸发的情况
     if(tile != null){
@@ -26,7 +27,7 @@ function UnlimitedPuddle(tile,liquid,amount){
     return;
 }
 exports.UnlimitedPuddle = UnlimitedPuddle
-
+*/
 function MendFieldAbility(amount,reload,range){
 	return extend(Ability,{
 		i: 0,
@@ -77,7 +78,7 @@ function MoveLiquidAbility(liquid,range,amount,healthPercent){
 		update(unit){
 		    if(unit.health / unit.maxHealth <= healthPercent && unit.tileOn() != null && unit.getDuration(status.antagonistic) == 0){
     			unit.tileOn().circle(range / 8,cons(tile => {
-    				UnlimitedPuddle(tile,liquid,amount);
+    				Puddles.deposit(tile,liquid,amount);
     			}))
 			}
 		},
@@ -99,8 +100,8 @@ function DeathNeoplasmAbility(range,amount){
 	return extend(Ability,{
 		death(unit){
 		    if(unit.tileOn() != null && unit.getDuration(status.antagonistic) == 0){
-			    unit.tileOn().circle(range / 8,cons(tile => {
-    				UnlimitedPuddle(tile,Liquids.neoplasm,amount * Vars.state.rules.unitHealth(unit.team));
+			    unit.tileOn().circle(range * Vars.state.rules.unitHealth(unit.team) / 8,cons(tile => {
+    				Puddles.deposit(tile,Liquids.neoplasm,amount);
     			}))
 			}
 		},
