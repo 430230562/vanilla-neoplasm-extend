@@ -252,6 +252,7 @@ Object.assign(siliconNitrideFurnace, {
     hasLiquids: true,
     hasItems: true,
     rotateDraw: false,
+    size: 3,
     regionRotated1: 2,
     liquidCapacity: 30,
     heatOutput: 12,

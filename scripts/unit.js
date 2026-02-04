@@ -879,10 +879,11 @@ neoplasmUnit2.immunities.add(status.neoplasmSlow)
 neoplasmUnit2.weapons.add(
 Object.assign(new Weapon(), {
     top: false,
+    mirror: false,
     shootSound: Sounds.shootFlame,
     reload: 15,
     recoil: 1,
-    rotateSpeed: 12,
+    rotate: true,
     ejectEffect: Fx.none,
     bullet: extend(BulletType, 4, 40, {
         hitSize: 11,

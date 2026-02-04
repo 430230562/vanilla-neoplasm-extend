@@ -73,6 +73,13 @@ addResearch(item.protein, {
     TechTree.nodeProduce(item.biomassSteel, () => {})
 })
 
+addResearch(item.siliconNitride,{
+    parent: "carbide",
+    objectives: Seq.with(
+        Objectives.Produce(item.siliconNitride),
+    )
+},() => {})
+
 //liquid
 addResearch(liquid.ammonia, {
     parent: "nitrogen",
@@ -97,15 +104,28 @@ addResearch(defense.oxideWall, {
             TechTree.node(defense.biomassWallLarge, () => {})
         })
     }),
-    TechTree.node(defense.explosive, () => {})
+    TechTree.node(defense.explosive, () => {}),
+    TechTree.node(defense.siliconNitrideWall, () => {
+        TechTree.node(defense.siliconNitrideWallLarge, () => {})
+    })
 });
+
+addResearch(defense.neoplasmCollecter,{
+    parent: "radar",
+},() => {})
+
+addResearch(defense.defuse, {
+    parent: "diffuse",
+}, () => {})
 
 //factory
 addResearch(factory.incubator, {
     parent: "silicon-arc-furnace",
     objectives: Seq.with(Objectives.OnSector(SectorPresets.intersect))
 }, () => {
-    TechTree.node(factory.cyanidePlant, () => {})
+    TechTree.node(factory.arkyciteRefinery, () => {
+        TechTree.node(factory.cyanidePlant, () => {})
+    })
 });
 
 addResearch(factory.ammoniaPlant, {
@@ -126,6 +146,22 @@ addResearch(factory.laserIncinerator, {
 addResearch(factory.ammoniaCollector,{
     parent: "vent-condenser",
 },() => {})
+
+addResearch(factory.siliconNitrideFurnace, {
+    parent: "atmospheric-concentrator",
+}, () => {
+    TechTree.node(factory.biomassSmelter, () => {
+        TechTree.node(factory.stableBiomassSmelter, () => {})
+    })
+})
+
+addResearch(factory.smallHeatRouter,{
+    parent: "small-heat-redirector",
+},() => {
+    TechTree.node(factory.microHeatRedirector, () => {
+        TechTree.node(factory.microHeatRouter, () => {})
+    })
+})
 
 //liquid
 addResearch(liquidBlock.turbopump,{

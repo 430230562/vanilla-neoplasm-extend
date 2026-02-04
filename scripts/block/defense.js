@@ -1,6 +1,7 @@
 const item = require("vne/item");
 const liquid = require("vne/liquid")
 const status = require("vne/status");
+const {ReduceArmorBulletType} = require("vne/lib/bulletType")
 
 const neoplasmCollecter = extend(Radar, "neoplasm-collecter", {
     outlineColor: Color.valueOf("4a4b53"),
@@ -329,6 +330,36 @@ Object.assign(siliconNitrideWallLarge,{
     ),
 })
 
+// 使用Set记录已访问节点，防止循环引用导致无限递归
+function depieceGraph(bullet) {
+  if (bullet == null) return;
+  
+  const visited = new Set();
+  const stack = [bullet];
+  
+  while (stack.length > 0) {
+    const currentBullet = stack.pop();
+    
+    // 跳过已处理节点
+    if (visited.has(currentBullet)) continue;
+    
+    //取消穿透
+    currentBullet.pierce = false;
+    currentBullet.pierceBuilding = false;
+    currentBullet.pierceDamageFactor = 0
+    
+    visited.add(currentBullet);
+    
+    // 添加未访问的子节点
+    if (currentBullet.intervalBullet != null && !visited.has(currentBullet.intervalBullet)) {
+      stack.push(currentBullet.intervalBullet);
+    }
+    if (currentBullet.fragBullet != null && !visited.has(currentBullet.fragBullet)) {
+      stack.push(currentBullet.fragBullet);
+    }
+  }
+}
+
 const biomassWall = new Wall("biomass-wall");
 exports.biomassWall = biomassWall;
 Object.assign(biomassWall, {
@@ -345,10 +376,9 @@ Object.assign(biomassWall, {
 })
 biomassWall.buildType = prov(() => extend(Building, {
     collision(bullet) {
-        bullet.type.pierce = false;
-        bullet.type.pierceBuilding = false;
-        bullet.type.pierceDamageFactor = 0
-
+    
+        depieceGraph(bullet.type)
+        
         this.super$collision(bullet)
 
         return true
@@ -371,9 +401,7 @@ Object.assign(biomassWallLarge, {
 })
 biomassWallLarge.buildType = prov(() => extend(Building, {
     collision(bullet) {
-        bullet.type.pierce = false;
-        bullet.type.pierceBuilding = false;
-        bullet.type.pierceDamageFactor = 0
+        depieceGraph(bullet.type)
 
         this.super$collision(bullet)
 
@@ -432,7 +460,7 @@ const targetBullet = extend(BulletType, {
     collides: false,
     absorbable: false,
     hittable: false,
-    lifetime: 60,
+    lifetime: 180,
     hitEffect: Fx.none,
     despawnEffect: Fx.none,
     lightOpacity: 0,
@@ -459,11 +487,12 @@ Object.assign(defuse,{
     outlineColor: Pal.darkOutline,
     size: 3,
     reload: 90,
-    recoil: 2,
+    recoil: 4,
     range: 125,
     shootCone: 40,
     scaledHealth: 210,
     rotateSpeed: 3,
+    heatColor: Color.valueOf("8D79C8a8"),
 
     coolant: new ConsumeLiquid(Liquids.nitrogen, 4 / 60),
     
@@ -488,14 +517,15 @@ defuse.ammo(
         smokeEffect: Fx.shootSmokeSquareSparse,
         ammoMultiplier: 1,
         reloadMultiplier: 0.34,
-        pierce: true,
-        pierceBuilding: true,
         hitColor: Pal.graphiteAmmoBack,
         backColor: Pal.graphiteAmmoBack,
         trailColor: Pal.graphiteAmmoBack,
         frontColor: Pal.graphiteAmmoFront,
         trailWidth: 6,
         trailLength: 6,
+        removeAfterPierce: false,
+        pierce:true,
+        pierceBuilding:true,
         hitEffect: Fx.hitSquaresColor,
         despawnEffect: Fx.hitSquaresColor,
         status: status.antagonistic,
@@ -527,8 +557,9 @@ defuse.ammo(
         frontColor: Color.valueOf("e4ffd6"),
         trailWidth: 6,
         trailLength: 6,
-        pierce: true,
-        pierceBuilding: true,
+        removeAfterPierce: false,
+        pierce:true,
+        pierceBuilding:true,
         hitEffect: Fx.hitSquaresColor,
         despawnEffect: Fx.hitSquaresColor,
         status: status.antagonistic,
@@ -560,7 +591,18 @@ defuse.buildType = prov(() => extend(ItemTurret.ItemTurretBuild, defuse, {
     }
 }))
 defuse.drawer = new DrawTurret("reinforced-");
-//defuse.drawer.parts.add();
+defuse.drawer.parts.add(
+    Object.assign(new RegionPart("-side"),{
+        heatProgress: DrawPart.PartProgress.recoil,
+        progress: DrawPart.PartProgress.warmup,
+        mirror: true,
+        moveX: 2,
+        moveY: 0,
+        moveRot: -10,
+        under: true,
+        heatColor: Color.valueOf("8D79C8a8")
+    })
+)
 /*drawer = new DrawTurret("reinforced-"){{
     parts.add(new RegionPart("-front"){{
         progress = PartProgress.warmup;
@@ -678,7 +720,7 @@ item.biomassSteel, Object.assign(new ReduceArmorBulletType(8,400,4),{
     ammoMultiplier: 4,
     pierceCap: 1,
     knockback: 6,
-    lifetime: 30,
+    lifetime: 32,
     rangeChange: 8 * 8,
     reloadMultiplier: 0.5,
     pierce: true,
