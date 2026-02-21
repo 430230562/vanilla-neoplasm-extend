@@ -1,0 +1,12 @@
+{
+"name": "vne",
+"displayName": "原版瘤液拓展",
+"subtitle": "想吃香草味瘤子",
+"description": "你是否觉得原版瘤液的用途,在矿渣池中焚毁,过于单一;如此富有生物活性的材料应该还有有别的用途:作为弹药,合成新材料,甚至是组建自己的生物军队...请尽情发挥你的想象.\n\n什么？你已经等不及了吗？那么就让我们开启这趟血淋淋的旅途吧",
+"minGameVersion": 154,
+"author": "pardon",
+"version": 0.3,
+"repo":"430230562/vanilla-neoplasm-extend",
+"hideBrowser":false,
+//"dependencies":[]
+}
