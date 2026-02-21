@@ -60,12 +60,12 @@ unitIncubator.buildType = prov(() => extend(UnitFactory.UnitFactoryBuild, unitIn
     onDestroyed(){
         this.super$onDestroyed();
     
-        if(this.progress >= 60)unit.neoplasmUnit1.spawn(this.team, this.x,this.y);
+        if(this.progress >= 60)unit.polyp.spawn(this.team, this.x,this.y);
     },
     onDeconstructed(){
         this.super$onDeconstructed();
     
-        if(this.progress >= 60)unit.neoplasmUnit1.spawn(this.team, this.x,this.y);
+        if(this.progress >= 60)unit.polyp.spawn(this.team, this.x,this.y);
     }
 }))
 
@@ -135,18 +135,18 @@ shaper.buildType = prov(() => extend(UnitFactory.UnitFactoryBuild, shaper,{
         this.super$onDestroyed();
         
         if(this.currentPlan < 3 && this.progress >= 45){
-            unit.neoplasmUnit1.spawn(this.team, this.x,this.y);
+            unit.polyp.spawn(this.team, this.x,this.y);
         }else if(this.progress >= 90){
-            unit.neoplasmUnit2.spawn(this.team, this.x,this.y);
+            unit.sarcoma.spawn(this.team, this.x,this.y);
         }
     },
     onDeconstructed(){
         this.super$onDeconstructed();
     
         if(this.currentPlan < 3 && this.progress >= 45){
-            unit.neoplasmUnit1.spawn(this.team, this.x,this.y);
+            unit.polyp.spawn(this.team, this.x,this.y);
         }else if(this.progress >= 90){
-            unit.neoplasmUnit2.spawn(this.team, this.x,this.y);
+            unit.sarcoma.spawn(this.team, this.x,this.y);
         }
     }
 }))

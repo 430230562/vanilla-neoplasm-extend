@@ -11,7 +11,7 @@ function Acid(puddleSize) {
 		
 		knockback: 0,
 		
-		status: status.corroding,
+		status: StatusEffects.corroded,
 		statusDuration: 120,
 	})
 }

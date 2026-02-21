@@ -22,7 +22,7 @@ const acid = extend(Liquid,"acid",Color.valueOf("84a94b"),{
 			}
 		}
 	},
-	effect: status.corroding,
+	effect: StatusEffects.corroded,
 	viscosity: 0.8,
 	heatCapacity: 0.2,
 	temperature: 0.54,

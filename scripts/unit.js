@@ -9,7 +9,7 @@ const {
 
 function Insect(name) {
     return extend(UnitType, name, {
-        outlineColor: Pal.neoplasmOutline,
+        outlineColor: Pal.neoplasmOutline, //想不到吧，其实这个是瘤液单位的标记Color.valueOf("2e191d")
         envDisabled: Env.none,
         healFlash: true,
         healColor: Pal.neoplasm1,
@@ -78,11 +78,8 @@ Object.assign(new StatWeapon("zerg-alter-weapon","alter",100), {
 				if (entity.health <= 100) {
 					entity.remove();
 					
-    			let u = entity.type.create(b.team);
-                u.set(unit.x, unit.y);
-                u.rotation = entity.rotation;
+                let u = entity.type.spawn(unit.team, entity.x,entity.y,entity.rotation);
                 u.health = u.maxHealth / 4
-                u.add();
             }
 				}
 			}
@@ -149,7 +146,7 @@ Object.assign(haploid, {
 
     shadowElevation: 0.1,
     groundLayer: 74,
-    
+
     constructor: () => new LegsUnit.create()
 })
 haploid.weapons.add(
@@ -169,7 +166,7 @@ Object.assign(new Weapon("vne-haploid-weapon"), {
         despawnEffect: Fx.none,
         trailColor: Color.valueOf("84a94b"),
 
-        status: status.corroding,
+        status: StatusEffects.corroded,
         statusDuration: 120,
 
         recoil: 0.8,
@@ -238,7 +235,7 @@ Object.assign(new Weapon(), {
 
         lightOpacity: 0,
 
-        status: status.corroding,
+        status: StatusEffects.corroded,
         statusDuration: 120,
 
         fragBullets: 2,
@@ -371,49 +368,73 @@ exports.bivalents = bivalents;
 Object.assign(bivalents, {
     speed: 1,
     drag: 0.1,
-    hitSize: 16,
+    hitSize: 26,
     rotateSpeed: 3,
     health: 3500,
     armor: 9,
     targetPriority: 1,
 
     fogRadius: 40,
-    stepShake: 0,
-    legCount: 4,
-    legLength: 18,
-    legGroupSize: 3,
-    lockLegBase: true,
-    legContinuousMove: true,
-    legExtension: -3,
-    legBaseOffset: 7,
-    legMaxLength: 1.1,
-    legMinLength: 0.2,
-    legLengthScl: 0.95,
-    legForwardScl: 0.9,
-
-    legMoveSpace: 1,
+    
+    stepShake: 0.75,
+    mechFrontSway: 1.9,
+    mechSideSway: 0.6,
+    stepSound: Sounds.mechStepHeavy,
+    stepSoundPitch: 0.9,
+    stepSoundVolume: 0.45,
+    
     hovering: true,
-
-    shadowElevation: 0.2,
-    groundLayer: 74,
-    constructor: () => new LegsUnit.create(),
+    canDrown: false,
+    
+    constructor: () => new MechUnit.create(),
 })
 bivalents.weapons.add(
 Object.assign(new Weapon("vne-bivalents-weapon"), {
     mirror: true,
-    x: 8,
+    top: false,
+    x: 14,
     y: 0,
-    shootY: 4,
-    reload: 20,
-    shoot: new ShootSpread(2, 15),
-    shootCone: 60,
-    cooldownTime: 42,
-    shootSound: Sounds.shootFuse,
-    bullet: Object.assign(new ShrapnelBulletType(), {
-        length: 40,
-        damage: 90,
-        width: 13,
-        lightOpacity: 0,
+    shootY: 16,
+    shootSound: Sounds.shootFlame,
+    reload: 10,
+    recoil: 1,
+    rotate: false,
+    ejectEffect: Fx.none,
+    bullet: extend(BulletType, 8, 80, {
+        hitSize: 11,
+        lifetime: 8,
+        pierce: true,
+        pierceBuilding: true,
+        pierceCap: 2,
+        shootEffect: new Effect(32, 80, e => {
+            Draw.color(Color.valueOf("e8803f"), Color.valueOf("c33e2b"), Color.gray, e.fin());
+
+            Angles.randLenVectors(e.id, 16, e.finpow() * 60, e.rotation, 10, (x, y) => {
+                Fill.circle(e.x + x, e.y + y, 0.65 + e.fout() * 1.5);
+            })
+        }),
+        hitEffect: new Effect(14, e => {
+            Draw.color(Color.valueOf("e8803f"), Color.valueOf("c33e2b"), e.fin());
+            Lines.stroke(0.5 + e.fout());
+
+            Angles.randLenVectors(e.id, 2, 1 + e.fin() * 15, e.rotation, 50, (x, y) => {
+                let ang = Mathf.angle(x, y);
+                Lines.lineAngle(e.x + x, e.y + y, ang, e.fout() * 3 + 1);
+            })
+        }),
+        despawnEffect: Fx.none,
+        statusDuration: 60 * 2,
+        status: status.neoplasmSlow,
+        keepVelocity: false,
+        hittable: false,
+        update(b) {
+            this.super$update(b);
+
+            let tile = Vars.world.tileWorld(b.x, b.y);
+            if (tile != null) {
+                Puddles.deposit(tile, Liquids.neoplasm, 20);
+            }
+        }
     })
 }))
 
@@ -428,7 +449,7 @@ Object.assign(ribosome, {
     hitSize: 8,
     engineOffset: 5.5,
     armor: 1,
-    aiController: () => new FlyingFollowAI()
+    controller: () => new FlyingFollowAI()
 })
 ribosome.weapons.add(
 Object.assign(new Weapon("vne-ribosome-weapon"), {
@@ -448,7 +469,7 @@ Object.assign(new Weapon("vne-ribosome-weapon"), {
         despawnEffect: Fx.none,
         trailColor: Color.valueOf("84a94b"),
 
-        status: status.corroding,
+        status: StatusEffects.corroded,
         statusDuration: 120,
 
         recoil: 0.8,
@@ -642,7 +663,7 @@ centrosome.weapons.add(Object.assign(new Weapon("vne-centrosome-weapon"), {
     x: 29 / 4,
     y: -11 / 4,
     shootY: 1.5,
-    reload: 120,
+    reload: 90,
     layerOffset: 0.01,
     rotate: false,
     alternate: false,
@@ -650,7 +671,7 @@ centrosome.weapons.add(Object.assign(new Weapon("vne-centrosome-weapon"), {
     baseRotation: -30,
     shoot: new ShootSpread(2, 10),
     shootSound: Sounds.plantBreak,
-    bullet: Object.assign(new BasicBulletType(4, 130), {
+    bullet: Object.assign(new BasicBulletType(4, 140), {
         lifetime: 60,
         width: 16,
         height: 16,
@@ -746,9 +767,8 @@ Object.assign(new Weapon(), {
     x: 0,
     shootY: 0,
     mirror: false,
-    shoot: Object.assign(new ShootPattern(), {
-        firstShotDelay: 7.5
-    }),
+    minWarmup: 0.95,
+    shootWarmupSpeed: 0.05,
     bullet: new ExplosionBulletType(90, 48),
 }))
 
@@ -807,11 +827,110 @@ Object.assign(new PointDefenseWeapon("vne-cytoderm-weapon"), {
 cytoderm.abilities.add(
 new DamageDownAbility(18, 120),
 new ForceFieldAbility(40, 0.2, 400, 60 * 6))
-cytoderm.immunities.add(status.neoplasmSlow)
 
-const neoplasmUnit1 = new UnitType("neoplasm-unit-1");
-exports.neoplasmUnit1 = neoplasmUnit1;
-Object.assign(neoplasmUnit1, {
+//unit.vne-adenoma.name = 腺瘤
+const adenoma = new Insect("adenoma");
+exports.adenoma = adenoma;
+Object.assign(adenoma, {
+    health: 880,
+    speed: 2.5,
+    flying: true,
+    hitSize: 16,
+    engineOffset: 11,
+    armor: 4,
+    accel: 0.08,
+    drag: 0.016,
+    itemCapacity: 0,
+    constructor: () => new UnitEntity.create(),
+    controller: () => extend(FlyingFollowAI, {
+        updateMovement() {
+            this.unloadPayloads();
+
+            //moveTo前面加this
+            //lookAt前面加this.unit
+            if (this.following != null) {
+                this.moveTo(this.following, 40);
+            } else if (this.target != null && this.unit.hasWeapons()) {
+                this.moveTo(this.target, 80);
+            }
+
+            if (this.shouldFaceTarget()) {
+                this.unit.lookAt(this.target);
+            } else if (this.following != null) {
+                this.unit.lookAt(this.following);
+            }
+
+            if (this.timer.get(this.timerTarget3, 30)) {
+                this.following = Units.closest(
+                this.unit.team,
+                this.unit.x,
+                this.unit.y,
+                Math.max(this.unit.type.range, 400),
+                u => (!u.dead && !(u.controller() instanceof FlyingFollowAI) && u.type != this.unit.type), (u, x, y) => {
+                    if (u.type.outlineColor == Pal.neoplasmOutline) {
+                        return u.maxHealth + Mathf.dst2(u.x, u.y, x, y) / 6400 + u.getDuration(status.stimulated) * 100
+                    } else {
+                        return 4294967296
+                        //好像是越小越优先
+                    }
+                }
+                //先找血量最低且没状态的瘤液单位
+                )
+                //很奇怪，原版没有unit.dead()这个function
+            }
+        }
+    })
+})
+adenoma.weapons.add(
+Object.assign(new Weapon("vne-adenoma-weapon"), {
+    mirror: false,
+    x: 0,
+    y: 1,
+    shootY: 4,
+    reload: 30,
+    cooldownTime: 40,
+    heatColor: Color.valueOf("c33e2b"),
+    shootSound: Sounds.shootScatter,
+    bullet: extend(FlakBulletType, 4, 9, {
+        lifetime: 48,
+        recoil: 1.2,
+        shootEffect: Fx.shootSmall,
+        collidesGround: true,
+        width: 6,
+        height: 8,
+        hitEffect: Fx.flakExplosion,
+        splashDamage: 31,
+        splashDamageRadius: 24,
+        backColor: Color.valueOf("c33e2b"),
+        trailColor: Color.valueOf("c33e2b"),
+        trailWidth: 2,
+        trailLength: 5,
+        frontColor: Color.white,
+        lightOpacity: 0.3,
+        fragBullets: 5,
+        fragBullet: Object.assign(new BasicBulletType(3, 7, "bullet"), {
+            width: 5,
+            height: 12,
+            shrinkY: 1,
+            lifetime: 20,
+            backColor: Color.valueOf("c33e2b"),
+            frontColor: Color.white,
+            lightOpacity: 0.3,
+            despawnEffect: Fx.none,
+        }),
+        puddles: 1,
+        puddleRange: 0,
+        puddleAmount: 70,
+        puddleLiquid: Liquids.neoplasm
+    })
+}))
+adenoma.abilities.add(
+new StatusFieldAbility(status.stimulated, 450, 300, 60))
+
+//unit.vne-polyp.name = 息肉
+const polyp = new UnitType("polyp");
+exports.polyp = polyp;
+Object.assign(polyp, {
     constructor: () => new CrawlUnit.create(),
     speed: 1,
     hitSize: 8,
@@ -837,14 +956,15 @@ Object.assign(neoplasmUnit1, {
     allowedInPayloads: false,
     useUnitCap: false,
 })
-neoplasmUnit1.abilities.add(
+polyp.abilities.add(
 new DeathNeoplasmAbility(32, 800),
 new MoveLiquidAbility(Liquids.neoplasm, 12, 5, 1))
-neoplasmUnit1.immunities.add(status.neoplasmSlow)
+polyp.immunities.add(status.neoplasmSlow)
 
-const neoplasmUnit2 = new UnitType("neoplasm-unit-2");
-exports.neoplasmUnit2 = neoplasmUnit2;
-Object.assign(neoplasmUnit2, {
+//unit.vne-sarcoma.name = 肉瘤
+const sarcoma = new UnitType("sarcoma");
+exports.sarcoma = sarcoma;
+Object.assign(sarcoma, {
     constructor: () => new CrawlUnit.create(),
     speed: 0.8,
     hitSize: 14,
@@ -870,13 +990,12 @@ Object.assign(neoplasmUnit2, {
     allowedInPayloads: false,
     useUnitCap: false,
 })
-neoplasmUnit2.abilities.add(
+sarcoma.abilities.add(
 new DeathNeoplasmAbility(40, 2400),
 new MoveLiquidAbility(Liquids.neoplasm, 16, 5, 1),
-new SpawnDeathAbility(neoplasmUnit1, 3, 12)
-)
-neoplasmUnit2.immunities.add(status.neoplasmSlow)
-neoplasmUnit2.weapons.add(
+new SpawnDeathAbility(polyp, 3, 12))
+sarcoma.immunities.add(status.neoplasmSlow)
+sarcoma.weapons.add(
 Object.assign(new Weapon(), {
     top: false,
     mirror: false,
@@ -922,32 +1041,47 @@ Object.assign(new Weapon(), {
         }
     })
 }))
-
-const primeFruitingBody = extend(UnitType, "prime-fruiting-body", {
+/*
+unit.vne-spore.name = 芽孢
+unit.vne-mycelium.name = 菌丝体
+unit.vne-sac.name = 瘤变囊
+cocoon茧
+*/
+const spore = extend(UnitType, "spore", {
     u: [bomber, bomber, haploid, haploid, haploid, ribosome, ribosome],
     update(unit) {
-        unit.heal(0.2)
-        if (unit.shield >= 10 || Time.time % 20 * 60 <= 2) {
-            this.u[Math.floor(Math.random() * this.u.length)].spawn(unit.team, unit.x, unit.y)
+        unit.heal(0.2);
+        if (unit.getDuration(status.stimulated) > 1 || Time.time % 20 * 60 <= 1 || Time.delta >= 4 /*防卡顿*/ ) {
+            let preSpawn = this.u[Math.floor(Math.random() * this.u.length)];
 
+            if (Units.canCreate(unit.team, preSpawn)) {
+                let spawnedUnit = preSpawn.spawn(unit.team, unit.x, unit.y);
+                //继承状态
+                spawnedUnit.apply(status.stimulated, unit.getDuration(status.stimulated))
+            } else {
+                mycelium.spawn(unit.team, unit.x, unit.y);
+            }
             unit.remove();
         }
-        if (unit.getDuration(StatusEffects.shielded) <= 10) {
-            unit.apply(StatusEffects.shielded, 20 * 60);
+        if (unit.healthMultiplier < 8) {
+            unit.healthMultiplier = 8
+            //折合约960血，其实不算硬
         }
     }
 })
-exports.primeFruitingBody = primeFruitingBody;
-Object.assign(primeFruitingBody, {
+exports.spore = spore;
+Object.assign(spore, {
     drawCell: false,
     lightRadius: 0,
     envDisabled: Env.none,
-    constructor: () => new MechUnit.create(),
+    constructor: () => new UnitEntity.create(),
+    flying: false,
     speed: 0,
-    hitSize: 4,
+    hitSize: 8,
     health: 120,
     armor: 20,
     targetPriority: -2,
+    outlineColor: Pal.neoplasmOutline,
     healColor: Pal.neoplasm1,
     targetable: true,
     hittable: true,
@@ -958,33 +1092,42 @@ Object.assign(primeFruitingBody, {
     logicControllable: false,
     allowedInPayloads: false,
 })
-primeFruitingBody.immunities.addAll(status.corroding)
+spore.immunities.addAll(StatusEffects.corroded)
 
-const seniorFruitingBody = extend(UnitType, "senior-fruiting-body", {
+const mycelium = extend(UnitType, "mycelium", {
     u: [diploid, diploid, diploid, lysosome, lysosome, cytoderm],
     update(unit) {
         unit.heal(0.2)
-        if (unit.shield >= 10 || Time.time % 40 * 60 <= 2) {
-            this.u[Math.floor(Math.random() * this.u.length)].spawn(unit.team, unit.x, unit.y)
+        if (unit.getDuration(status.stimulated) > 1 || Time.time % 20 * 60 <= 1 || Time.delta >= 4 /*防卡顿*/ ) {
+            let preSpawn = this.u[Math.floor(Math.random() * this.u.length)];
 
-            unit.remove();
+            if (Units.canCreate(unit.team, preSpawn)) {
+                let spawnedUnit = preSpawn.spawn(unit.team, unit.x, unit.y);
+                //继承状态
+                spawnedUnit.apply(status.stimulated, unit.getDuration(status.stimulated))
+
+                unit.remove();
+            }
         }
-        if (unit.getDuration(StatusEffects.shielded) <= 10) {
-            unit.apply(StatusEffects.shielded, 20 * 60);
+        if (unit.healthMultiplier < 12) {
+            unit.healthMultiplier = 12
+            //折合约1200血，其实不算硬
         }
     }
 })
-exports.seniorFruitingBody = seniorFruitingBody;
-Object.assign(seniorFruitingBody, {
+exports.mycelium = mycelium;
+Object.assign(mycelium, {
     drawCell: false,
     lightRadius: 0,
     envDisabled: Env.none,
-    constructor: () => new MechUnit.create(),
+    constructor: () => new UnitEntity.create(),
+    flying: false,
     speed: 0,
-    hitSize: 8,
-    health: 130,
+    hitSize: 12,
+    health: 100,
     armor: 30,
     targetPriority: -2,
+    outlineColor: Pal.neoplasmOutline,
     healColor: Pal.neoplasm1,
     targetable: true,
     hittable: true,
@@ -995,69 +1138,133 @@ Object.assign(seniorFruitingBody, {
     logicControllable: false,
     allowedInPayloads: false,
 })
-seniorFruitingBody.immunities.addAll(status.corroding);
+mycelium.immunities.addAll(StatusEffects.corroded);
 
+const sac = new extend(UnitType, "sac", {
+    u: [triploid, triploid, triploid, trichocyst, trichocyst, adenoma, adenoma],
+    update(unit) {
+        unit.heal(0.2)
+        if (unit.getDuration(status.stimulated) > 1 || Time.time % 60 * 60 <= 1 || Time.delta >= 4 /*防卡顿*/ ) {
+            let preSpawn = this.u[Math.floor(Math.random() * this.u.length)];
+
+            if (Units.canCreate(unit.team, preSpawn)) {
+                let spawnedUnit = preSpawn.spawn(unit.team, unit.x, unit.y);
+                //继承状态
+                spawnedUnit.apply(status.stimulated, unit.getDuration(status.stimulated))
+
+                unit.remove();
+            }
+        }
+        if (unit.healthMultiplier < 20) {
+            unit.healthMultiplier = 20
+            //折合约1800血，其实不算硬
+        }
+        
+    }
+})
+exports.sac = sac;
+Object.assign(sac, {
+    drawCell: false,
+    lightRadius: 0,
+    envDisabled: Env.none,
+    constructor: () => new UnitEntity.create(),
+    flying: false,
+    speed: 0,
+    hitSize: 16,
+    health: 90,
+    armor: 35,
+    targetPriority: -2,
+    outlineColor: Pal.neoplasmOutline,
+    healColor: Pal.neoplasm1,
+    targetable: true,
+    hittable: true,
+    canAttack: false,
+    hidden: false,
+    isEnemy: false,
+    playerControllable: false,
+    logicControllable: false,
+    allowedInPayloads: false,
+})
+sac.immunities.addAll(StatusEffects.corroded);
+
+const metastasis = new UnitType("metastasis");
+exports.metastasis = metastasis;
+Object.assign(metastasis, {
+    constructor: () => new CrawlUnit.create(),
+    speed: 0.67,
+    hitSize: 12,
+    targetPriority: 2,
+    health: 1200,
+    omniMovement: false,
+    rotateSpeed: 2,
+    segments: 3,
+    drawBody: false,
+    aiController: () => new HugAI(),
+
+    segmentScl: 3,
+    segmentPhase: 5,
+    segmentMag: 0.5,
+    outlineColor: Pal.neoplasmOutline,
+    envDisabled: Env.none,
+    healFlash: true,
+    healColor: Pal.neoplasm1,
+    lightRadius: 0,
+
+    playerControllable: false,
+    logicControllable: false,
+    allowedInPayloads: false,
+    useUnitCap: false,
+})
+metastasis.abilities.add(
+Object.assign(new LiquidRegenAbility(), {
+    liquid: Liquids.neoplasm,
+    slurpEffect: Fx.neoplasmHeal,
+    slurpSpeed: 27,
+    regenPerSlurp: 12,
+}),
+extend(Ability, {
+    update(unit) {
+        this.super$update(unit);
+
+        unit.heal(0.5)
+        unit.maxHealth = Math.floor(Math.min(40000, Math.max(unit.health + 10, unit.maxHealth)))
+        unit.hitSize = Math.pow(unit.maxHealth / 500, 0.5) * 8
+    },
+    death(unit) {
+        unit.tileOn()
+            .circle(unit.hitSize * 0.1875, cons(tile => {
+            if (tile != null) Puddles.deposit(tile, Liquids.neoplasm, 70);
+        }))
+
+        for (let i = 0; i < unit.maxHealth / 500; i++) {
+            if (i <= 6) {
+                spore.spawn(unit.team, unit.x, unit.y);
+                if (Mathf.chance(0.5)) polyp.spawn(unit.team, unit.x, unit.y)
+            } else {
+                mycelium.spawn(unit.team, unit.x, unit.y);
+                if (Mathf.chance(0.4)) sarcoma.spawn(unit.team, unit.x, unit.y)
+            }
+
+            if (Mathf.chance(0.2)) {
+                i -= 1
+            }
+        }
+    },
+}))
+metastasis.immunities.add(status.neoplasmSlow)
 
 UnitTypes.renale.hidden = false;
+UnitTypes.renale.outlineColor = Pal.neoplasmOutline;
+UnitTypes.renale.immunities.add(status.neoplasmSlow)
 
 UnitTypes.latum.hidden = false;
+UnitTypes.latum.outlineColor = Pal.neoplasmOutline;
+UnitTypes.latum.immunities.add(status.neoplasmSlow)
 UnitTypes.latum.abilities.addAll(
-Object.assign(new SpawnDeathAbility(primeFruitingBody, 20, 40), {
-    randAmount: 10,
-}),
-Object.assign(new SpawnDeathAbility(seniorFruitingBody, 8, 40), {
+Object.assign(new SpawnDeathAbility(metastasis, 4, 40), {
     randAmount: 8,
 }))
 
-/*const cancer = new UnitType("cancer");
-exports.cancer = cancer;
-Object.assign(cancer, {
-	constructor: () => new MechUnit.create(),
-	speed: 0.67,
-	armor: 0,
-	hitSize: 6,
-	health: 500,
-	mechSideSway: 0.25,
-    targetPriority: 2,
-	targetAir: false,
-	outlineColor: Pal.neoplasmOutline,
-	envDisabled: Env.none,
-	healFlash: true,
-	healColor: Pal.neoplasm1,
-	lightRadius: 0,
-})
-cancer.abilities.add(
-    Object.assign(new RegenAbility(), {
-		percentAmount: -1 / (100 * 60) * 100,
-	}),
-	Object.assign(new LiquidRegenAbility(), {
-		liquid: Liquids.neoplasm,
-		slurpEffect: Fx.neoplasmHeal,
-		slurpSpeed: 27,
-		regenPerSlurp: 3.2
-	}),
-	extend(Ability,{
-	    update(unit){
-	        this.super$update(unit);
-	        
-	        unit.maxHealth = Math.floor(Math.min(20000,Math.max(unit.health + 10,unit.maxHealth)))
-	        unit.hitSize = Math.pow(unit.maxHealth / 500, 0.5) * 8
-	    },
-	    death(unit){
-			unit.tileOn().circle(unit.hitSize * 0.75,cons(tile => {
-				if(tile != null)Puddles.deposit(tile,Liquids.neoplasm,unit.maxHealth / 10);
-			}))
-			
-			for(let i = 0;i < unit.maxHealth / 500;i++){
-    			let u = primeFruitingBody.create(unit.team);
-                u.set(unit.x, unit.y);
-                u.rotation = unit.rotation;
-                u.maxHealth = 120
-                u.add();
-            }
-		},
-	})
-)*/
 
 /*const mitosis = new extend(UnitType,"mitosis",{
     update(unit){
@@ -1103,8 +1310,8 @@ Object.assign(mitosis, {
 	constructor: () => new LegsUnit.create()
 })
 mitosis.abilities.addAll(
-	new UnitSpawnAbility(primeFruitingBody, 60 * 20, 0, 0),
-	Object.assign(new SpawnDeathAbility(primeFruitingBody, 2, 20),{
+	new UnitSpawnAbility(spore, 60 * 20, 0, 0),
+	Object.assign(new SpawnDeathAbility(spore, 2, 20),{
 		randAmount: 4,
 	}),
 	new DeathNeoplasmAbility(30, 1350),
@@ -1162,13 +1369,13 @@ Object.assign(meiosis, {
 	constructor: () => new LegsUnit.create()
 })
 meiosis.abilities.addAll(
-	new UnitSpawnAbility(primeFruitingBody, 60 * 20, -7.5, -4),
-	new UnitSpawnAbility(primeFruitingBody, 60 * 20, 7.5, -4),
-	new UnitSpawnAbility(seniorFruitingBody, 60 * 40, 0, 0),
-	Object.assign(new SpawnDeathAbility(primeFruitingBody, 4, 20),{
+	new UnitSpawnAbility(spore, 60 * 20, -7.5, -4),
+	new UnitSpawnAbility(spore, 60 * 20, 7.5, -4),
+	new UnitSpawnAbility(mycelium, 60 * 40, 0, 0),
+	Object.assign(new SpawnDeathAbility(spore, 4, 20),{
 		randAmount: 4,
 	}),
-	Object.assign(new SpawnDeathAbility(seniorFruitingBody, 1, 20),{
+	Object.assign(new SpawnDeathAbility(mycelium, 1, 20),{
 		randAmount: 2,
 	}),
 	new DeathNeoplasmAbility(48, 2250),

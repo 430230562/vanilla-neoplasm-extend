@@ -2,7 +2,7 @@ const item = require('vne/item');
 
 Planets.sun.radius = 7
 
-const ochre = new Planet("ochre", Planets.sun, 5);
+const ochre = new Planet("ochre", Planets.sun, 4.5);
 exports.ochre = ochre;
 Object.assign(ochre,{
     generator: extend(SerpuloPlanetGenerator,{

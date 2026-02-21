@@ -1,7 +1,9 @@
 const item = require("vne/item");
 const liquid = require("vne/liquid")
 const status = require("vne/status");
-const {ReduceArmorBulletType} = require("vne/lib/bulletType")
+const {
+    ReduceArmorBulletType
+} = require("vne/lib/bulletType")
 
 const neoplasmCollecter = extend(Radar, "neoplasm-collecter", {
     outlineColor: Color.valueOf("4a4b53"),
@@ -12,9 +14,8 @@ const neoplasmCollecter = extend(Radar, "neoplasm-collecter", {
     buildVisibility: BuildVisibility.shown,
     category: Category.effect,
     requirements: ItemStack.with(
-        Items.silicon, 40,
-        item.siliconNitride, 10
-    ),
+    Items.silicon, 40,
+    item.siliconNitride, 10),
     setBars() {
         this.super$setBars();
 
@@ -56,18 +57,18 @@ neoplasmCollecter.buildType = prov(() => extend(Radar.RadarBuild, neoplasmCollec
             amount: this.liquids.get(Liquids.neoplasm)
         }
     },
-    updateTile(){
+    updateTile() {
         this.super$updateTile();
-        
+
         this.dumpLiquid(Liquids.neoplasm);
-        
-        this.tile.circle(this.fogRadius(),cons(tile => {
+
+        this.tile.circle(this.fogRadius(), cons(tile => {
             let other = Puddles.get(tile);
             if (other != null && other.liquid == Liquids.neoplasm && this.liquids.get(Liquids.neoplasm) < this.block.liquidCapacity) {
-                if(other.amount >= 1 * this.power.status){
+                if (other.amount >= 1 * this.power.status) {
                     this.liquids.add(Liquids.neoplasm, 1 * this.power.status);
                     other.amount -= 1 * this.power.status
-                }else{
+                } else {
                     this.liquids.add(Liquids.neoplasm, other.amount);
                     other.remove();
                 }
@@ -143,7 +144,7 @@ Object.assign(coagulantIngotWall, {
 coagulantIngotWall.buildType = prov(() => extend(Building, {
     collision(bullet) {
         this.super$collision(bullet);
-        
+
         Puddles.deposit(this.tile, Liquids.neoplasm, bullet.damage);
 
         return true
@@ -300,7 +301,7 @@ oxideWallLarge.buildType = prov(() => extend(Building, {
 
 const siliconNitrideWall = new Wall("silicon-nitride-wall");
 exports.siliconNitrideWall = siliconNitrideWall;
-Object.assign(siliconNitrideWall,{
+Object.assign(siliconNitrideWall, {
     health: 960,
     insulated: true,
     absorbLasers: true,
@@ -310,13 +311,12 @@ Object.assign(siliconNitrideWall,{
     buildVisibility: BuildVisibility.shown,
     category: Category.defense,
     requirements: ItemStack.with(
-        item.siliconNitride, 6
-    ),
+    item.siliconNitride, 6),
 })
 
 const siliconNitrideWallLarge = new Wall("silicon-nitride-wall-large");
 exports.siliconNitrideWallLarge = siliconNitrideWallLarge;
-Object.assign(siliconNitrideWallLarge,{
+Object.assign(siliconNitrideWallLarge, {
     health: 960 * 4,
     insulated: true,
     absorbLasers: true,
@@ -326,38 +326,37 @@ Object.assign(siliconNitrideWallLarge,{
     buildVisibility: BuildVisibility.shown,
     category: Category.defense,
     requirements: ItemStack.with(
-        item.siliconNitride, 6 * 4
-    ),
+    item.siliconNitride, 6 * 4),
 })
 
 // 使用Set记录已访问节点，防止循环引用导致无限递归
 function depieceGraph(bullet) {
-  if (bullet == null) return;
-  
-  const visited = new Set();
-  const stack = [bullet];
-  
-  while (stack.length > 0) {
-    const currentBullet = stack.pop();
-    
-    // 跳过已处理节点
-    if (visited.has(currentBullet)) continue;
-    
-    //取消穿透
-    currentBullet.pierce = false;
-    currentBullet.pierceBuilding = false;
-    currentBullet.pierceDamageFactor = 0
-    
-    visited.add(currentBullet);
-    
-    // 添加未访问的子节点
-    if (currentBullet.intervalBullet != null && !visited.has(currentBullet.intervalBullet)) {
-      stack.push(currentBullet.intervalBullet);
+    if (bullet == null) return;
+
+    const visited = new Set();
+    const stack = [bullet];
+
+    while (stack.length > 0) {
+        const currentBullet = stack.pop();
+
+        // 跳过已处理节点
+        if (visited.has(currentBullet)) continue;
+
+        //取消穿透
+        currentBullet.pierce = false;
+        currentBullet.pierceBuilding = false;
+        currentBullet.pierceDamageFactor = 0
+
+        visited.add(currentBullet);
+
+        // 添加未访问的子节点
+        if (currentBullet.intervalBullet != null && !visited.has(currentBullet.intervalBullet)) {
+            stack.push(currentBullet.intervalBullet);
+        }
+        if (currentBullet.fragBullet != null && !visited.has(currentBullet.fragBullet)) {
+            stack.push(currentBullet.fragBullet);
+        }
     }
-    if (currentBullet.fragBullet != null && !visited.has(currentBullet.fragBullet)) {
-      stack.push(currentBullet.fragBullet);
-    }
-  }
 }
 
 const biomassWall = new Wall("biomass-wall");
@@ -376,9 +375,9 @@ Object.assign(biomassWall, {
 })
 biomassWall.buildType = prov(() => extend(Building, {
     collision(bullet) {
-    
+
         depieceGraph(bullet.type)
-        
+
         this.super$collision(bullet)
 
         return true
@@ -468,7 +467,7 @@ const targetBullet = extend(BulletType, {
 
 const defuse = new ItemTurret("defuse");
 exports.defuse = defuse;
-Object.assign(defuse,{
+Object.assign(defuse, {
     shoot: new ShootSpread(15, 4),
 
     coolantMultiplier: 45,
@@ -480,9 +479,9 @@ Object.assign(defuse,{
     maxAmmo: 30,
     consumeAmmoOnce: true,
     targetUnderBlocks: false,
-    
+
     shootSound: Sounds.shootDiffuse,
-    
+
     shootY: 5,
     outlineColor: Pal.darkOutline,
     size: 3,
@@ -495,87 +494,85 @@ Object.assign(defuse,{
     heatColor: Color.valueOf("8D79C8a8"),
 
     coolant: new ConsumeLiquid(Liquids.nitrogen, 4 / 60),
-    
+
     buildVisibility: BuildVisibility.shown,
     category: Category.turret,
     requirements: ItemStack.with(
     Items.graphite, 200,
     Items.silicon, 200,
     Items.oxide, 125,
-    item.siliconNitride, 100,
-    ),
+    item.siliconNitride, 100, ),
 })
 defuse.ammo(
-    Items.graphite, extend(BasicBulletType, {
-        speed: 4,
-        damage: 0,
-        knockback: 3,
-        width: 25,
-        hitSize: 7,
-        height: 20,
-        shootEffect: Fx.shootBigColor,
-        smokeEffect: Fx.shootSmokeSquareSparse,
-        ammoMultiplier: 1,
-        reloadMultiplier: 0.34,
-        hitColor: Pal.graphiteAmmoBack,
-        backColor: Pal.graphiteAmmoBack,
-        trailColor: Pal.graphiteAmmoBack,
-        frontColor: Pal.graphiteAmmoFront,
-        trailWidth: 6,
-        trailLength: 6,
-        removeAfterPierce: false,
-        pierce:true,
-        pierceBuilding:true,
-        hitEffect: Fx.hitSquaresColor,
-        despawnEffect: Fx.hitSquaresColor,
-        status: status.antagonistic,
-        statusDuration: 300,
-        update(b) {
-            this.super$update(b);
+Items.graphite, extend(BasicBulletType, {
+    speed: 4,
+    damage: 0,
+    knockback: 3,
+    width: 25,
+    hitSize: 7,
+    height: 20,
+    shootEffect: Fx.shootBigColor,
+    smokeEffect: Fx.shootSmokeSquareSparse,
+    ammoMultiplier: 1,
+    reloadMultiplier: 0.34,
+    hitColor: Pal.graphiteAmmoBack,
+    backColor: Pal.graphiteAmmoBack,
+    trailColor: Pal.graphiteAmmoBack,
+    frontColor: Pal.graphiteAmmoFront,
+    trailWidth: 6,
+    trailLength: 6,
+    removeAfterPierce: false,
+    pierce: true,
+    pierceBuilding: true,
+    hitEffect: Fx.hitSquaresColor,
+    despawnEffect: Fx.hitSquaresColor,
+    status: status.antagonistic,
+    statusDuration: 300,
+    update(b) {
+        this.super$update(b);
 
-            let tile = Vars.world.tileWorld(b.x, b.y);
-            let puddle = Puddles.get(tile);
-            if(puddle != null && puddle.liquid == Liquids.neoplasm){
-                puddle.remove();
-                b.type.despawnEffect.at(b.x,b.y);
-            }
+        let tile = Vars.world.tileWorld(b.x, b.y);
+        let puddle = Puddles.get(tile);
+        if (puddle != null && puddle.liquid == Liquids.neoplasm) {
+            puddle.remove();
+            b.type.despawnEffect.at(b.x, b.y);
         }
-    }),
-    Items.oxide, extend(BasicBulletType,{
-        speed: 4,
-        damage: 0,
-        knockback: 3,
-        width: 25,
-        hitSize: 7,
-        height: 20,
-        shootEffect: Fx.shootBigColor,
-        smokeEffect: Fx.shootSmokeSquareSparse,
-        ammoMultiplier: 2,
-        hitColor: Color.valueOf("a0b380"),
-        backColor: Color.valueOf("a0b380"),
-        trailColor: Color.valueOf("a0b380"),
-        frontColor: Color.valueOf("e4ffd6"),
-        trailWidth: 6,
-        trailLength: 6,
-        removeAfterPierce: false,
-        pierce:true,
-        pierceBuilding:true,
-        hitEffect: Fx.hitSquaresColor,
-        despawnEffect: Fx.hitSquaresColor,
-        status: status.antagonistic,
-        statusDuration: 300,
-        update(b) {
-            this.super$update(b);
+    }
+}),
+Items.oxide, extend(BasicBulletType, {
+    speed: 4,
+    damage: 0,
+    knockback: 3,
+    width: 25,
+    hitSize: 7,
+    height: 20,
+    shootEffect: Fx.shootBigColor,
+    smokeEffect: Fx.shootSmokeSquareSparse,
+    ammoMultiplier: 2,
+    hitColor: Color.valueOf("a0b380"),
+    backColor: Color.valueOf("a0b380"),
+    trailColor: Color.valueOf("a0b380"),
+    frontColor: Color.valueOf("e4ffd6"),
+    trailWidth: 6,
+    trailLength: 6,
+    removeAfterPierce: false,
+    pierce: true,
+    pierceBuilding: true,
+    hitEffect: Fx.hitSquaresColor,
+    despawnEffect: Fx.hitSquaresColor,
+    status: status.antagonistic,
+    statusDuration: 300,
+    update(b) {
+        this.super$update(b);
 
-            let tile = Vars.world.tileWorld(b.x, b.y);
-            let puddle = Puddles.get(tile);
-            if(puddle != null && puddle.liquid == Liquids.neoplasm){
-                puddle.remove();
-                b.type.despawnEffect.at(b.x,b.y);
-            }
+        let tile = Vars.world.tileWorld(b.x, b.y);
+        let puddle = Puddles.get(tile);
+        if (puddle != null && puddle.liquid == Liquids.neoplasm) {
+            puddle.remove();
+            b.type.despawnEffect.at(b.x, b.y);
         }
-    })
-)
+    }
+}))
 defuse.buildType = prov(() => extend(ItemTurret.ItemTurretBuild, defuse, {
     findTarget() {
         if (this.target == null) {
@@ -585,24 +582,23 @@ defuse.buildType = prov(() => extend(ItemTurret.ItemTurretBuild, defuse, {
                     this.target = targetBullet.create(this, Team.derelict, tile.worldx(), tile.worldy(), this.rotation - 180)
                 }
             }))
-        }else{
+        } else {
             this.super$findTarget()
         }
     }
 }))
 defuse.drawer = new DrawTurret("reinforced-");
 defuse.drawer.parts.add(
-    Object.assign(new RegionPart("-side"),{
-        heatProgress: DrawPart.PartProgress.recoil,
-        progress: DrawPart.PartProgress.warmup,
-        mirror: true,
-        moveX: 2,
-        moveY: 0,
-        moveRot: -10,
-        under: true,
-        heatColor: Color.valueOf("8D79C8a8")
-    })
-)
+Object.assign(new RegionPart("-side"), {
+    heatProgress: DrawPart.PartProgress.recoil,
+    progress: DrawPart.PartProgress.warmup,
+    mirror: true,
+    moveX: 2,
+    moveY: 0,
+    moveRot: -10,
+    under: true,
+    heatColor: Color.valueOf("8D79C8a8")
+}))
 /*drawer = new DrawTurret("reinforced-"){{
     parts.add(new RegionPart("-front"){{
         progress = PartProgress.warmup;
@@ -639,22 +635,14 @@ item.coagulantIngot, extend(BasicBulletType, 7.5, 85, {
     buildingDamageMultiplier: 0.3,
     status: status.neoplasmSlow,
     statusDuration: 120,
-    despawned(b) {
-        this.super$despawned(b);
-
-        let tile = Vars.world.tileWorld(b.x, b.y);
-        Puddles.deposit(tile, Liquids.neoplasm, b.damage * 0.5);
-    },
-    hit(b, x, y) {
-        this.super$hit(b, x, y);
-
-        //记忆中这样写会爆栈，其实不会
-        let tile = Vars.world.tileWorld(x, y);
-        Puddles.deposit(tile, Liquids.neoplasm, b.damage * 0.5);
-    }
+    
+    puddles: 1,
+    puddleRange: 0,
+    puddleAmount: 70,
+    puddleLiquid: Liquids.neoplasm
 }))
 Blocks.breach.ammoTypes.put(
-item.siliconNitride, Object.assign(new BasicBulletType(8,60),{
+item.siliconNitride, Object.assign(new BasicBulletType(8, 60), {
     width: 12,
     hitSize: 7,
     height: 20,
@@ -679,14 +667,14 @@ item.siliconNitride, Object.assign(new BasicBulletType(8,60),{
     buildingDamageMultiplier: 0.3,
     status: StatusEffects.slow,
     statusDuration: 10,
-    fragBullets:3,
+    fragBullets: 3,
     fragRandomSpread: 0,
     fragSpread: 30 / 2,
     fragVelocityMin: 6,
     fragVelocityMax: 6,
     fragLifeMin: 1,
     fragLifeMax: 1,
-    fragBullet: Object.assign(new BasicBulletType(),{
+    fragBullet: Object.assign(new BasicBulletType(), {
         damage: 40,
         width: 12,
         hitSize: 7,
@@ -708,10 +696,9 @@ item.siliconNitride, Object.assign(new BasicBulletType(8,60),{
         status: StatusEffects.slow,
         statusDuration: 10,
     })
-})
-)
+}))
 Blocks.breach.ammoTypes.put(
-item.biomassSteel, Object.assign(new ReduceArmorBulletType(8,400,4),{
+item.biomassSteel, Object.assign(new ReduceArmorBulletType(8, 400, 4), {
     width: 12,
     hitSize: 12,
     height: 20,
@@ -735,8 +722,7 @@ item.biomassSteel, Object.assign(new ReduceArmorBulletType(8,400,4),{
     despawnEffect: Fx.hitBulletColor,
     shootSound: Sounds.shootBreachCarbide,
     buildingDamageMultiplier: 0.3,
-})
-)
+}))
 
 //升华
 Blocks.sublimate.ammoTypes.put(
@@ -842,19 +828,11 @@ item.coagulantIngot, extend(BasicBulletType, 8, 45, {
     despawnEffect: Fx.hitBulletColor,
     status: status.neoplasmSlow,
     statusDuration: 120,
-    despawned(b) {
-        this.super$despawned(b);
-
-        let tile = Vars.world.tileWorld(b.x, b.y);
-        Puddles.deposit(tile, Liquids.neoplasm, b.damage);
-    },
-    hit(b, x, y) {
-        this.super$hit(b, x, y);
-
-        //记忆中这样写会爆栈，其实不会
-        let tile = Vars.world.tileWorld(x, y);
-        Puddles.deposit(tile, Liquids.neoplasm, b.damage);
-    },
+    
+    puddles: 1,
+    puddleRange: 0,
+    puddleAmount: 70,
+    puddleLiquid: Liquids.neoplasm,
     update(b) {
         this.super$update(b);
 

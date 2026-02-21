@@ -590,7 +590,7 @@ contractileVacuole.ammo(
 		
 		lightOpacity: 0,
 		
-		status: status.corroding,
+		status: StatusEffects.corroded,
 		statusDuration: 120,
 		
 		homingRange: 40,
@@ -642,7 +642,7 @@ acidMist.ammo(
 		
 		lightOpacity: 0,
 		
-		status: status.corroding,
+		status: StatusEffects.corroded,
 		statusDuration: 120,
 		
 		fragBullets: 12,
@@ -662,7 +662,7 @@ acidMist.ammo(
     		hitEffect: Fx.none,
 			despawnEffect: Fx.none,
     		
-    		status: status.corroding,
+    		status: StatusEffects.corroded,
     		statusDuration: 120
 		})
 	})
@@ -760,7 +760,7 @@ acidMine.buildType = prov(() => extend(Building,{
     unitOn(unit){
         if(unit.team != this.team){
             unit.damage(Math.min(unit.type.hitSize * unit.type.hitSize * 1.6 + 160,64 * Math.log(7 * unit.type.hitSize) + 270));
-            unit.apply(status.corroding, 180);
+            unit.apply(StatusEffects.corroded, 180);
             Puddles.deposit(unit.tileOn(),liquid.acid,100),
             this.kill();
         }

@@ -1,30 +1,6 @@
-let armorDamage = Stat("armorDamage");
-
-const corroding = extend(StatusEffect,"corroding",{
-	update(unit, time){
-		this.super$update(unit, time);
-		
-		if(unit.armor >= 0){
-			unit.armor -= 0.5 / 60
-		}
-	},
-	setStats(){
-		this.super$setStats();
-		
-		this.stats.add(armorDamage, 0.5, StatUnit.perSecond)
-	},
-	init(){
-	    this.affinity(StatusEffects.shocked, (unit, result, time) => {
-	        unit.damagePierce(17);
-	    })
-	},
-	damage: 0.2,
-	transitionDamage: 17,
-});
-exports.corroding = corroding;
-
-const neoplasmSlow = new extend(StatusEffect,"neoplasm-slow",{
+const neoplasmSlow = extend(StatusEffect,"neoplasm-slow",{
     speedMultiplier: 0.25,
+    effect: Fx.neoplasmHeal,
     update(unit, entry){
         this.super$update(unit, entry);
         
@@ -33,8 +9,26 @@ const neoplasmSlow = new extend(StatusEffect,"neoplasm-slow",{
 })
 exports.neoplasmSlow = neoplasmSlow;
 
+const stimulated = extend(StatusEffect,"stimulated",{
+    damageMultiplier: 1,
+    healthMultiplier: 1.2,
+    speedMultiplier: 1.25,
+    reloadMultiplier: 1.25,
+    color: Color.valueOf("cd6240ff"),
+    update(unit, entry){
+        this.super$update(unit, entry);
+        
+        //非瘤液单位无法获得
+        if(unit.type.outlineColor != Pal.neoplasmOutline){
+            unit.unapply(this)
+        }
+    }
+})
+exports.stimulated = stimulated;
+
 const antagonistic = extend(StatusEffect,"antagonistic",{
     speedMultiplier: 0.98,
+    color: Color.valueOf("d1efff"),
     init(){
 	    this.opposite(StatusEffects.burning, neoplasmSlow)
 	}
@@ -45,4 +39,4 @@ exports.antagonistic = antagonistic;
 new Packages.rhino.ClassCache().associate(scope);
 let n = new Packages.rhino.NativeJavaObject(scope, StatusEffects.shocked, StatusEffect, true)
 
-n.affinity(corroding, (unit, result, time) => {})*/
+n.affinity(StatusEffects.corroded, (unit, result, time) => {})*/
