@@ -1048,7 +1048,7 @@ unit.vne-sac.name = 瘤变囊
 cocoon茧
 */
 const spore = extend(UnitType, "spore", {
-    u: [bomber, bomber, haploid, haploid, haploid, ribosome, ribosome],
+    u: [bomber, bomber, haploid, haploid, haploid, ribosome, ribosome, UnitTypes.renale, UnitTypes.renale],
     update(unit) {
         unit.heal(0.2);
         if (unit.getDuration(status.stimulated) > 1 || Time.time % 20 * 60 <= 1 || Time.delta >= 4 /*防卡顿*/ ) {
@@ -1231,8 +1231,7 @@ extend(Ability, {
         unit.hitSize = Math.pow(unit.maxHealth / 500, 0.5) * 8
     },
     death(unit) {
-        unit.tileOn()
-            .circle(unit.hitSize * 0.1875, cons(tile => {
+        unit.tileOn().circle(unit.hitSize * 0.1875, cons(tile => {
             if (tile != null) Puddles.deposit(tile, Liquids.neoplasm, 70);
         }))
 

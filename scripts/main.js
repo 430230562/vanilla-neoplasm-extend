@@ -11,6 +11,8 @@ require("vne/block/liquidBlock");
 require("vne/block/power");
 require("vne/block/unitFactory");
 
+require("vne/block/neopBlock")
+
 require("vne/sector");
 require("vne/planet");
 

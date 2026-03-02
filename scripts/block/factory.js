@@ -202,11 +202,11 @@ cyanidePlant.buildType = prov(() => extend(GenericCrafter.GenericCrafterBuild, c
     //为什么我之前没发现这一点
     write(write) {
         this.super$write(write);
-        write.f(this.style);
+        write.bool(this.style);
     },
     read(read, revision) {
         this.super$read(read, revision);
-        this.style = read.f();
+        this.style = read.bool();
     }
 }));
 cyanidePlant.consumeLiquids(LiquidStack.with(

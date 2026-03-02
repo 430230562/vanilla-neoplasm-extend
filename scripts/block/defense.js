@@ -792,7 +792,7 @@ item.coagulantIngot, extend(ArtilleryBulletType, 2.5, 240, "shell", {
         let tile = Vars.world.tileWorld(b.x, b.y);
         if (tile != null) {
             tile.circle(11, cons(other => {
-                Puddles.deposit(other, Liquids.neoplasm, 30);
+                if(Mathf.chance(0.125))Puddles.deposit(other, Liquids.neoplasm, 20);
             }))
         }
     }
