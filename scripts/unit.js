@@ -449,7 +449,7 @@ Object.assign(ribosome, {
     hitSize: 8,
     engineOffset: 5.5,
     armor: 1,
-    controller: () => new FlyingFollowAI()
+    aiController: () => new FlyingFollowAI()
 })
 ribosome.weapons.add(
 Object.assign(new Weapon("vne-ribosome-weapon"), {
@@ -842,7 +842,7 @@ Object.assign(adenoma, {
     drag: 0.016,
     itemCapacity: 0,
     constructor: () => new UnitEntity.create(),
-    controller: () => extend(FlyingFollowAI, {
+    aiController: () => extend(FlyingFollowAI, {
         updateMovement() {
             this.unloadPayloads();
 
@@ -854,19 +854,19 @@ Object.assign(adenoma, {
                 this.moveTo(this.target, 80);
             }
 
-            if (this.shouldFaceTarget()) {
+            if (this.target != null && this.unit.inRange(this.target)) {
                 this.unit.lookAt(this.target);
             } else if (this.following != null) {
                 this.unit.lookAt(this.following);
             }
 
-            if (this.timer.get(this.timerTarget3, 30)) {
+            if (this.timer.get(this.timerTarget3, 60)) {
                 this.following = Units.closest(
                 this.unit.team,
                 this.unit.x,
                 this.unit.y,
                 Math.max(this.unit.type.range, 400),
-                u => (!u.dead && !(u.controller() instanceof FlyingFollowAI) && u.type != this.unit.type), (u, x, y) => {
+                u => (!u.dead && !u.isFlying && u.type != this.unit.type), (u, x, y) => {
                     if (u.type.outlineColor == Pal.neoplasmOutline) {
                         return u.maxHealth + Mathf.dst2(u.x, u.y, x, y) / 6400 + u.getDuration(status.stimulated) * 100
                     } else {

@@ -22,6 +22,7 @@ toPosArr = [1,4,7,10], arr3 = [
 var nodeConsume = 20, turretConsume = 30;
 
 function ConveyNeoplasm(giver, receiver, amount) {
+    if(!giver && !receiver)return false
     let conveyAmount = Math.min(amount, giver.liquids.get(Liquids.neoplasm), receiver.block.liquidCapacity - receiver.liquids.get(Liquids.neoplasm))
 
     if (conveyAmount >= 0) {
@@ -287,13 +288,15 @@ neopNode.buildType = prov(() => extend(Building, {
     
                         this.child[i] = PosTile.build
                     }else if(CanSpawnSize3(this.tile.x + posArr[toPosArr[i]].x,this.tile.y + posArr[toPosArr[i]].y) && Mathf.chance(0.05) && this.liquids.get(Liquids.neoplasm) >= turretConsume){
-                        Vars.world.tile(this.tile.x + posArr[toPosArr[i]].x,this.tile.y + posArr[toPosArr[i]].y).setBlock(neopTurret, this.team);
-                        this.liquids.remove(Liquids.neoplasm, spawner);
+                        Vars.world.tile(this.tile.x + posArr[toPosArr[i]].x,this.tile.y + posArr[toPosArr[i]].y).setBlock(spawner, this.team);
+                        this.liquids.remove(Liquids.neoplasm, turretConsume);
                     }else if(CanSpawnSize3(this.tile.x + posArr[toPosArr[i]].x,this.tile.y + posArr[toPosArr[i]].y) && Mathf.chance(0.05) && this.liquids.get(Liquids.neoplasm) >= turretConsume){
                         Vars.world.tile(this.tile.x + posArr[toPosArr[i]].x,this.tile.y + posArr[toPosArr[i]].y).setBlock(neopTurret, this.team);
                         this.liquids.remove(Liquids.neoplasm, turretConsume);
                     }
                 }
+                
+                if(this.liquids.get(Liquids.neoplasm) == NaN)this.liquids.reset(Liquids.neoplasm,0)
 
                 if (this.child[i] != null) {
                     if (!this.child[i].dead) {
@@ -499,6 +502,13 @@ spawner.buildType = prov(() => extend(Building, {
     },
     draw(){
         this.super$draw()
+        
+        if(this.working){
+            //construct(Building t, TextureRegion region, Color color, float rotation, float progress, float alpha, float time, float size){
+            Draw.reset();
+            Draw.draw(Layer.blockOver, () => Drawf.construct(this, Core.atlas.find("vne-spawner-ball"), Color.valueOf("c33e2b"), 0, this.prog / (12 * 20), 1, Time.time, 20));
+        }
+        Draw.rect(Core.atlas.find("vne-spawner-top"),this.x,this.y, 0)
     },
     findParent() {
         let par = null
@@ -552,6 +562,10 @@ spawner.buildType = prov(() => extend(Building, {
         } else {
             write.i(-1);
         }
+        
+        write.f(this.prog);
+        write.bool(this.working);
+        write.i(this.plan)
     },
 
     read(read, revision) {
@@ -560,6 +574,9 @@ spawner.buildType = prov(() => extend(Building, {
         if (!this.readPos) this.readPos = -1;
 
         this.readPos = read.i();
+        this.prog = read.f();
+        this.working = read.bool();
+        this.plan = read.i();
 
         this._needsResolve = true;
     }
