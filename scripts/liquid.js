@@ -63,3 +63,12 @@ Object.assign(ammonia,{
 	explosiveness: 0.6,
 	coolant: false,
 })
+
+const naturalGas = new Liquid("natural-gas",Color.valueOf("848a86"))
+exports.naturalGas = naturalGas;
+Object.assign(naturalGas,{
+	gas: true,
+	flammability: 1.5,
+	explosiveness: 1,
+	coolant: false,
+})

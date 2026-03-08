@@ -19,7 +19,7 @@ function Insect(name) {
             this.super$init();
 
             this.abilities.add(
-            new DeathNeoplasmAbility(this.hitSize * 1.2, this.health * 0.75),
+            new DeathNeoplasmAbility(this.hitSize * 1.25, this.health * 0.75),
             Object.assign(new RegenAbility(), {
                 percentAmount: 1 / (90 * 60) * 100,
             }),
@@ -854,7 +854,7 @@ Object.assign(adenoma, {
                 this.moveTo(this.target, 80);
             }
 
-            if (this.target != null && this.unit.inRange(this.target)) {
+            if (this.shouldFaceTarget()) {
                 this.unit.lookAt(this.target);
             } else if (this.following != null) {
                 this.unit.lookAt(this.following);

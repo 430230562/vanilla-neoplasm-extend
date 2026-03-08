@@ -85,9 +85,7 @@ Object.assign(incubator, {
 incubator.consumePower(1.2);
 incubator.consumeLiquid(Liquids.water, 18 / 60);
 
-const arkyciteRefinery = new Separator("arkycite-refinery");
-exports.arkyciteRefinery = arkyciteRefinery;
-Object.assign(arkyciteRefinery, {
+const arkyciteRefinery = extend(Separator,"arkycite-refinery",{
     results: ItemStack.with(
     Items.graphite, 4,
     item.protein, 6),
@@ -95,6 +93,7 @@ Object.assign(arkyciteRefinery, {
     liquidCapacity: 160,
     size: 3,
     hasPower: true,
+    hasLiquids: true,
     drawer: new DrawMulti(
     new DrawRegion("-bottom"),
     Object.assign(new DrawParticles(), {
@@ -114,10 +113,27 @@ Object.assign(arkyciteRefinery, {
     Items.graphite, 60,
     Items.silicon, 60,
     Items.tungsten, 25,
-    Items.oxide, 25, )
-})
+    Items.oxide, 25, ),
+    
+    setStats() {
+        this.super$setStats();
+
+        this.stats.add(Stat.output, StatValues.liquid(liquid.naturalGas, 3, true));
+    },
+});
+exports.arkyciteRefinery = arkyciteRefinery;
 arkyciteRefinery.consumePower(3);
 arkyciteRefinery.consumeLiquid(Liquids.arkycite, 40 / 60);
+arkyciteRefinery.buildType = prov(() => extend(Separator.SeparatorBuild, arkyciteRefinery, {
+    updateTile(){
+        this.super$updateTile();
+        
+        if(this.efficiency > 0){
+            let maxProduce = Math.min(this.block.liquidCapacity - this.liquids.get(liquid.naturalGas), Time.delta * this.efficiency * 0.05);
+            this.liquids.add(liquid.naturalGas, maxProduce)
+        }
+    }
+}))
 
 const cyanidePlant = extend(GenericCrafter, "cyanide-plant", {
     craftEffect: Fx.none,
@@ -135,7 +151,8 @@ const cyanidePlant = extend(GenericCrafter, "cyanide-plant", {
     Items.graphite, 70,
     Items.silicon, 50,
     Items.oxide, 35,
-    Items.carbide, 25),
+    item.siliconNitride, 45
+    ),
     setStats() {
         this.super$setStats();
 
@@ -259,6 +276,9 @@ Object.assign(siliconNitrideFurnace, {
     drawer: new DrawMulti(
     new DrawRegion("-bottom"),
     new DrawArcSmelt(),
+    Object.assign(new DrawLiquidTile(Liquids.nitrogen),{
+        alpha: 0.5,
+    }),
     new DrawDefault(),
     new DrawHeatOutput()
     ),
@@ -267,7 +287,7 @@ Object.assign(siliconNitrideFurnace, {
     requirements: ItemStack.with(
         Items.silicon, 120,
         Items.tungsten, 80,
-        Items.carbide, 75,
+        Items.oxide, 75,
     )
 });
 siliconNitrideFurnace.consumeItem(Items.silicon, 3)
@@ -498,6 +518,53 @@ Object.assign(watergasStove, {
 watergasStove.consumeLiquid(Liquids.water, 0.3);
 watergasStove.consumeItem(Items.graphite, 3);
 watergasStove.consumePower(2.5);
+
+const BMAStove = new GenericCrafter("BMA-stove");
+exports.BMAStove = BMAStove;
+Object.assign(BMAStove,{
+    ambientSound: Sounds.loopSmelter,
+    ambientSoundVolume: 0.11,
+    craftEffect: Fx.none,
+    hasPower: true,
+    hasLiquids: true,
+    hasItems: false,
+    rotateDraw: false,
+    size: 3,
+    liquidCapacity: 30,
+    liquidOutputDirections: [1,3],
+    outputLiquids: LiquidStack.with(
+	    Liquids.hydrogen, 0.3,
+	    Liquids.cyanogen, 0.05
+	),
+    rotate: true,
+    invertFlip: true,
+    regionRotated1: 3,
+    drawer: new DrawMulti(
+    new DrawRegion("-bottom"),
+    new DrawArcSmelt(),
+    Object.assign(new DrawLiquidTile(liquid.naturalGas),{
+        alpha: 0.5,
+    }),
+    Object.assign(new DrawLiquidTile(liquid.ammonia),{
+        alpha: 0.5,
+    }),
+    new DrawDefault(),
+    new DrawLiquidOutputs(),
+    ),
+    buildVisibility: BuildVisibility.shown,
+    category: Category.crafting,
+    requirements: ItemStack.with(
+        Items.silicon, 120,
+        Items.tungsten, 150,
+        Items.oxide, 80,
+        item.siliconNitride, 125,
+    )
+})
+BMAStove.consumeLiquids(LiquidStack.with(
+liquid.naturalGas, 0.1,
+liquid.ammonia, 0.1
+));
+BMAStove.consumePower(1500 / 60);
 
 const laserIncinerator = new Incinerator("laser-incinerator");
 exports.laserIncinerator = laserIncinerator;

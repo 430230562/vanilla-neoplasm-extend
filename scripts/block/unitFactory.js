@@ -151,6 +151,22 @@ shaper.buildType = prov(() => extend(UnitFactory.UnitFactoryBuild, shaper,{
     }
 }))
 
+const evolver = new Reconstructor("evolver");
+exports.evolver = evolver;
+Object.assign(evolver,{
+    size: 5,
+	constructTime: 60 * 20,
+	liquidCapacity: 20,
+	buildVisibility: BuildVisibility.shown,
+	category: Category.units,
+	requirements: ItemStack.with(
+	    Items.thorium, 150,
+	    Items.silicon, 300,
+	    Items.tungsten, 150,
+	    Items.siliconNitride, 200,
+	)
+})
+
 /*const reincubator = new Reconstructor("reincubator");
 exports.reincubator = reincubator;
 Object.assign(reincubator,{
