@@ -168,7 +168,7 @@ neopCore.buildType = prov(() => extend(Building, {
             for (let i = 0; i < 4; i++) {
                 let PosTile = this.tile.nearby(i);
                 //ai指导: 蒙特卡洛
-                if (PosTile != null && PosTile.block() == Blocks.air && Mathf.chance(0.25) && this.liquids.get(Liquids.neoplasm) >= nodeConsume) {
+                if (Mathf.chance(0.25) && PosTile != null && PosTile.block() == Blocks.air  && this.liquids.get(Liquids.neoplasm) >= nodeConsume) {
                     PosTile.setBlock(neopNode, this.team, i);
                     this.liquids.remove(Liquids.neoplasm, nodeConsume);
 
@@ -287,10 +287,10 @@ neopNode.buildType = prov(() => extend(Building, {
                         this.liquids.remove(Liquids.neoplasm, nodeConsume);
     
                         this.child[i] = PosTile.build
-                    }else if(CanSpawnSize3(this.tile.x + posArr[toPosArr[i]].x,this.tile.y + posArr[toPosArr[i]].y) && Mathf.chance(0.05) && this.liquids.get(Liquids.neoplasm) >= turretConsume){
+                    }else if(Mathf.chance(0.05) && CanSpawnSize3(this.tile.x + posArr[toPosArr[i]].x,this.tile.y + posArr[toPosArr[i]].y) && this.liquids.get(Liquids.neoplasm) >= turretConsume){
                         Vars.world.tile(this.tile.x + posArr[toPosArr[i]].x,this.tile.y + posArr[toPosArr[i]].y).setBlock(spawner, this.team);
                         this.liquids.remove(Liquids.neoplasm, turretConsume);
-                    }else if(CanSpawnSize3(this.tile.x + posArr[toPosArr[i]].x,this.tile.y + posArr[toPosArr[i]].y) && Mathf.chance(0.05) && this.liquids.get(Liquids.neoplasm) >= turretConsume){
+                    }else if(Mathf.chance(0.05) && CanSpawnSize3(this.tile.x + posArr[toPosArr[i]].x,this.tile.y + posArr[toPosArr[i]].y) && this.liquids.get(Liquids.neoplasm) >= turretConsume){
                         Vars.world.tile(this.tile.x + posArr[toPosArr[i]].x,this.tile.y + posArr[toPosArr[i]].y).setBlock(neopTurret, this.team);
                         this.liquids.remove(Liquids.neoplasm, turretConsume);
                     }

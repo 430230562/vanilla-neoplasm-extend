@@ -124,7 +124,8 @@ addResearch(factory.incubator, {
     objectives: Seq.with(Objectives.OnSector(SectorPresets.intersect))
 }, () => {
     TechTree.node(factory.arkyciteRefinery, () => {
-        TechTree.node(factory.cyanidePlant, () => {})
+        TechTree.node(factory.cyanidePlant, () => {}),
+        TechTree.node(factory.BMAStove, () => {})
     })
 });
 
@@ -153,6 +154,12 @@ addResearch(factory.siliconNitrideFurnace, {
     TechTree.node(factory.biomassSmelter, () => {
         TechTree.node(factory.stableBiomassSmelter, () => {})
     })
+})
+
+addResearch(factory.floorCrusher,{
+    parent: "cliff-crusher"
+},() => {
+    TechTree.node(factory.LargeFloorCrusher, () => {})
 })
 
 addResearch(factory.smallHeatRouter,{

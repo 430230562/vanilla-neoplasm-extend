@@ -93,6 +93,7 @@ Object.assign(reinforcedForceProjector, {
     phaseUseTime: 600,
     size: 1,
     itemConsumer: new ConsumeItems([new ItemStack(item.siliconNitride, 1)]),
+    //coolantConsumer: new ConsumeLiquid(liquid.naturalGas, 0.1),
     buildVisibility: BuildVisibility.shown,
     category: Category.effect,
     requirements: ItemStack.with(
@@ -117,6 +118,7 @@ Object.assign(reinforcedForceProjectorLarge, {
     phaseShieldBoost: 800,
     phaseUseTime: 400,
     itemConsumer: new ConsumeItems([new ItemStack(item.siliconNitride, 1)]),
+    //coolantConsumer: new ConsumeLiquid(liquid.naturalGas, 0.1),
     size: 3,
     buildVisibility: BuildVisibility.shown,
     category: Category.effect,

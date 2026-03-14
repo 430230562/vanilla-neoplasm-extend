@@ -163,7 +163,7 @@ Object.assign(evolver,{
 	    Items.thorium, 150,
 	    Items.silicon, 300,
 	    Items.tungsten, 150,
-	    Items.siliconNitride, 200,
+	    item.siliconNitride, 200,
 	)
 })
 

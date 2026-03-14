@@ -3,6 +3,7 @@ const liquid = require("vne/liquid");
 const {
     ammoniaTurbine
 } = require("vne/effect");
+const {DrawMultiRotationRegion} = require("vne/lib/draw")
 
 const microHeatRedirector = new HeatConductor("micro-heat-redirector")
 exports.microHeatRedirector = microHeatRedirector;
@@ -69,6 +70,8 @@ Object.assign(incubator, {
     hasLiquids: true,
     hasItems: true,
     attribute: Attribute.get("biomass"),
+    boostScale: 1 / 9,
+    maxBoost: 2,
     drawer: new DrawMulti(
     new DrawRegion("-bottom"),
     new DrawLiquidTile(Liquids.water),
@@ -85,7 +88,7 @@ Object.assign(incubator, {
 incubator.consumePower(1.2);
 incubator.consumeLiquid(Liquids.water, 18 / 60);
 
-const arkyciteRefinery = extend(Separator,"arkycite-refinery",{
+const arkyciteRefinery = extend(Separator, "arkycite-refinery", {
     results: ItemStack.with(
     Items.graphite, 4,
     item.protein, 6),
@@ -114,25 +117,61 @@ const arkyciteRefinery = extend(Separator,"arkycite-refinery",{
     Items.silicon, 60,
     Items.tungsten, 25,
     Items.oxide, 25, ),
-    
+
     setStats() {
         this.super$setStats();
 
         this.stats.add(Stat.output, StatValues.liquid(liquid.naturalGas, 3, true));
     },
+    setBars() {
+        this.super$setBars();
+        this.addBar("outputLiquid", func(e => new Bar(
+        prov(() => {
+            if (e.getOutputLiquid() != null) {
+                return e.getOutputLiquid()
+                    .liquid.localizedName
+            } else {
+                return Core.bundle.get("bar.liquid")
+            }
+        }),
+        prov(() => {
+            if (e.getOutputLiquid() != null) {
+                return e.getOutputLiquid()
+                    .liquid.color
+            } else {
+                return Color.white
+            }
+        }),
+        floatp(() => {
+            if (e.getOutputLiquid() != null) {
+                return e.getOutputLiquid()
+                    .amount / this.liquidCapacity
+            } else {
+                return 0
+            }
+        }))))
+    }
 });
 exports.arkyciteRefinery = arkyciteRefinery;
 arkyciteRefinery.consumePower(3);
 arkyciteRefinery.consumeLiquid(Liquids.arkycite, 40 / 60);
 arkyciteRefinery.buildType = prov(() => extend(Separator.SeparatorBuild, arkyciteRefinery, {
-    updateTile(){
+    updateTile() {
         this.super$updateTile();
-        
-        if(this.efficiency > 0){
+
+        if (this.efficiency > 0) {
             let maxProduce = Math.min(this.block.liquidCapacity - this.liquids.get(liquid.naturalGas), Time.delta * this.efficiency * 0.05);
             this.liquids.add(liquid.naturalGas, maxProduce)
         }
-    }
+
+        this.dumpLiquid(liquid.naturalGas);
+    },
+    getOutputLiquid() {
+        return {
+            liquid: liquid.naturalGas,
+            amount: this.liquids.get(liquid.naturalGas)
+        }
+    },
 }))
 
 const cyanidePlant = extend(GenericCrafter, "cyanide-plant", {
@@ -151,8 +190,7 @@ const cyanidePlant = extend(GenericCrafter, "cyanide-plant", {
     Items.graphite, 70,
     Items.silicon, 50,
     Items.oxide, 35,
-    item.siliconNitride, 45
-    ),
+    item.siliconNitride, 45),
     setStats() {
         this.super$setStats();
 
@@ -276,19 +314,17 @@ Object.assign(siliconNitrideFurnace, {
     drawer: new DrawMulti(
     new DrawRegion("-bottom"),
     new DrawArcSmelt(),
-    Object.assign(new DrawLiquidTile(Liquids.nitrogen),{
+    Object.assign(new DrawLiquidTile(Liquids.nitrogen), {
         alpha: 0.5,
     }),
     new DrawDefault(),
-    new DrawHeatOutput()
-    ),
+    new DrawHeatOutput()),
     buildVisibility: BuildVisibility.shown,
     category: Category.crafting,
     requirements: ItemStack.with(
-        Items.silicon, 120,
-        Items.tungsten, 80,
-        Items.oxide, 75,
-    )
+    Items.silicon, 120,
+    Items.tungsten, 80,
+    Items.oxide, 75, )
 });
 siliconNitrideFurnace.consumeItem(Items.silicon, 3)
 siliconNitrideFurnace.consumeLiquid(Liquids.nitrogen, 8 / 60)
@@ -521,7 +557,7 @@ watergasStove.consumePower(2.5);
 
 const BMAStove = new GenericCrafter("BMA-stove");
 exports.BMAStove = BMAStove;
-Object.assign(BMAStove,{
+Object.assign(BMAStove, {
     ambientSound: Sounds.loopSmelter,
     ambientSoundVolume: 0.11,
     craftEffect: Fx.none,
@@ -531,40 +567,36 @@ Object.assign(BMAStove,{
     rotateDraw: false,
     size: 3,
     liquidCapacity: 30,
-    liquidOutputDirections: [1,3],
+    liquidOutputDirections: [1, 3],
     outputLiquids: LiquidStack.with(
-	    Liquids.hydrogen, 0.3,
-	    Liquids.cyanogen, 0.05
-	),
+    Liquids.hydrogen, 0.3,
+    Liquids.cyanogen, 0.05),
     rotate: true,
     invertFlip: true,
     regionRotated1: 3,
     drawer: new DrawMulti(
     new DrawRegion("-bottom"),
     new DrawArcSmelt(),
-    Object.assign(new DrawLiquidTile(liquid.naturalGas),{
+    Object.assign(new DrawLiquidTile(liquid.naturalGas), {
         alpha: 0.5,
     }),
-    Object.assign(new DrawLiquidTile(liquid.ammonia),{
+    Object.assign(new DrawLiquidTile(liquid.ammonia), {
         alpha: 0.5,
     }),
     new DrawDefault(),
-    new DrawLiquidOutputs(),
-    ),
+    new DrawLiquidOutputs(), ),
     buildVisibility: BuildVisibility.shown,
     category: Category.crafting,
     requirements: ItemStack.with(
-        Items.silicon, 120,
-        Items.tungsten, 150,
-        Items.oxide, 80,
-        item.siliconNitride, 125,
-    )
+    Items.silicon, 120,
+    Items.tungsten, 150,
+    Items.oxide, 80,
+    item.siliconNitride, 125, )
 })
 BMAStove.consumeLiquids(LiquidStack.with(
 liquid.naturalGas, 0.1,
-liquid.ammonia, 0.1
-));
-BMAStove.consumePower(1500 / 60);
+liquid.ammonia, 0.1));
+BMAStove.consumePower(700 / 60);
 
 const laserIncinerator = new Incinerator("laser-incinerator");
 exports.laserIncinerator = laserIncinerator;
@@ -578,6 +610,95 @@ Object.assign(laserIncinerator, {
     Items.tungsten, 12, )
 })
 laserIncinerator.consumePower(5);
+
+const floorCrusher = extend(AttributeCrafter, "floor-crusher", {
+    attribute: Attribute.sand,
+    baseEfficiency: 0,
+    minEfficiency: 0.1,
+    boostScale: 1 / 4,
+    maxBoost: 2,
+    craftEffect: Fx.mine,
+    drawer: new DrawMulti(
+    new DrawMultiRotationRegion("-rotator", 2, 4, 3.6, 3, false),
+    new DrawMultiRotationRegion("-axis", 2, 4, 0, 3, false),
+    new DrawDefault()),
+    craftTime: 300 / 4,
+    size: 2,
+    ambientSound: Sounds.loopDrill,
+    ambientSoundVolume: 0.06,
+    outputItem: new ItemStack(Items.sand, 1),
+    buildVisibility: BuildVisibility.shown,
+    category: Category.production,
+    requirements: ItemStack.with(
+    Items.graphite, 40,
+    Items.beryllium, 25, ),
+    setStats() {
+        this.super$setStats();
+
+        //假装它是一个Drill
+        this.stats.add(Stat.drillSpeed, 60 / this.craftTime, StatUnit.itemsSecond);
+        this.stats.remove(Stat.productionTime)
+    },
+});
+exports.floorCrusher = floorCrusher;
+floorCrusher.consumePower(10 / 60);
+
+const largeFloorCrusher = extend(AttributeCrafter, "large-floor-crusher", {
+    attribute: Attribute.sand,
+    baseEfficiency: 0,
+    minEfficiency: 0.1,
+    boostScale: 1 / 9,
+    maxBoost: 2,
+    craftEffect: Fx.mineBig,
+    drawer: new DrawMulti(
+    new DrawMultiRotationRegion("-rotator", 1.2, 6, 3, 6, false),
+    new DrawMultiRotationRegion("-axis", 1.2, 6, 0, 6, false),
+    new DrawDefault()),
+    craftTime: 225 / 9,
+    size: 3,
+    ambientSound: Sounds.loopDrill,
+    ambientSoundVolume: 0.08,
+    outputItem: new ItemStack(Items.sand, 1),
+    itemCapacity: 20,
+    buildVisibility: BuildVisibility.shown,
+    category: Category.production,
+    requirements: ItemStack.with(
+    Items.silicon, 120,
+    Items.beryllium, 120,
+    Items.tungsten, 75,
+    item.siliconNitride, 55,
+    ),
+    setStats() {
+        this.super$setStats();
+
+        //假装它是一个Drill
+        this.stats.add(Stat.drillSpeed, 60 / this.craftTime, StatUnit.itemsSecond);
+        this.stats.remove(Stat.productionTime)
+
+        let consumer = this.findConsumer(f => f instanceof ConsumeLiquidBase);
+
+        this.stats.remove(Stat.input);
+        this.stats.add(Stat.booster,
+        StatValues.speedBoosters("{0}" + StatUnit.timesSpeed.localized(),
+        consumer.amount, 2,
+        false, liquid => consumer.consumes(liquid)))
+
+    },
+});
+exports.largeFloorCrusher = largeFloorCrusher;
+largeFloorCrusher.buildType = prov(() => extend(AttributeCrafter.AttributeCrafterBuild, largeFloorCrusher, {
+    efficiencyMultiplier(){
+        let originalEfficiency = this.super$efficiencyMultiplier();
+        if(this.liquids.get(liquid.naturalGas) >= 0.001){
+            return originalEfficiency * 2
+        }else{
+            return originalEfficiency
+        }
+    }
+}))
+largeFloorCrusher.consumePower(1);
+largeFloorCrusher.consumeLiquid(liquid.naturalGas, 3 / 60)
+    .optional = true;
 
 const ammoniaCollector = new AttributeCrafter("ammonia-collector");
 exports.ammoniaCollector = ammoniaCollector;

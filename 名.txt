@@ -1,0 +1,251 @@
+sector.dustbowl.name = 尘荒原
+sector.faultline.name= 断裂地带
+sector.saltpan.name= 硝盐平原
+sector.monsoon.name= 季风高地
+sector.obsidian.name= 黑曜石原
+sector.silica.name= 硅晶沙海
+sector.breach.name= 决口隘道
+sector.fumarole.name= 喷气荒原
+sector.silt.name= 淤积河滩
+sector.mirage.name= 热影幻漠
+sector.butte.name= 孤峰台地
+sector.escarpment.name= 熔岩断崖
+sector.floodland.name= 洪泛废土
+sector.sulfur.name= 硫磺喷口
+sector.badland.name= 恶地丘陵
+sector.tufa.name= 钙华石林
+sector.schorr.name= 铁质荒地
+sector.vent.name= 地热裂口
+sector.sinkhole.name= 陷落天坑
+sector.mesa.name= 平顶山原
+
+unit.arbiter.name = 裁决
+unit.penumbra.name= 蚀影
+unit.promulgate.name= 昭示
+unit.inhere.name= 本征
+unit.sublimate.name= 升格
+unit.abjure.name= 断念
+unit.evoke.name= 唤灵
+unit.quasar.name= 星殒
+unit.praxis.name= 成规
+unit.exegesis.name= 诠解
+unit.threnody.name= 哀诗
+unit.igneous.name= 熔裁
+unit.nomology.name= 律典
+unit.exscind.name= 斩绝
+unit.rescind.name= 废止
+unit.solipsist.name= 唯我
+unit.paragon.name= 至型
+unit.apogee.name= 远极
+unit.catena.name= 链契
+unit.aeon.name= 永劫
+
+unit.astraeus.name = 天启
+unit.caelum.name= 天穹
+unit.kismet.name= 天命
+unit.mandate.name= 天宪
+unit.providus.name= 天眼
+unit.judex.name= 天裁
+unit.sanctus.name= 天佑
+unit.fatum.name= 天运
+unit.arbiter.name= 天衡
+unit.fulmen.name= 天殛
+unit.oraculum.name= 天谕
+unit.terminus.name= 天终
+unit.ascensus.name= 天阶
+unit.prodigium.name= 天兆
+unit.vox.name= 天音
+
+以下是按照“等级从低到高”设计的海军单位名称，共五个等级，体现力量和层次的递进，并符合您所需的庄重、抽象、略带宿命感的风格：
+
+第一级
+unit.navis.name = 巡弋
+unit.navis-ii.name = 护航
+unit.navis-iii.name = 坚盾
+
+第二级
+unit.cutter.name = 破浪
+unit.cutter-ii.name = 截击
+unit.cutter-iii.name = 狩猎
+
+第三级
+unit.frigate.name = 镇海
+unit.frigate-ii.name = 守望
+unit.frigate-iii.name = 仲裁
+
+第四级
+unit.cruiser.name = 制裁
+unit.cruiser-ii.name = 主宰
+unit.cruiser-iii.name = 威权
+
+第五级
+unit.dreadnought.name = 终焉
+unit.dreadnought-ii.name = 寂灭
+unit.dreadnought-iii.name = 天命（最高级回归“天”字，体现终极权威）
+
+命名逻辑说明：
+
+· 第一级 (巡弋/护航/坚盾)：强调基础的巡逻、防御和保护职能。
+· 第二级 (破浪/截击/狩猎)：名称更具攻击性和机动性，体现战术突击和区域控制。
+· 第三级 (镇海/守望/仲裁)：名称强调区域控制、警戒和秩序维护，带有权威色彩。
+· 第四级 (制裁/主宰/威权)：名称充满力量感和绝对控制意味，体现战略层面的压制力。
+· 第五级 (终焉/寂灭/天命)：名称超越战术战略，上升到概念和宿命层面，具有终极威慑和终结一切的意味。其中“天命”一词，既呼应了此前“天”字头的风格，又赋予其“终极法则执行者”的至高地位。
+
+这套命名体系通过用词语气的层层递进，清晰地构建了海军单位的权力与力量金字塔。
+
+
+unit.vne-mitochondrion.name = 线粒体
+unit.vne-endoplasmic-reticulum.name = 内质网
+unit.vne-golgi.name = 高尔基体
+unit.vne-peroxisome.name = 过氧化物酶体
+unit.vne-vacuole.name = 液泡
+unit.vne-nucleolus.name = 核仁
+unit.vne-chromosome.name = 染色体
+unit.vne-chromatin.name = 染色质
+unit.vne-centriole.name = 中心粒
+unit.vne-spindle.name = 纺锤体
+unit.vne-plasmid.name = 质粒
+unit.vne-tetraploid.name = 四倍体
+unit.vne-polyploid.name = 多倍体
+unit.vne-aneuploid.name = 非整倍体
+unit.vne-gamete.name = 配子
+unit.vne-zygote.name = 合子
+unit.vne-embryo.name = 胚体
+unit.vne-sarcoma.name = 肉瘤
+unit.vne-lymphoma.name = 淋巴瘤
+unit.vne-melanoma.name = 黑素瘤
+unit.vne-adenoma.name = 腺瘤
+unit.vne-polyp.name = 息肉
+unit.vne-cyst.name = 囊肿
+unit.vne-fibroma.name = 纤维瘤
+unit.vne-lipoma.name = 脂肪瘤
+unit.vne-teratoma.name = 畸胎瘤
+unit.vne-metastasis.name = 转移灶
+unit.vne-necrosis.name = 坏死
+unit.vne-apoptosis.name = 凋亡
+unit.vne-autophagy.name = 自噬
+unit.vne-phagocyte.name = 吞噬细胞
+unit.vne-exocytosis.name = 胞吐
+unit.vne-endocytosis.name = 胞吞
+unit.vne-virus.name = 病毒
+unit.vne-bacteriophage.name = 噬菌体
+unit.vne-chlamydia.name = 衣原体
+unit.vne-mycoplasma.name = 支原体
+unit.vne-spirochete.name = 螺旋体
+unit.vne-coccus.name = 球菌
+unit.vne-bacillus.name = 杆菌
+unit.vne-spore.name = 芽孢
+unit.vne-hypha.name = 菌丝
+unit.vne-mycelium.name = 菌丝体
+unit.vne-tumor-mother.name = 肿瘤母体
+unit.vne-tumor-core.name = 肿瘤核心
+unit.vne-sac.name = 瘤液囊
+unit.vne-gland.name = 瘤液腺
+unit.vne-vent.name = 瘤液喷口
+unit.vne-nidus.name = 瘤液巢
+unit.vne-essence.name = 瘤液精华
+
+基础单位
+unit.vne-xylem.name = 木质部
+unit.vne-phloem.name = 韧皮部
+unit.vne-cambium.name = 形成层
+unit.vne-cortex.name = 皮层
+unit.vne-endodermis.name = 内皮层
+unit.vne-pericycle.name = 中柱鞘
+unit.vne-pith.name = 髓心
+unit.vne-medulla.name = 髓质
+
+细胞层级
+unit.vne-chloroplast.name = 叶绿体
+unit.vne-amyloplast.name = 淀粉体
+unit.vne-etioplast.name = 黄化体
+unit.vne-chromoplast.name = 色质体
+unit.vne-vacuole-plant.name = 中央液泡
+unit.vne-cell-wall.name = 细胞壁
+
+组织类型
+unit.vne-palisade.name = 栅栏组织
+unit.vne-spongy.name = 海绵组织
+unit.vne-epidermis.name = 表皮层
+unit.vne-cuticle.name = 角质层
+unit.vne-stoma.name = 气孔
+unit.vne-guard-cell.name = 保卫细胞
+
+器官类
+unit.vne-root-hair.name = 根毛
+unit.vne-root-tip.name = 根尖
+unit.vne-root-cap.name = 根冠
+unit.vne-quiescent-center.name = 静止中心
+unit.vne-lateral-root.name = 侧根
+unit.vne-adventitious-root.name = 不定根
+
+unit.vne-apical-meristem.name = 顶端分生组织
+unit.vne-axillary-bud.name = 侧芽
+unit.vne-terminal-bud.name = 顶芽
+unit.vne-node.name = 节
+unit.vne-internode.name = 节间
+
+unit.vne-lamina.name = 叶片
+unit.vne-petiole.name = 叶柄
+unit.vne-vein.name = 叶脉
+unit.vne-midrib.name = 主脉
+unit.vne-stipule.name = 托叶
+
+unit.vne-petal.name = 花瓣
+unit.vne-sepal.name = 萼片
+unit.vne-stamen.name = 雄蕊
+unit.vne-anther.name = 花药
+unit.vne-filament.name = 花丝
+unit.vne-pistil.name = 雌蕊
+unit.vne-stigma.name = 柱头
+unit.vne-style.name = 花柱
+unit.vne-ovary.name = 子房
+unit.vne-ovule.name = 胚珠
+
+unit.vne-pericarp.name = 果皮
+unit.vne-exocarp.name = 外果皮
+unit.vne-mesocarp.name = 中果皮
+unit.vne-endocarp.name = 内果皮
+unit.vne-seed-coat.name = 种皮
+unit.vne-cotyledon.name = 子叶
+unit.vne-endosperm.name = 胚乳
+unit.vne-plumule.name = 胚芽
+unit.vne-radicle.name = 胚根
+
+特殊结构
+unit.vne-thorn.name = 刺
+unit.vne-prickle.name = 皮刺
+unit.vne-tendril.name = 卷须
+unit.vne-bulb.name = 鳞茎
+unit.vne-corm.name = 球茎
+unit.vne-tuber.name = 块茎
+unit.vne-rhizome.name = 根状茎
+unit.vne-stolon.name = 匍匐茎
+unit.vne-sucker.name = 吸枝
+
+病理方向
+unit.vne-gall.name = 虫瘿
+unit.vne-rust.name = 锈病
+unit.vne-smut.name = 黑粉病
+unit.vne-mildew.name = 霉病
+unit.vne-blight.name = 枯萎病
+unit.vne-canker.name = 溃疡
+unit.vne-wilt.name = 萎蔫
+unit.vne-chlorosis.name = 失绿
+unit.vne-necrosis-plant.name = 坏死
+
+类群名称
+unit.vne-bryophyte.name = 苔藓
+unit.vne-pteridophyte.name = 蕨类
+unit.vne-gymnosperm.name = 裸子
+unit.vne-angiosperm.name = 被子
+unit.vne-monocot.name = 单子叶
+unit.vne-dicot.name = 双子叶
+
+生态类型
+unit.vne-pioneer.name = 先锋
+unit.vne-climax.name = 顶极
+unit.vne-ruderal.name = 杂草
+unit.vne-epiphyte.name = 附生
+unit.vne-parasite-plant.name = 寄生
+unit.vne-saprophyte.name = 腐生
