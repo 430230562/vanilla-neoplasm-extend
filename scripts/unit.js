@@ -26,7 +26,8 @@ function Insect(name) {
             Object.assign(new LiquidRegenAbility(), {
                 liquid: Liquids.neoplasm,
                 slurpEffect: Fx.neoplasmHeal,
-                regenPerSlurp: 6
+                regenPerSlurp: 24,
+                slurpSpeed: 2.5
             }));
             this.immunities.add(status.neoplasmSlow)
         }
@@ -121,7 +122,7 @@ Object.assign(haploid, {
     drag: 0.11,
     hitSize: 11,
     rotateSpeed: 3,
-    health: 200,
+    health: 240,
     armor: 1,
     legStraightness: 0.3,
     stepShake: 0,
@@ -193,7 +194,7 @@ Object.assign(diploid, {
     drag: 0.4,
     hitSize: 12,
     rotateSpeed: 3,
-    health: 540,
+    health: 660,
     legCount: 6,
     legLength: 13,
     legMoveSpace: 1.4,
@@ -262,7 +263,7 @@ Object.assign(polarBody, {
     maxRange: 6,
     lifetime: 95,
     outlineColor: Pal.neoplasmOutline,
-    health: 35,
+    health: 45,
     lowAltitude: true,
 })
 polarBody.parts.add(
@@ -307,8 +308,8 @@ Object.assign(triploid, {
     drag: 0.1,
     hitSize: 21,
     rotateSpeed: 3,
-    health: 1100,
-    armor: 4,
+    health: 1350,
+    armor: 5,
 
     fogRadius: 40,
     stepShake: 0,
@@ -370,22 +371,22 @@ Object.assign(bivalents, {
     drag: 0.1,
     hitSize: 26,
     rotateSpeed: 3,
-    health: 3500,
-    armor: 9,
+    health: 5600,
+    armor: 10,
     targetPriority: 1,
 
     fogRadius: 40,
-    
+
     stepShake: 0.75,
     mechFrontSway: 1.9,
     mechSideSway: 0.6,
     stepSound: Sounds.mechStepHeavy,
     stepSoundPitch: 0.9,
     stepSoundVolume: 0.45,
-    
+
     hovering: true,
     canDrown: false,
-    
+
     constructor: () => new MechUnit.create(),
 })
 bivalents.weapons.add(
@@ -442,7 +443,7 @@ const ribosome = new Insect("ribosome");
 exports.ribosome = ribosome;
 Object.assign(ribosome, {
     constructor: () => new UnitEntity.create(),
-    health: 180,
+    health: 210,
     speed: 3.5,
     flying: true,
     lowAltitude: true,
@@ -502,7 +503,7 @@ const lysosome = new Insect("lysosome");
 exports.lysosome = lysosome;
 Object.assign(lysosome, {
     constructor: () => new UnitEntity.create(),
-    health: 420,
+    health: 520,
     speed: 2,
     accel: 0.08,
     drag: 0.016,
@@ -564,7 +565,7 @@ const trichocyst = new Insect("trichocyst");
 exports.trichocyst = trichocyst;
 Object.assign(trichocyst, {
     constructor: () => new UnitEntity.create(),
-    health: 900,
+    health: 1200,
     speed: 1.667,
     accel: 0.08,
     drag: 0.016,
@@ -639,7 +640,7 @@ Object.assign(centrosome, {
     speed: 1.25,
     rotateSpeed: 3.2,
     accel: 0.1,
-    health: 4000,
+    health: 4500,
     armor: 5,
     hitSize: 20,
 
@@ -671,7 +672,7 @@ centrosome.weapons.add(Object.assign(new Weapon("vne-centrosome-weapon"), {
     baseRotation: -30,
     shoot: new ShootSpread(2, 10),
     shootSound: Sounds.plantBreak,
-    bullet: Object.assign(new BasicBulletType(4, 140), {
+    bullet: Object.assign(new BasicBulletType(4, 150), {
         lifetime: 60,
         width: 16,
         height: 16,
@@ -741,7 +742,7 @@ Object.assign(bomber, {
     speed: 1.2,
     armor: 3,
     hitSize: 6,
-    health: 180,
+    health: 300,
     mechSideSway: 0.25,
     range: 40,
     targetAir: false,
@@ -777,9 +778,9 @@ exports.cytoderm = cytoderm;
 Object.assign(cytoderm, {
     constructor: () => new ElevationMoveUnit.create(),
     speed: 0.62,
-    armor: 12,
+    armor: 13,
     hitSize: 14,
-    health: 700,
+    health: 800,
     hovering: true,
     canDrown: false,
     omniMovement: false,
@@ -832,7 +833,7 @@ new ForceFieldAbility(40, 0.2, 400, 60 * 6))
 const adenoma = new Insect("adenoma");
 exports.adenoma = adenoma;
 Object.assign(adenoma, {
-    health: 880,
+    health: 980,
     speed: 2.5,
     flying: true,
     hitSize: 16,
@@ -842,31 +843,26 @@ Object.assign(adenoma, {
     drag: 0.016,
     itemCapacity: 0,
     constructor: () => new UnitEntity.create(),
-    aiController: () => extend(FlyingFollowAI, {
+    aiController: () => new extend(FlyingFollowAI, {
+        
         updateMovement() {
             this.unloadPayloads();
 
             //moveTo前面加this
             //lookAt前面加this.unit
-            if (this.following != null) {
-                this.moveTo(this.following, 40);
-            } else if (this.target != null && this.unit.hasWeapons()) {
-                this.moveTo(this.target, 80);
-            }
-
-            if (this.shouldFaceTarget()) {
+            if (this.target != null && this.unit.within(this.target, this.unit.type.range)) {
                 this.unit.lookAt(this.target);
             } else if (this.following != null) {
                 this.unit.lookAt(this.following);
             }
 
-            if (this.timer.get(this.timerTarget3, 60)) {
+            if (Mathf.chance(1 / 20)) {
                 this.following = Units.closest(
                 this.unit.team,
                 this.unit.x,
                 this.unit.y,
                 Math.max(this.unit.type.range, 400),
-                u => (!u.dead && !u.isFlying && u.type != this.unit.type), (u, x, y) => {
+                u => (!u.dead && u.type != this.unit.type), (u, x, y) => {
                     if (u.type.outlineColor == Pal.neoplasmOutline) {
                         return u.maxHealth + Mathf.dst2(u.x, u.y, x, y) / 6400 + u.getDuration(status.stimulated) * 100
                     } else {
@@ -875,8 +871,14 @@ Object.assign(adenoma, {
                     }
                 }
                 //先找血量最低且没状态的瘤液单位
-                )
+                );
                 //很奇怪，原版没有unit.dead()这个function
+            }
+            
+            if (this.following != null) {
+                this.moveTo(this.following, 40);
+            } else if (this.target != null && this.unit.hasWeapons()) {
+                this.moveTo(this.target, 80);
             }
         }
     })
@@ -1159,7 +1161,7 @@ const sac = new extend(UnitType, "sac", {
             unit.healthMultiplier = 20
             //折合约1800血，其实不算硬
         }
-        
+
     }
 })
 exports.sac = sac;
@@ -1231,7 +1233,8 @@ extend(Ability, {
         unit.hitSize = Math.pow(unit.maxHealth / 500, 0.5) * 8
     },
     death(unit) {
-        unit.tileOn().circle(unit.hitSize * 0.1875, cons(tile => {
+        unit.tileOn()
+            .circle(unit.hitSize * 0.1875, cons(tile => {
             if (tile != null) Puddles.deposit(tile, Liquids.neoplasm, 70);
         }))
 

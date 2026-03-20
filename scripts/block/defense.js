@@ -637,7 +637,7 @@ item.coagulantIngot, extend(BasicBulletType, 7.5, 85, {
     buildingDamageMultiplier: 0.3,
     status: status.neoplasmSlow,
     statusDuration: 120,
-    
+
     puddles: 1,
     puddleRange: 0,
     puddleAmount: 70,
@@ -669,6 +669,7 @@ item.siliconNitride, Object.assign(new BasicBulletType(8, 60), {
     buildingDamageMultiplier: 0.3,
     status: StatusEffects.slow,
     statusDuration: 10,
+    
     fragBullets: 3,
     fragRandomSpread: 0,
     fragSpread: 30 / 2,
@@ -794,11 +795,67 @@ item.coagulantIngot, extend(ArtilleryBulletType, 2.5, 240, "shell", {
         let tile = Vars.world.tileWorld(b.x, b.y);
         if (tile != null) {
             tile.circle(11, cons(other => {
-                if(Mathf.chance(0.125))Puddles.deposit(other, Liquids.neoplasm, 20);
+                if (Mathf.chance(0.125)) Puddles.deposit(other, Liquids.neoplasm, 20);
             }))
         }
     }
 }))
+
+Blocks.titan.ammoTypes.put(
+item.siliconNitride, Object.assign(new ArtilleryBulletType(2.5, 200, "shell"),{
+    hitEffect: new MultiEffect(Fx.titanExplosion, Fx.titanSmoke),
+    despawnEffect: Fx.none,
+    knockback: 2,
+    lifetime: 190,
+    height: 17,
+    width: 15,
+    splashDamageRadius: 65,
+    splashDamage: 120,
+    rangeChange: 12,
+    reloadMultiplier: 1.25,
+    scaledSplashDamage: true,
+    hitColor: Color.valueOf("8D79C8"),
+    backColor: Color.valueOf("8D79C8"),
+    trailColor: Color.valueOf("8D79C8"),
+    frontColor: Color.valueOf("8D79C8"),
+    ammoMultiplier: 1,
+    hitSound: Sounds.explosionTitan,
+
+    trailLength: 32,
+    trailWidth: 3.35,
+    trailSinScl: 2.5,
+    trailSinMag: 0.5,
+    trailEffect: Fx.vapor,
+    trailInterval: 3,
+    despawnShake: 7,
+
+    shootEffect: Fx.shootTitan,
+    smokeEffect: Fx.shootSmokeTitan,
+
+    trailInterp: v => Math.max(Mathf.slope(v), 0.8),
+    shrinkX: 0.2,
+    shrinkY: 0.1,
+    buildingDamageMultiplier: 0.25,
+    fragBullets: 13,
+    fragBullet: Object.assign(new BasicBulletType(6, 9), {
+        width: 1,
+        height: 1,
+        lifetime: 600,
+        drag: 0.1,
+        shrinkX: 0,
+        shrinkY: 0,
+        collidesAir: false,
+        pierce: true,
+        pierceBuilding: true,
+        buildingDamageMultiplier: 0.25,
+        hitEffect: Fx.none,
+        despawnEffect: Fx.none,
+        lightOpacity: 0,
+        backColor: Color.valueOf("8D79C8"),
+        frontColor: Color.valueOf("8D79C8"),
+    })
+})
+)
 
 //驱离
 Blocks.disperse.ammoTypes.put(
@@ -830,7 +887,7 @@ item.coagulantIngot, extend(BasicBulletType, 8, 45, {
     despawnEffect: Fx.hitBulletColor,
     status: status.neoplasmSlow,
     statusDuration: 120,
-    
+
     puddles: 1,
     puddleRange: 0,
     puddleAmount: 70,
@@ -843,4 +900,67 @@ item.coagulantIngot, extend(BasicBulletType, 8, 45, {
             Puddles.deposit(tile, Liquids.neoplasm, 3);
         }
     }
+}))
+Blocks.disperse.ammoTypes.put(
+item.siliconNitride, Object.assign(new BasicBulletType(), {
+    damage: 37,
+    speed: 8,
+    lifetime: 48,
+    rangeChange: 40,
+    width: 16,
+    height: 16,
+    shrinkY: 0.3,
+    knockback: 3,
+    backSprite: "large-bomb-back",
+    sprite: "mine-bullet",
+    collidesGround: false,
+    collidesTiles: false,
+    shootEffect: Fx.shootBig2,
+    smokeEffect: Fx.shootSmokeDisperse,
+    frontColor: Color.valueOf("ffffff7f"),
+    backColor: Color.valueOf("8D79C8ff"),
+    trailColor: Color.valueOf("8D79C8ff"),
+    hitColor: Color.valueOf("8D79C8ff"),
+    trailChance: 0.33,
+    trailRotation: true,
+    trailEffect: Fx.disperseTrail,
+
+    hitEffect: Fx.hitBulletColor,
+    despawnEffect: Fx.hitBulletColor,
+
+    status: StatusEffects.slow,
+    statusDuration: 10,
+    
+    fragBullets: 3,
+    fragRandomSpread: 0,
+    fragSpread: 30 / 2,
+    fragVelocityMin: 6,
+    fragVelocityMax: 6,
+    fragLifeMin: 1,
+    fragLifeMax: 1,
+    fragBullet: Object.assign(new BasicBulletType(), {
+        damage: 15,
+        width: 8,
+        hitSize: 7,
+        height: 8,
+        backSprite: "large-bomb-back",
+        sprite: "mine-bullet",
+        shootEffect: new MultiEffect(Fx.shootBigColor, Fx.colorSparkBig),
+        smokeEffect: Fx.shootBigSmoke,
+        lifetime: 10,
+        pierce: true,
+        collidesGround: false,
+        collidesTiles: false,
+        hitColor: Color.valueOf("8D79C8"),
+        backColor: Color.valueOf("8D79C8"),
+        trailColor: Color.valueOf("8D79C8"),
+        frontColor: Color.white,
+        trailWidth: 1,
+        trailLength: 10,
+        
+        hitEffect: Fx.hitBulletColor,
+        despawnEffect: Fx.hitBulletColor,
+        status: StatusEffects.slow,
+        statusDuration: 10,
+    })
 }))

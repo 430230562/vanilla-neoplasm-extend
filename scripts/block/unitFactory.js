@@ -166,6 +166,41 @@ Object.assign(evolver,{
 	    item.siliconNitride, 200,
 	)
 })
+evolver.addUpgrade(unit.diploid, unit.triploid);
+evolver.addUpgrade(unit.lysosome, unit.trichocyst);
+evolver.addUpgrade(unit.cytoderm, unit.adenoma)
+evolver.consumePower(2.7);
+evolver.consumeItems(ItemStack.with(
+	item.protein, 35,
+	Items.dormantCyst, 15
+));
+evolver.buildType = prov(() => extend(Reconstructor.ReconstructorBuild, evolver,{
+    a: 0,
+    draw(){
+        this.super$draw()
+        
+        if(this.progress <= 120){
+            this.a = (this.progress / 120)
+        }else if(this.progress >= 60 * 18){
+            this.a = (60 * 20 - this.progress) / 120
+        }else{
+            this.a = 1
+        }
+        
+        Draw.z(35.05);
+        LiquidBlock.drawTiledFrames(4, this.x, this.y, 0, Liquids.neoplasm, this.a * 0.7)
+    },
+    onDestroyed(){
+        this.super$onDestroyed();
+    
+        if(this.progress >= 120)unit.metastasis.spawn(this.team, this.x,this.y);
+    },
+    onDeconstructed(){
+        this.super$onDeconstructed();
+        
+        if(this.progress >= 120)unit.metastasis.spawn(this.team, this.x,this.y);
+    }
+}))
 
 /*const reincubator = new Reconstructor("reincubator");
 exports.reincubator = reincubator;
