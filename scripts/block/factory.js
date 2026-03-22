@@ -174,6 +174,35 @@ arkyciteRefinery.buildType = prov(() => extend(Separator.SeparatorBuild, arkycit
     },
 }))
 
+const irradiationChamber = new GenericCrafter("irradiation-chamber");
+exports.irradiationChamber = irradiationChamber;
+Object.assign(irradiationChamber,{
+    craftEffect: Fx.none,
+    craftTime: 120,
+    size: 3,
+    liquidCapacity: 60,
+    hasPower: true,
+    hasLiquids: true,
+    hasItems: true,
+    outputItem: new ItemStack(Items.dormantCyst, 1),
+    outputLiquid: new LiquidStack(Liquids.neoplasm, 10 / 60),
+    drawer: new DrawMulti(
+    new DrawRegion("-bottom"),
+    new DrawLiquidTile(Liquids.neoplasm),
+    new DrawArcSmelt(),
+    new DrawDefault()),
+    buildVisibility: BuildVisibility.shown,
+    category: Category.crafting,
+    requirements: ItemStack.with(
+    Items.silicon, 125,
+    Items.oxide, 75,
+    Items.carbide, 35,
+    item.siliconNitride, 45
+    ),
+})
+irradiationChamber.consumeItem(item.protein, 5)
+irradiationChamber.ConsumeItemRadioactive(0.5)
+
 const cyanidePlant = extend(GenericCrafter, "cyanide-plant", {
     craftEffect: Fx.none,
     craftTime: 150,
