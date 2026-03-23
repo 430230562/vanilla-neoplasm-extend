@@ -46,7 +46,7 @@ function CanSpawnSize3(x, y) {
   return true; // 全部符合
 }
 
-var neopCore = extend(Block, "neop-core", {
+var neopCore = extend(CoreBlock, "neop-core", {
     buildVisibility: BuildVisibility.editorOnly,
     category: Category.effect,
     update: true,
@@ -58,6 +58,9 @@ var neopCore = extend(Block, "neop-core", {
     hasShadow: true,
     hasLiquids: true,
     liquidCapacity: 900,
+    canPlaceOn(tile,team,rotation){
+		return true
+	},
 })
 
 var neopNode = extend(Block, "neop-node", {
@@ -130,7 +133,7 @@ Object.assign(spawner,{
     liquidCapacity: 90,
 })
 
-neopCore.buildType = prov(() => extend(Building, {
+neopCore.buildType = prov(() => extend(CoreBlock.CoreBuild, neopCore, {
     child: [null, null, null, null],
     readPos: [-1, -1, -1, -1],
     _needsResolve: false,
@@ -185,6 +188,8 @@ neopCore.buildType = prov(() => extend(Building, {
                 }
             }
         }
+        
+        this.super$updateTile();
         //Vars.ui.showLabel("" + this.child[0] + "\n" + this.child[1] + "\n" + this.child[2] + "\n" + this.child[3], 0.01, this.x, this.y);
     },
     collision(bullet) {
