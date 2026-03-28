@@ -189,7 +189,7 @@ Object.assign(irradiationChamber,{
     drawer: new DrawMulti(
     new DrawRegion("-bottom"),
     new DrawLiquidTile(Liquids.neoplasm),
-    new DrawArcSmelt(),
+    new DrawWarmupRegion(),
     new DrawDefault()),
     buildVisibility: BuildVisibility.shown,
     category: Category.crafting,
@@ -201,7 +201,17 @@ Object.assign(irradiationChamber,{
     ),
 })
 irradiationChamber.consumeItem(item.protein, 5)
-irradiationChamber.ConsumeItemRadioactive(0.5)
+irradiationChamber.consume(ConsumeItemRadioactive(0.5))
+irradiationChamber.buildType = prov(() => extend(GenericCrafter.GenericCrafterBuild, irradiationChamber, {
+    updateTile(){
+        this.super$updateTile()
+        
+        if (this.liquid.get(Liquids.neoplasm) >= this.block.liquidCapacity) {
+            this.kill()
+        }
+    }
+}))
+
 
 const cyanidePlant = extend(GenericCrafter, "cyanide-plant", {
     craftEffect: Fx.none,

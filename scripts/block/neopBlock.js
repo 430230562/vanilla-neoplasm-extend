@@ -58,6 +58,8 @@ var neopCore = extend(CoreBlock, "neop-core", {
     hasShadow: true,
     hasLiquids: true,
     liquidCapacity: 900,
+    itemCapacity: 100,
+    unitCapModifier: 25,
     canPlaceOn(tile,team,rotation){
 		return true
 	},

@@ -171,8 +171,7 @@ evolver.addUpgrade(unit.lysosome, unit.trichocyst);
 evolver.addUpgrade(unit.cytoderm, unit.adenoma)
 evolver.consumePower(2.7);
 evolver.consumeItems(ItemStack.with(
-	item.protein, 35,
-	Items.dormantCyst, 15
+	Items.dormantCyst, 20
 ));
 evolver.buildType = prov(() => extend(Reconstructor.ReconstructorBuild, evolver,{
     a: 0,
