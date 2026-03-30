@@ -306,7 +306,7 @@ exports.triploid = triploid;
 Object.assign(triploid, {
     speed: 0.52,
     drag: 0.1,
-    hitSize: 21,
+    hitSize: 19,
     rotateSpeed: 3,
     health: 1350,
     armor: 5,
@@ -856,7 +856,7 @@ Object.assign(adenoma, {
                 this.unit.lookAt(this.following);
             }
 
-            if (Mathf.chance(1 / 20)) {
+            if (Mathf.chance(1 / 60)) {
                 this.following = Units.closest(
                 this.unit.team,
                 this.unit.x,
