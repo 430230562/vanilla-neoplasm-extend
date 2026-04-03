@@ -195,6 +195,7 @@ const oxideWall = new Wall("oxide-wall");
 exports.oxideWall = oxideWall;
 Object.assign(oxideWall, {
     health: 900,
+    armor: 5,
     insulated: true,
     absorbLasers: true,
     schematicPriority: 10,
@@ -248,6 +249,7 @@ const oxideWallLarge = new Wall("oxide-wall-large");
 exports.oxideWallLarge = oxideWallLarge;
 Object.assign(oxideWallLarge, {
     health: 900 * 4,
+    armor: 5,
     insulated: true,
     absorbLasers: true,
     schematicPriority: 10,
@@ -310,6 +312,7 @@ Object.assign(siliconNitrideWall, {
     schematicPriority: 10,
     update: false,
     size: 1,
+    buildCostMultiplier: 24,
     buildVisibility: BuildVisibility.shown,
     category: Category.defense,
     requirements: ItemStack.with(
@@ -325,41 +328,12 @@ Object.assign(siliconNitrideWallLarge, {
     schematicPriority: 10,
     update: false,
     size: 2,
+    buildCostMultiplier: 24,
     buildVisibility: BuildVisibility.shown,
     category: Category.defense,
     requirements: ItemStack.with(
     item.siliconNitride, 6 * 4),
 })
-
-// 使用Set记录已访问节点，防止循环引用导致无限递归
-function depieceGraph(bullet) {
-    if (bullet == null) return;
-
-    const visited = new Set();
-    const stack = [bullet];
-
-    while (stack.length > 0) {
-        const currentBullet = stack.pop();
-
-        // 跳过已处理节点
-        if (visited.has(currentBullet)) continue;
-
-        //取消穿透
-        currentBullet.pierce = false;
-        currentBullet.pierceBuilding = false;
-        currentBullet.pierceDamageFactor = 0
-
-        visited.add(currentBullet);
-
-        // 添加未访问的子节点
-        if (currentBullet.intervalBullet != null && !visited.has(currentBullet.intervalBullet)) {
-            stack.push(currentBullet.intervalBullet);
-        }
-        if (currentBullet.fragBullet != null && !visited.has(currentBullet.fragBullet)) {
-            stack.push(currentBullet.fragBullet);
-        }
-    }
-}
 
 const biomassWall = new Wall("biomass-wall");
 exports.biomassWall = biomassWall;
@@ -378,9 +352,17 @@ Object.assign(biomassWall, {
 biomassWall.buildType = prov(() => extend(Building, {
     collision(bullet) {
 
-        depieceGraph(bullet.type)
-
-        this.super$collision(bullet)
+        if(bullet.type.speed >= 0.1){
+            bullet.remove()
+            
+            bullet.type.hitEffect.at(bullet.x,bullet.y)
+            
+            let eventuallyDamage = Math.max(bullet.damage * bullet.type.buildingDamageMultiplier - this.block.armor,0)
+            this.damage(eventuallyDamage * Vars.state.rules.blockDamage(bullet.team))
+        }else{
+            //激光电弧
+            this.super$collision(bullet)
+        }
 
         return true
     }
@@ -402,13 +384,22 @@ Object.assign(biomassWallLarge, {
 })
 biomassWallLarge.buildType = prov(() => extend(Building, {
     collision(bullet) {
-        depieceGraph(bullet.type)
-
-        this.super$collision(bullet)
+        if(bullet.type.speed >= 0.1){
+            bullet.remove()
+            bullet.type.hitEffect.at(bullet.x,bullet.y)
+            
+            let eventuallyDamage = Math.max(bullet.damage * bullet.type.buildingDamageMultiplier - this.block.armor,0)
+            this.damage(eventuallyDamage * Vars.state.rules.blockDamage(bullet.team))
+        }else{
+            //激光电弧
+            this.super$collision(bullet)
+        }
 
         return true
     }
 }))
+
+Blocks.constructor.filter.add(siliconNitrideWallLarge,biomassWallLarge)
 
 const explosive = new Wall("explosive");
 exports.explosive = explosive;

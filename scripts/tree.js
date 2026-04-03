@@ -159,7 +159,7 @@ addResearch(factory.siliconNitrideFurnace, {
 addResearch(factory.floorCrusher,{
     parent: "cliff-crusher"
 },() => {
-    TechTree.node(factory.LargeFloorCrusher, () => {})
+    TechTree.node(factory.largeFloorCrusher, () => {})
 })
 
 addResearch(factory.smallHeatRouter,{

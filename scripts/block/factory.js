@@ -178,13 +178,14 @@ const irradiationChamber = new GenericCrafter("irradiation-chamber");
 exports.irradiationChamber = irradiationChamber;
 Object.assign(irradiationChamber,{
     craftEffect: Fx.none,
-    craftTime: 120,
+    craftTime: 300,
     size: 3,
-    liquidCapacity: 60,
+    liquidCapacity: 90,
+    itemCapacity: 24,
     hasPower: true,
     hasLiquids: true,
     hasItems: true,
-    outputItem: new ItemStack(Items.dormantCyst, 1),
+    outputItem: new ItemStack(Items.dormantCyst, 3),
     outputLiquid: new LiquidStack(Liquids.neoplasm, 10 / 60),
     drawer: new DrawMulti(
     new DrawRegion("-bottom"),
@@ -200,18 +201,17 @@ Object.assign(irradiationChamber,{
     item.siliconNitride, 45
     ),
 })
-irradiationChamber.consumeItem(item.protein, 5)
-irradiationChamber.consume(ConsumeItemRadioactive(0.5))
+irradiationChamber.consumeItem(item.protein, 12)
+irradiationChamber.consume(ConsumeItemRadioactive(0.8))
 irradiationChamber.buildType = prov(() => extend(GenericCrafter.GenericCrafterBuild, irradiationChamber, {
     updateTile(){
         this.super$updateTile()
         
-        if (this.liquid.get(Liquids.neoplasm) >= this.block.liquidCapacity) {
+        if (this.liquids.get(Liquids.neoplasm) >= this.block.liquidCapacity - 0.01) {
             this.kill()
         }
     }
 }))
-
 
 const cyanidePlant = extend(GenericCrafter, "cyanide-plant", {
     craftEffect: Fx.none,

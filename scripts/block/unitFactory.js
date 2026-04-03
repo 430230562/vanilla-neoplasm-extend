@@ -201,6 +201,69 @@ evolver.buildType = prov(() => extend(Reconstructor.ReconstructorBuild, evolver,
     }
 }))
 
+const laboratory = new UnitFactory("laboratory");
+exports.laboratory = laboratory;
+Object.assign(laboratory, {
+	size: 3,
+	plans: Seq.with(
+		new UnitPlan(unit.polyp, 60 * 40, ItemStack.with()),
+		new UnitPlan(UnitTypes.renale, 60 * 60, ItemStack.with()),
+		new UnitPlan(unit.sarcoma, 60 * 120, ItemStack.with()),
+		new UnitPlan(unit.metastasis , 60 * 200, ItemStack.with())
+	),
+	//目前仅敌方可用
+	buildVisibility: BuildVisibility.shown,
+	category: Category.units,
+	requirements: ItemStack.with(
+	    Items.carbide, 200,
+		Items.dormantCyst, 75,
+		item.siliconNitride, 125,
+		item.biomassSteel, 225,
+	),
+})
+laboratory.consumeLiquid(Liquids.neoplasm, 20 / 60)
+laboratory.consumePower(6);
+laboratory.buildType = prov(() => extend(UnitFactory.UnitFactoryBuild, laboratory,{
+    a: 0,
+    draw(){
+        this.super$draw()
+        
+        if(this.currentPlan != -1){
+            var plan = this.block.plans.get(this.currentPlan);
+        }
+        
+        if(this.progress <= 120){
+            this.a = (this.progress / 120)
+        }else if(this.progress >= plan.time - 120){
+            this.a = (plan.time - this.progress) / 120
+        }else{
+            this.a = 1
+        }
+        
+        Draw.z(35.05);
+        LiquidBlock.drawTiledFrames(2, this.x, this.y, 0, Liquids.neoplasm, this.a * 0.7)
+        
+        Draw.reset();
+    },
+    onDestroyed(){
+        Damage.damage(this.x, this.y, 72, 1200);
+        
+        if (this.tile != null) this.tile.circle(9, cons(tile => {
+            Puddles.deposit(tile, Liquids.neoplasm, 70);
+        }))
+
+        Fx.reactorExplosion.at(this.x, this.y, 0, Color.valueOf("c33e2b"));
+        Sounds.explosionReactor.at(this);
+        
+        this.super$onDestroyed();
+    },
+    onDeconstructed(){
+        if(this.progress >= 60) this.onDestroyed();
+        
+        this.super$onDeconstructed();
+    }
+}))
+
 /*const reincubator = new Reconstructor("reincubator");
 exports.reincubator = reincubator;
 Object.assign(reincubator,{

@@ -168,7 +168,7 @@ Object.assign(new Weapon("vne-haploid-weapon"), {
         trailColor: Color.valueOf("84a94b"),
 
         status: StatusEffects.corroded,
-        statusDuration: 120,
+        statusDuration: 40,
 
         recoil: 0.8,
         lifetime: 45,
@@ -237,7 +237,7 @@ Object.assign(new Weapon(), {
         lightOpacity: 0,
 
         status: StatusEffects.corroded,
-        statusDuration: 120,
+        statusDuration: 40,
 
         fragBullets: 2,
         fragBullet: new Acid(18)
@@ -471,7 +471,7 @@ Object.assign(new Weapon("vne-ribosome-weapon"), {
         trailColor: Color.valueOf("84a94b"),
 
         status: StatusEffects.corroded,
-        statusDuration: 120,
+        statusDuration: 40,
 
         recoil: 0.8,
         lifetime: 45,
@@ -1196,7 +1196,7 @@ Object.assign(metastasis, {
     speed: 0.67,
     hitSize: 12,
     targetPriority: 2,
-    health: 1200,
+    health: 1500,
     omniMovement: false,
     rotateSpeed: 2,
     segments: 3,
@@ -1221,8 +1221,8 @@ metastasis.abilities.add(
 Object.assign(new LiquidRegenAbility(), {
     liquid: Liquids.neoplasm,
     slurpEffect: Fx.neoplasmHeal,
-    slurpSpeed: 27,
-    regenPerSlurp: 12,
+    slurpSpeed: 10,
+    regenPerSlurp: 24,
 }),
 extend(Ability, {
     update(unit) {
@@ -1252,11 +1252,18 @@ extend(Ability, {
             }
         }
     },
+    localized(){
+		return Core.bundle.format("ability.infinityGrowth");
+	},
 }))
 metastasis.immunities.add(status.neoplasmSlow)
 
 UnitTypes.renale.hidden = false;
 UnitTypes.renale.outlineColor = Pal.neoplasmOutline;
+UnitTypes.renale.playerControllable = false;
+UnitTypes.renale.logicControllable = false;
+UnitTypes.renale.allowedInPayloads = false;
+UnitTypes.renale.useUnitCap = false;
 UnitTypes.renale.immunities.add(status.neoplasmSlow)
 
 UnitTypes.latum.hidden = false;
