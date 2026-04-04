@@ -15,6 +15,7 @@ function Insect(name) {
         healColor: Pal.neoplasm1,
         lightRadius: 0,
         engineSize: 0,
+        researchCostMultiplier: 0,
         init() {
             this.super$init();
 
@@ -751,6 +752,7 @@ Object.assign(bomber, {
     healFlash: true,
     healColor: Pal.neoplasm1,
     lightRadius: 0,
+    researchCostMultiplier: 0,
 })
 bomber.abilities.add(
 new DeathNeoplasmAbility(18, 400),
@@ -957,6 +959,7 @@ Object.assign(polyp, {
     logicControllable: false,
     allowedInPayloads: false,
     useUnitCap: false,
+    researchCostMultiplier: 0,
 })
 polyp.abilities.add(
 new DeathNeoplasmAbility(32, 800),
@@ -991,6 +994,7 @@ Object.assign(sarcoma, {
     logicControllable: false,
     allowedInPayloads: false,
     useUnitCap: false,
+    researchCostMultiplier: 0,
 })
 sarcoma.abilities.add(
 new DeathNeoplasmAbility(40, 2400),
@@ -1194,7 +1198,7 @@ exports.metastasis = metastasis;
 Object.assign(metastasis, {
     constructor: () => new CrawlUnit.create(),
     speed: 0.67,
-    hitSize: 12,
+    hitSize: 16,
     targetPriority: 2,
     health: 1500,
     omniMovement: false,
@@ -1205,12 +1209,13 @@ Object.assign(metastasis, {
 
     segmentScl: 3,
     segmentPhase: 5,
-    segmentMag: 0.5,
+    segmentMag: 1.5,
     outlineColor: Pal.neoplasmOutline,
     envDisabled: Env.none,
     healFlash: true,
     healColor: Pal.neoplasm1,
     lightRadius: 0,
+    researchCostMultiplier: 0,
 
     playerControllable: false,
     logicControllable: false,

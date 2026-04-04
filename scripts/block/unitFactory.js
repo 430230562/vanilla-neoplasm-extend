@@ -63,9 +63,7 @@ unitIncubator.buildType = prov(() => extend(UnitFactory.UnitFactoryBuild, unitIn
         if(this.progress >= 60)unit.polyp.spawn(this.team, this.x,this.y);
     },
     onDeconstructed(){
-        this.super$onDeconstructed();
-    
-        if(this.progress >= 60)unit.polyp.spawn(this.team, this.x,this.y);
+        this.onDestroyed();
     }
 }))
 
@@ -141,13 +139,7 @@ shaper.buildType = prov(() => extend(UnitFactory.UnitFactoryBuild, shaper,{
         }
     },
     onDeconstructed(){
-        this.super$onDeconstructed();
-    
-        if(this.currentPlan < 3 && this.progress >= 45){
-            unit.polyp.spawn(this.team, this.x,this.y);
-        }else if(this.progress >= 90){
-            unit.sarcoma.spawn(this.team, this.x,this.y);
-        }
+        this.onDestroyed();
     }
 }))
 
@@ -195,9 +187,7 @@ evolver.buildType = prov(() => extend(Reconstructor.ReconstructorBuild, evolver,
         if(this.progress >= 120)unit.metastasis.spawn(this.team, this.x,this.y);
     },
     onDeconstructed(){
-        this.super$onDeconstructed();
-        
-        if(this.progress >= 120)unit.metastasis.spawn(this.team, this.x,this.y);
+        this.onDestroyed();
     }
 }))
 
@@ -254,13 +244,9 @@ laboratory.buildType = prov(() => extend(UnitFactory.UnitFactoryBuild, laborator
 
         Fx.reactorExplosion.at(this.x, this.y, 0, Color.valueOf("c33e2b"));
         Sounds.explosionReactor.at(this);
-        
-        this.super$onDestroyed();
     },
     onDeconstructed(){
         if(this.progress >= 60) this.onDestroyed();
-        
-        this.super$onDeconstructed();
     }
 }))
 
