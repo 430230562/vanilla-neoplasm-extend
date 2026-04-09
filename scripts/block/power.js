@@ -217,3 +217,15 @@ exports.biomassReactor = biomassReactor;
 biomassReactor.consumeItem(item.protein, 1);
 biomassReactor.consumeLiquid(liquid.ammonia, 0.1)
     .optional = true;
+    
+const nodeDiode = new PowerDiode("node-diode");
+exports.nodeDiode = nodeDiode;
+Object.assign(nodeDiode,{
+    buildVisibility: BuildVisibility.shown,
+    category: Category.power,
+    requirements: ItemStack.with(
+        Items.silicon, 5,
+        Items.oxide, 5,
+        item.siliconNitride, 10
+    ),
+})

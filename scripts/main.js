@@ -5,6 +5,7 @@ require("vne/status");
 require("vne/unit");
 
 require("vne/block/defense");
+require("vne/block/distribution");
 require("vne/block/environment");
 require("vne/block/factory");
 require("vne/block/liquidBlock");

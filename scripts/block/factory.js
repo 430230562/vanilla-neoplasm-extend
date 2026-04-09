@@ -188,10 +188,9 @@ Object.assign(irradiationChamber,{
     outputItem: new ItemStack(Items.dormantCyst, 3),
     outputLiquid: new LiquidStack(Liquids.neoplasm, 10 / 60),
     drawer: new DrawMulti(
-    new DrawRegion("-bottom"),
-    new DrawLiquidTile(Liquids.neoplasm),
-    new DrawWarmupRegion(),
-    new DrawDefault()),
+        new DrawWarmupRegion(),
+        new DrawDefault()
+    ),
     buildVisibility: BuildVisibility.shown,
     category: Category.crafting,
     requirements: ItemStack.with(
