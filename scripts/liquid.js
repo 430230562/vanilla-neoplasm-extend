@@ -11,37 +11,37 @@ Liquids.neoplasm.canStayOn.addAll(Liquids.neoplasm)
 
 
 const acid = extend(Liquid,"acid",Color.valueOf("84a94b"),{
-	update(puddle){
-		if(puddle.tile != null && puddle.tile.build != null){
-			puddle.tile.build.damage(0.2)
-			
-			puddle.amount -= 0.2
-			
-			if(Mathf.chanceDelta(0.05)){
-				Fx.mineSmall.at(puddle.x,puddle.y)
-			}
-		}
-	},
-	effect: StatusEffects.corroded,
-	viscosity: 0.8,
-	heatCapacity: 0.2,
-	temperature: 0.54,
-	flammability: 0,
-	capPuddles: false,
-	coolant: false
+    update(puddle){
+        if(puddle.tile != null && puddle.tile.build != null){
+            puddle.tile.build.damage(0.2)
+            
+            puddle.amount -= 0.2
+            
+            if(Mathf.chanceDelta(0.05)){
+                Fx.mineSmall.at(puddle.x,puddle.y)
+            }
+        }
+    },
+    effect: StatusEffects.corroded,
+    viscosity: 0.8,
+    heatCapacity: 0.2,
+    temperature: 0.54,
+    flammability: 0,
+    capPuddles: false,
+    coolant: false
 });
 exports.acid = acid;
 
 const venous = extend(CellLiquid,"venous",Color.valueOf("9e172c"),{
     viscosity: 0.95,
-	heatCapacity: 0.2,
-	temperature: 0.5,
-	flammability: 0,
-	spreadTarget: null,
-	capPuddles: false,
-	coolant: false,
-	
-	colorFrom: Color.valueOf("e05438"),
+    heatCapacity: 0.2,
+    temperature: 0.5,
+    flammability: 0,
+    spreadTarget: null,
+    capPuddles: false,
+    coolant: false,
+    
+    colorFrom: Color.valueOf("e05438"),
     colorTo: Color.valueOf("7a0c15"),
 })
 exports.venous = venous;
@@ -50,25 +50,25 @@ const nutrient = new Liquid("nutrient",Color.valueOf("f8df70"));
 exports.nutrient = nutrient;
 Object.assign(nutrient,{
     viscosity: 0.5,
-	temperature: 0.54,
-	flammability: 0.55,
-	coolant: false,
+    temperature: 0.54,
+    flammability: 0.55,
+    coolant: false,
 })
 
 const ammonia = new Liquid("ammonia",Color.valueOf("57c3c2"));
 exports.ammonia = ammonia
 Object.assign(ammonia,{
     gas: true,
-	flammability: 0.8,
-	explosiveness: 0.6,
-	coolant: false,
+    flammability: 0.8,
+    explosiveness: 0.6,
+    coolant: false,
 })
 
 const naturalGas = new Liquid("natural-gas",Color.valueOf("848a86"))
 exports.naturalGas = naturalGas;
 Object.assign(naturalGas,{
-	gas: true,
-	flammability: 1.5,
-	explosiveness: 1,
-	coolant: false,
+    gas: true,
+    flammability: 1.5,
+    explosiveness: 1,
+    coolant: false,
 })

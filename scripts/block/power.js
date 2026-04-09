@@ -1,6 +1,30 @@
 const item = require("vne/item");
 const liquid = require("vne/liquid");
-const {ammoniaTurbine} = require("vne/effect")
+const {ammoniaTurbine} = require("vne/effect");
+
+const nodeDiode = new PowerDiode("node-diode");
+exports.nodeDiode = nodeDiode;
+Object.assign(nodeDiode,{
+    buildVisibility: BuildVisibility.shown,
+    category: Category.power,
+    requirements: ItemStack.with(
+        Items.silicon, 5,
+        Items.oxide, 5,
+        item.siliconNitride, 10
+    )
+})
+
+const assistantBattery = new Battery('assistant-battery');
+exports.assistantBattery = assistantBattery;
+Object.assign(assistantBattery,{
+    buildVisibility: BuildVisibility.shown,
+    category: Category.power,
+    requirements: ItemStack.with(
+        Items.beryllium, 15,
+        item.siliconNitride, 5
+    )
+})
+assistantBattery.consumePowerBuffered(5000);
 
 const oxidationChamber = extend(ThermalGenerator, "oxidation-chamber", {
     setBars() {
@@ -217,15 +241,3 @@ exports.biomassReactor = biomassReactor;
 biomassReactor.consumeItem(item.protein, 1);
 biomassReactor.consumeLiquid(liquid.ammonia, 0.1)
     .optional = true;
-    
-const nodeDiode = new PowerDiode("node-diode");
-exports.nodeDiode = nodeDiode;
-Object.assign(nodeDiode,{
-    buildVisibility: BuildVisibility.shown,
-    category: Category.power,
-    requirements: ItemStack.with(
-        Items.silicon, 5,
-        Items.oxide, 5,
-        item.siliconNitride, 10
-    ),
-})
