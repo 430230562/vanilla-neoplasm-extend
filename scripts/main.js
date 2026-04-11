@@ -20,3 +20,5 @@ require("vne/planet");
 require("vne/tree");
 
 require("vne/report");
+
+print(">>>>>MultiCrafter JavaScript loaded.")

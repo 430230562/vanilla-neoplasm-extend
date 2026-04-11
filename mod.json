@@ -6,6 +6,8 @@
     "minGameVersion": 154,
     "author": "pardon",
     "version": 0.3,
+    "java": true,
+    "main": "net.liplum.MultiCrafterMod",
     "repo": "430230562/vanilla-neoplasm-extend",
     "hideBrowser": false
 }

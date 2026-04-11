@@ -73,8 +73,15 @@ addResearch(item.protein, {
     TechTree.nodeProduce(item.biomassSteel, () => {})
 })
 
+addResearch(item.coagulantIngot, {
+    parent: "oxide",
+    objectives: Seq.with(
+        Objectives.Produce(item.coagulantIngot),
+    )
+}, () => {})
+
 addResearch(item.siliconNitride,{
-    parent: "carbide",
+    parent: "oxide",
     objectives: Seq.with(
         Objectives.Produce(item.siliconNitride),
     )
@@ -88,10 +95,10 @@ addResearch(liquid.ammonia, {
     )
 }, () => {})
 
-addResearch(item.coagulantIngot, {
-    parent: "oxide",
+addResearch(liquid.naturalGas, {
+    parent: "hydrogen",
     objectives: Seq.with(
-        Objectives.Produce(item.coagulantIngot),
+        Objectives.Produce(liquid.naturalGas),
     )
 }, () => {})
 
@@ -127,6 +134,7 @@ addResearch(factory.incubator, {
         TechTree.node(factory.cyanidePlant, () => {}),
         TechTree.node(factory.BMAStove, () => {})
     })
+    TechTree.node(factory.irradiationChamber, () => {})
 });
 
 addResearch(factory.ammoniaPlant, {
@@ -185,6 +193,12 @@ addResearch(liquidBlock.biomassConduit, {
 })
 
 //power
+addResearch(power.nodeDiode,{
+    parent: "beam-tower"
+},() => {
+    TechTree.node(power.assistantBattery, () => {})
+})
+
 addResearch(power.oxidationChamber,{
     parent: "turbine-condenser"
 },() => {});
@@ -213,7 +227,14 @@ addResearch(unitFactory.unitIncubator, {
     ), () => {
         TechTree.node(unit.diploid, () => {}),
         TechTree.node(unit.lysosome, () => {}),
-        TechTree.node(unit.cytoderm, () => {})
+        TechTree.node(unit.cytoderm, () => {}),
+        TechTree.node(unitFactory.evolver, Seq.with(
+            Objectives.Produce(Items.dormantCyst)
+        ), () => {
+            TechTree.node(unit.triploid, () => {}),
+            TechTree.node(unit.trichocyst, () => {}),
+            TechTree.node(unit.adenoma, () => {})
+        })
     })
 });
 

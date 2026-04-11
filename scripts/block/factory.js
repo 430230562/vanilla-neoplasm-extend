@@ -3,7 +3,68 @@ const liquid = require("vne/liquid");
 const {
     ammoniaTurbine
 } = require("vne/effect");
-const {DrawMultiRotationRegion} = require("vne/lib/draw")
+const {
+    DrawMultiRotationRegion
+} = require("vne/lib/draw")
+
+const {
+    MultiCrafter, DrawRecipe, IOEntry, Recipe
+} = require("vne/lib/multi-crafter")
+
+/*const c = new MultiCrafter("js")
+c.recipes = [{
+    input:{
+        items : [
+        "copper/1",{
+            item:"surge-alloy",
+            amount: 2
+        }]
+    },
+    output:{
+        items : ["coal/1"],
+        power : 2
+    },
+    craftTime : 120.0
+},{
+    input:{
+        items : [
+
+        "titanium/1"
+        ],
+        power : 2
+    },
+    output:{
+        items : "graphite/1",
+        fluids : "water/1.2"
+    },
+    craftTime : 240.0
+},{
+    input:{
+        fluids : "water/1"
+    },
+    output:{
+        fluids:{
+            fluid : "slag",
+            amount : 1.5
+        }
+    },
+    craftTime : 240.0
+},{
+    input:{
+        fluids : "water/1"
+    },
+    output:{
+        heat : 5
+    },
+    craftTime : 120.0
+},{
+    input:{
+        heat : 8
+    },
+    output: "sand/1",
+    craftTime : 120.0
+}]
+*/
 
 const microHeatRedirector = new HeatConductor("micro-heat-redirector")
 exports.microHeatRedirector = microHeatRedirector;
@@ -176,52 +237,118 @@ arkyciteRefinery.buildType = prov(() => extend(Separator.SeparatorBuild, arkycit
 
 const irradiationChamber = new GenericCrafter("irradiation-chamber");
 exports.irradiationChamber = irradiationChamber;
-Object.assign(irradiationChamber,{
+Object.assign(irradiationChamber, {
     craftEffect: Fx.none,
-    craftTime: 300,
     size: 3,
     liquidCapacity: 90,
     itemCapacity: 24,
+    craftTime: 120,
     hasPower: true,
     hasLiquids: true,
     hasItems: true,
-    outputItem: new ItemStack(Items.dormantCyst, 3),
+    outputItem: new ItemStack(Items.dormantCyst, 1),
     outputLiquid: new LiquidStack(Liquids.neoplasm, 10 / 60),
     drawer: new DrawMulti(
-        new DrawWarmupRegion(),
-        new DrawDefault()
-    ),
+    new DrawDefault(),
+    new DrawWarmupRegion()),
     buildVisibility: BuildVisibility.shown,
     category: Category.crafting,
     requirements: ItemStack.with(
     Items.silicon, 125,
     Items.oxide, 75,
     Items.carbide, 35,
-    item.siliconNitride, 45
-    ),
+    item.siliconNitride, 45),
 })
-irradiationChamber.consumeItem(item.protein, 12)
-irradiationChamber.consume(ConsumeItemRadioactive(0.8))
+irradiationChamber.consumeItem(item.protein, 4)
+irradiationChamber.consume(ConsumeItemRadioactive(0.5))
 irradiationChamber.buildType = prov(() => extend(GenericCrafter.GenericCrafterBuild, irradiationChamber, {
-    updateTile(){
+    updateTile() {
         this.super$updateTile()
-        
+
         if (this.liquids.get(Liquids.neoplasm) >= this.block.liquidCapacity - 0.01) {
             this.kill()
         }
+    },
+    craft(){
+        this.super$craft();
+        
+        Vars.content.items().each(i => {
+            if(this.items.get(i) > 0 && this.items.get(i) <= this.block.itemCapacity &&
+                i.radioactivity >= 0.5 && 
+                Mathf.chance(1.175 - i.radioactivity * 0.375)){
+                    this.items.add(i, 1)
+                }
+        });
     }
 }))
 
-const cyanidePlant = extend(GenericCrafter, "cyanide-plant", {
+const cyanidePlant = new MultiCrafter("cyanide-plant");
+exports.cyanidePlant = cyanidePlant;
+Object.assign(cyanidePlant, {
     craftEffect: Fx.none,
-    craftTime: 150,
     size: 3,
     liquidCapacity: 30,
     hasPower: true,
     hasLiquids: true,
     hasItems: true,
     configurable: true,
-    drawer: new DrawDefault(),
+    drawer: Object.assign(new DrawRecipe(), {
+        defaultDrawer: 0,
+        drawers: [
+        //配方1
+        new DrawMulti(
+        new DrawRegion("-bottom"),
+        new DrawLiquidTile(Liquids.neoplasm),
+        new DrawRegion("-rotator0", 0, true),
+        new DrawRegion("-rotator1", 0, true),
+        Object.assign(new DrawLiquidTile(Liquids.cyanogen), {
+            alpha: 0.5,
+        }),
+        new DrawDefault(),
+        new DrawRegion("-cell0")),
+        //配方2
+        new DrawMulti(
+        new DrawRegion("-bottom"),
+        new DrawLiquidTile(Liquids.neoplasm),
+        new DrawRegion("-rotator0", 3, true),
+        new DrawRegion("-rotator1", -4, true),
+        Object.assign(new DrawLiquidTile(Liquids.cyanogen), {
+            alpha: 0.5,
+        }),
+        new DrawDefault(),
+        new DrawRegion("-cell1"))
+        ]
+    }),
+    resolvedRecipes: Seq.with(
+        Object.assign(new Recipe(),{
+            input: Object.assign(new IOEntry(),{
+                fluids: LiquidStack.with(
+                    Liquids.cyanogen, 0.05,
+                    Liquids.neoplasm, 10 / 60
+                ),
+                power: 1,
+                icon: prov(() => Core.atlas.find("liquid-neoplasm"))
+            }),
+            output: Object.assign(new IOEntry(),{
+                items: ItemStack.with(Items.dormantCyst, 1)
+            }),
+            craftTime: 150.0
+    }),
+        Object.assign(new Recipe(),{
+            input: Object.assign(new IOEntry(),{
+                fluids: LiquidStack.with(
+                    Liquids.cyanogen, 0.05,
+                    Liquids.neoplasm, 10 / 60
+                ),
+                power: 1,
+                icon: prov(() => Core.atlas.find("liquid-neoplasm"))
+            }),
+            output: Object.assign(new IOEntry(),{
+                items: ItemStack.with(item.protein, 1)
+            }),
+            craftTime: 50.0
+        })
+    ),
     buildVisibility: BuildVisibility.shown,
     category: Category.crafting,
     requirements: ItemStack.with(
@@ -229,10 +356,14 @@ const cyanidePlant = extend(GenericCrafter, "cyanide-plant", {
     Items.silicon, 50,
     Items.oxide, 35,
     item.siliconNitride, 45),
+})
+
+/*const cyanidePlant = extend(GenericCrafter, "", {
+
     setStats() {
         this.super$setStats();
 
-        this.stats.add(Stat.output, StatValues.items(this.craftTime, ItemStack.with(item.protein, 7, Items.dormantCyst, 2)));
+        this.stats.add(Stat.output, StatValues.items(this.craftTime, ItemStack.with(item.protein, 7, )));
     },
     icons() {
         return [Core.atlas.find("vne-cyanide-plant")]
@@ -302,10 +433,9 @@ cyanidePlant.buildType = prov(() => extend(GenericCrafter.GenericCrafterBuild, c
         this.style = read.bool();
     }
 }));
-cyanidePlant.consumeLiquids(LiquidStack.with(
-Liquids.cyanogen, 0.05,
-Liquids.neoplasm, 10 / 60));
+cyanidePlant.consumeLiquids();
 cyanidePlant.consumePower(1);
+*/
 
 const adsorbent = new GenericCrafter("adsorbent");
 exports.adsorbent = adsorbent;
@@ -704,8 +834,7 @@ const largeFloorCrusher = extend(AttributeCrafter, "large-floor-crusher", {
     Items.silicon, 120,
     Items.beryllium, 120,
     Items.tungsten, 75,
-    item.siliconNitride, 55,
-    ),
+    item.siliconNitride, 55, ),
     setStats() {
         this.super$setStats();
 
@@ -725,11 +854,11 @@ const largeFloorCrusher = extend(AttributeCrafter, "large-floor-crusher", {
 });
 exports.largeFloorCrusher = largeFloorCrusher;
 largeFloorCrusher.buildType = prov(() => extend(AttributeCrafter.AttributeCrafterBuild, largeFloorCrusher, {
-    efficiencyMultiplier(){
+    efficiencyMultiplier() {
         let originalEfficiency = this.super$efficiencyMultiplier();
-        if(this.liquids.get(liquid.naturalGas) >= 0.001){
+        if (this.liquids.get(liquid.naturalGas) >= 0.001) {
             return originalEfficiency * 2
-        }else{
+        } else {
             return originalEfficiency
         }
     }
