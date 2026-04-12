@@ -11,3 +11,5 @@ module.exports = {
     IOEntry : getClass("multicraft.IOEntry"),
     Recipe : getClass("multicraft.Recipe")
 }
+
+print(">>>>>MultiCrafter JavaScript loaded.")
