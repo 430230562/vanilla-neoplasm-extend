@@ -4,6 +4,7 @@ require("vne/status");
 
 require("vne/unit");
 
+require("vne/block/core");
 require("vne/block/defense");
 require("vne/block/distribution");
 require("vne/block/environment");

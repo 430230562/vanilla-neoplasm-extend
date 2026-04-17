@@ -7,8 +7,19 @@ Liquids.neoplasm.spreadDamage = 0.1;
 Liquids.neoplasm.removeScaling = 0.05;
 Liquids.neoplasm.incinerable = false;
 Liquids.neoplasm.effect = status.neoplasmSlow;
-Liquids.neoplasm.canStayOn.addAll(Liquids.neoplasm)
 
+const brine = new Liquid("brine",Color.valueOf("7c92ac"));
+exports.brine = brine;
+Object.assign(brine,{
+    viscosity: 0.5,
+    heatCapacity: 0.4,
+    temperature: 0.5,
+    flammability: 0,
+    explosiveness: 0,
+    boilPoint: 0.5,
+    capPuddles: false,
+    coolant: false
+})
 
 const acid = extend(Liquid,"acid",Color.valueOf("84a94b"),{
     update(puddle){
@@ -72,3 +83,5 @@ Object.assign(naturalGas,{
     explosiveness: 1,
     coolant: false,
 })
+
+Liquids.neoplasm.canStayOn.addAll(Liquids.neoplasm, brine);

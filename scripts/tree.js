@@ -156,6 +156,10 @@ addResearch(factory.ammoniaCollector,{
     parent: "vent-condenser",
 },() => {})
 
+addResearch(factory.atmosphericCondenser,{
+    parent: "vent-condenser",
+},() => {})
+
 addResearch(factory.siliconNitrideFurnace, {
     parent: "atmospheric-concentrator",
 }, () => {

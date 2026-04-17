@@ -3,27 +3,45 @@ Items.dormantCyst.hidden = false;
 const protein = new Item("protein", Color.valueOf("d6dbe7"));
 exports.protein = protein;
 Object.assign(protein, {
-	flammability: 0.95
+    flammability: 0.95
 })
 
-const coagulantIngot = new Item("coagulant-ingot",Color.valueOf("D6A17C"));
+const salt = new Item("salt",Color.valueOf("c3c1bb"));
+exports.salt = salt;
+Object.assign(salt,{})
+
+const coagulantIngot = new Item("coagulant-ingot", Color.valueOf("D6A17C"));
 exports.coagulantIngot = coagulantIngot;
-Object.assign(coagulantIngot,{
-    buildable:false
+Object.assign(coagulantIngot, {
+    buildable: false
+})
+
+const nickel = new Item("nickel", Color.valueOf("00c49b"));
+exports.nickel = nickel
+Object.assign(nickel, {
+    hardness: 2,
+    cost: 0.5,
+})
+
+const manganese = new Item("manganese", Color.valueOf("ecaae2"))
+exports.manganese = manganese;
+Object.assign(manganese, {
+	hardness: 3,
+	cost: 1.2,
 })
 
 const siliconNitride = new Item("silicon-nitride", Color.valueOf("8D79C8"));
 exports.siliconNitride = siliconNitride;
 Object.assign(siliconNitride, {
-	cost: 1.7,
-	healthScaling: 1.4,
+    cost: 1.7,
+    healthScaling: 1.4,
 })
 
 const biomassSteel = new Item("biomass-steel", Color.valueOf("7EA341"));
 exports.biomassSteel = biomassSteel;
 Object.assign(biomassSteel, {
-	cost: 2.5,
-	healthScaling: 2.2,
+    cost: 2.5,
+    healthScaling: 2.2,
 })
 
-Items.erekirItems.addAll(protein,coagulantIngot,siliconNitride,biomassSteel)
+Items.erekirItems.addAll(protein, coagulantIngot, siliconNitride, biomassSteel)

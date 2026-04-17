@@ -34,6 +34,63 @@ Blocks.sand.attributes.set(Attribute.sand, 2);
 Blocks.arkyicStone.attributes.set(Attribute.get("biomass"), 0.5)
 Blocks.arkyicStone.attributes.set(Attribute.get("arkycite"), 1.5)
 
+//盐水
+const brineFloorShallow = new Floor("brine-floor-shallow");
+exports.brineFloorShallow = brineFloorShallow;
+Object.assign(brineFloorShallow,{
+    speedMultiplier: 0.8,
+	variants: 0,
+	status: StatusEffects.wet,
+	statusDuration: 60,
+	liquidDrop: liquid.brine,
+	isLiquid: true,
+	cacheLayer: CacheLayer.water,
+	supportsOverlay: true,
+	liquidMultiplier: 0.75,
+})
+
+const brineFloor = new Floor("brine-floor");
+exports.brineFloor = brineFloor;
+Object.assign(brineFloor,{
+    speedMultiplier: 0.5,
+	variants: 0,
+	status: StatusEffects.wet,
+	statusDuration: 90,
+	liquidDrop: liquid.brine,
+	isLiquid: true,
+	cacheLayer: CacheLayer.water,
+	supportsOverlay: true,
+	liquidMultiplier: 1,
+})
+
+const brineFloorDeep = new Floor("brine-floor-deep");
+exports.brineFloorDeep = brineFloorDeep;
+Object.assign(brineFloorDeep,{
+    speedMultiplier: 0.2,
+	variants: 0,
+	status: StatusEffects.wet,
+	statusDuration: 120,
+	liquidDrop: liquid.brine,
+	isLiquid: true,
+	cacheLayer: CacheLayer.water,
+	supportsOverlay: true,
+	liquidMultiplier: 1.5,
+	drownTime:240
+})
+
+//草
+const redGrass = new Floor("red-grass");
+redGrass.attributes.set(Attribute.water, 0.1);
+
+const yellowGrass = new Floor("yellow-grass");
+yellowGrass.attributes.set(Attribute.water, 0.1);
+
+const flower = new Prop("flower");
+Object.assign(flower,{
+	variants: 6,
+	hasShadow: false,
+})
+
 //neoplasm
 Blocks.redStone.attributes.set(Attribute.get("biomass"), 0.75);
 Blocks.redStone.attributes.set(Attribute.get("arkycite"), 1);

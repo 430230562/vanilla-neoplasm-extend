@@ -17,13 +17,13 @@ Object.assign(microHeatRedirector, {
     buildVisibility: BuildVisibility.shown,
     category: Category.crafting,
     requirements: ItemStack.with(
-        Items.graphite, 3,
-        item.biomassSteel, 1,),
+    Items.graphite, 3,
+    item.biomassSteel, 1, ),
     size: 1,
     drawer: new DrawMulti(
-        new DrawDefault(),
-        new DrawHeatOutput(),
-        new DrawHeatInput("-heat")),
+    new DrawDefault(),
+    new DrawHeatOutput(),
+    new DrawHeatInput("-heat")),
     regionRotated1: 1,
 })
 
@@ -33,15 +33,15 @@ Object.assign(smallHeatRouter, {
     buildVisibility: BuildVisibility.shown,
     category: Category.crafting,
     requirements: ItemStack.with(
-        Items.graphite, 8,
-        Items.surgeAlloy, 8,),
+    Items.graphite, 8,
+    Items.surgeAlloy, 8, ),
     size: 2,
     drawer: new DrawMulti(
-        new DrawDefault(),
-        new DrawHeatOutput(-1, false),
-        new DrawHeatOutput(),
-        new DrawHeatOutput(1, false),
-        new DrawHeatInput("-heat")),
+    new DrawDefault(),
+    new DrawHeatOutput(-1, false),
+    new DrawHeatOutput(),
+    new DrawHeatOutput(1, false),
+    new DrawHeatInput("-heat")),
     regionRotated1: 1,
     splitHeat: true
 })
@@ -52,15 +52,15 @@ Object.assign(microHeatRouter, {
     buildVisibility: BuildVisibility.shown,
     category: Category.crafting,
     requirements: ItemStack.with(
-        Items.graphite, 3,
-        item.biomassSteel, 1,),
+    Items.graphite, 3,
+    item.biomassSteel, 1, ),
     size: 1,
     drawer: new DrawMulti(
-        new DrawDefault(),
-        new DrawHeatOutput(-1, false),
-        new DrawHeatOutput(),
-        new DrawHeatOutput(1, false),
-        new DrawHeatInput("-heat")),
+    new DrawDefault(),
+    new DrawHeatOutput(-1, false),
+    new DrawHeatOutput(),
+    new DrawHeatOutput(1, false),
+    new DrawHeatInput("-heat")),
     regionRotated1: 1,
     splitHeat: true
 })
@@ -79,50 +79,50 @@ Object.assign(incubator, {
     boostScale: 1 / 9,
     maxBoost: 2,
     drawer: new DrawMulti(
-        new DrawRegion("-bottom"),
-        new DrawLiquidTile(Liquids.water),
-        Object.assign(new DrawCultivator(), {}),
-        new DrawDefault(),
-        new DrawRegion("-top")),
+    new DrawRegion("-bottom"),
+    new DrawLiquidTile(Liquids.water),
+    Object.assign(new DrawCultivator(), {}),
+    new DrawDefault(),
+    new DrawRegion("-top")),
     buildVisibility: BuildVisibility.shown,
     category: Category.crafting,
     requirements: ItemStack.with(
-        Items.graphite, 70,
-        Items.silicon, 60,
-        Items.tungsten, 25),
+    Items.graphite, 70,
+    Items.silicon, 60,
+    Items.tungsten, 25),
 })
 incubator.consumePower(1.2);
-incubator.consumeLiquid(Liquids.water, 18 / 60);
+incubator.consumeLiquid(Liquids.water, 15 / 60);
 
 const arkyciteRefinery = extend(Separator, "arkycite-refinery", {
     results: ItemStack.with(
-        Items.graphite, 4,
-        item.protein, 6),
+    Items.graphite, 4,
+    item.protein, 6),
     craftTime: 20,
     liquidCapacity: 160,
     size: 3,
     hasPower: true,
     hasLiquids: true,
     drawer: new DrawMulti(
-        new DrawRegion("-bottom"),
-        Object.assign(new DrawParticles(), {
-            alpha: 0.70,
-            particleRad: 10,
-            particleSize: 9,
-            particleLife: 60,
-            particles: 8,
-            rotateScl: -3,
-            reverse: true,
-            color: Color.valueOf("84a94b"),
-        }),
-        new DrawDefault()),
+    new DrawRegion("-bottom"),
+    Object.assign(new DrawParticles(), {
+        alpha: 0.70,
+        particleRad: 10,
+        particleSize: 9,
+        particleLife: 60,
+        particles: 8,
+        rotateScl: -3,
+        reverse: true,
+        color: Color.valueOf("84a94b"),
+    }),
+    new DrawDefault()),
     buildVisibility: BuildVisibility.shown,
     category: Category.crafting,
     requirements: ItemStack.with(
-        Items.graphite, 60,
-        Items.silicon, 60,
-        Items.tungsten, 25,
-        Items.oxide, 25,),
+    Items.graphite, 60,
+    Items.silicon, 60,
+    Items.tungsten, 25,
+    Items.oxide, 25, ),
 
     setStats() {
         this.super$setStats();
@@ -132,30 +132,30 @@ const arkyciteRefinery = extend(Separator, "arkycite-refinery", {
     setBars() {
         this.super$setBars();
         this.addBar("outputLiquid", func(e => new Bar(
-            prov(() => {
-                if (e.getOutputLiquid() != null) {
-                    return e.getOutputLiquid()
-                        .liquid.localizedName
-                } else {
-                    return Core.bundle.get("bar.liquid")
-                }
-            }),
-            prov(() => {
-                if (e.getOutputLiquid() != null) {
-                    return e.getOutputLiquid()
-                        .liquid.color
-                } else {
-                    return Color.white
-                }
-            }),
-            floatp(() => {
-                if (e.getOutputLiquid() != null) {
-                    return e.getOutputLiquid()
-                        .amount / this.liquidCapacity
-                } else {
-                    return 0
-                }
-            }))))
+        prov(() => {
+            if (e.getOutputLiquid() != null) {
+                return e.getOutputLiquid()
+                    .liquid.localizedName
+            } else {
+                return Core.bundle.get("bar.liquid")
+            }
+        }),
+        prov(() => {
+            if (e.getOutputLiquid() != null) {
+                return e.getOutputLiquid()
+                    .liquid.color
+            } else {
+                return Color.white
+            }
+        }),
+        floatp(() => {
+            if (e.getOutputLiquid() != null) {
+                return e.getOutputLiquid()
+                    .amount / this.liquidCapacity
+            } else {
+                return 0
+            }
+        }))))
     }
 });
 exports.arkyciteRefinery = arkyciteRefinery;
@@ -215,15 +215,14 @@ irradiationChamber.buildType = prov(() => extend(GenericCrafter.GenericCrafterBu
             this.kill()
         }
     },
-    craft(){
+    craft() {
         this.super$craft();
-        
-        Vars.content.items().each(i => {
-            if(this.items.get(i) > 0 && this.items.get(i) <= this.block.itemCapacity &&
-                i.radioactivity >= 0.5 && 
-                Mathf.chance(1.175 - i.radioactivity * 0.375)){
-                    this.items.add(i, 1)
-                }
+
+        Vars.content.items()
+            .each(i => {
+            if (this.items.get(i) > 0 && this.items.get(i) <= this.block.itemCapacity && i.radioactivity >= 0.5 && Mathf.chance(1.175 - i.radioactivity * 0.375)) {
+                this.items.add(i, 1)
+            }
         });
     }
 }))
@@ -262,39 +261,35 @@ Object.assign(cyanidePlant, {
             alpha: 0.5,
         }),
         new DrawDefault(),
-        new DrawRegion("-cell1"))
-        ]
+        new DrawRegion("-cell1"))]
     }),
     resolvedRecipes: Seq.with(
-        Object.assign(new Recipe(),{
-            input: Object.assign(new IOEntry(),{
-                fluids: LiquidStack.with(
-                    Liquids.cyanogen, 0.05,
-                    Liquids.neoplasm, 10 / 60
-                ),
-                power: 1,
-                icon: prov(() => Core.atlas.find("liquid-neoplasm"))
-            }),
-            output: Object.assign(new IOEntry(),{
-                items: ItemStack.with(Items.dormantCyst, 1)
-            }),
-            craftTime: 150.0
+    Object.assign(new Recipe(), {
+        input: Object.assign(new IOEntry(), {
+            fluids: LiquidStack.with(
+            Liquids.cyanogen, 0.05,
+            Liquids.neoplasm, 10 / 60),
+            power: 1,
+            icon: prov(() => Core.atlas.find("liquid-neoplasm"))
+        }),
+        output: Object.assign(new IOEntry(), {
+            items: ItemStack.with(Items.dormantCyst, 1)
+        }),
+        craftTime: 150.0
     }),
-        Object.assign(new Recipe(),{
-            input: Object.assign(new IOEntry(),{
-                fluids: LiquidStack.with(
-                    Liquids.cyanogen, 0.05,
-                    Liquids.neoplasm, 10 / 60
-                ),
-                power: 1,
-                icon: prov(() => Core.atlas.find("liquid-neoplasm"))
-            }),
-            output: Object.assign(new IOEntry(),{
-                items: ItemStack.with(item.protein, 1)
-            }),
-            craftTime: 50.0
-        })
-    ),
+    Object.assign(new Recipe(), {
+        input: Object.assign(new IOEntry(), {
+            fluids: LiquidStack.with(
+            Liquids.cyanogen, 0.05,
+            Liquids.neoplasm, 10 / 60),
+            power: 1,
+            icon: prov(() => Core.atlas.find("liquid-neoplasm"))
+        }),
+        output: Object.assign(new IOEntry(), {
+            items: ItemStack.with(item.protein, 1)
+        }),
+        craftTime: 50.0
+    })),
     buildVisibility: BuildVisibility.shown,
     category: Category.crafting,
     requirements: ItemStack.with(
@@ -316,15 +311,15 @@ Object.assign(adsorbent, {
     hasLiquids: true,
     hasItems: true,
     drawer: new DrawMulti(
-        new DrawRegion("-bottom"),
-        new DrawLiquidTile(Liquids.neoplasm),
-        new DrawDefault()),
+    new DrawRegion("-bottom"),
+    new DrawLiquidTile(Liquids.neoplasm),
+    new DrawDefault()),
     buildVisibility: BuildVisibility.shown,
     category: Category.crafting,
     requirements: ItemStack.with(
-        Items.graphite, 35,
-        Items.silicon, 30,
-        Items.oxide, 25,),
+    Items.graphite, 35,
+    Items.silicon, 30,
+    Items.oxide, 25, ),
 })
 adsorbent.consumeLiquid(Liquids.neoplasm, 20 / 60);
 adsorbent.consumeItem(Items.oxide, 1);
@@ -347,19 +342,19 @@ Object.assign(siliconNitrideFurnace, {
     liquidCapacity: 30,
     heatOutput: 12,
     drawer: new DrawMulti(
-        new DrawRegion("-bottom"),
-        new DrawArcSmelt(),
-        Object.assign(new DrawLiquidTile(Liquids.nitrogen), {
-            alpha: 0.5,
-        }),
-        new DrawDefault(),
-        new DrawHeatOutput()),
+    new DrawRegion("-bottom"),
+    new DrawArcSmelt(),
+    Object.assign(new DrawLiquidTile(Liquids.nitrogen), {
+        alpha: 0.5,
+    }),
+    new DrawDefault(),
+    new DrawHeatOutput()),
     buildVisibility: BuildVisibility.shown,
     category: Category.crafting,
     requirements: ItemStack.with(
-        Items.silicon, 120,
-        Items.tungsten, 80,
-        Items.oxide, 75,)
+    Items.silicon, 120,
+    Items.tungsten, 80,
+    Items.oxide, 75, )
 });
 siliconNitrideFurnace.consumeItem(Items.silicon, 3)
 siliconNitrideFurnace.consumeLiquid(Liquids.nitrogen, 8 / 60)
@@ -370,9 +365,9 @@ const biomassSmelter = extend(GenericCrafter, "biomass-smelter", {
         this.super$setBars();
 
         this.addBar("instability", func(e => new Bar(
-            prov(() => Core.bundle.get("bar.instability")),
-            prov(() => Pal.sap),
-            floatp(() => e.getInstability()))));
+        prov(() => Core.bundle.get("bar.instability")),
+        prov(() => Pal.sap),
+        floatp(() => e.getInstability()))));
     },
     health: 360,
     craftEffect: Fx.smeltsmoke,
@@ -384,17 +379,17 @@ const biomassSmelter = extend(GenericCrafter, "biomass-smelter", {
     hasPower: true,
     hasLiquids: false,
     drawer: new DrawMulti(
-        new DrawDefault(),
-        new DrawFlame(Color.valueOf("c7d9a3"))),
+    new DrawDefault(),
+    new DrawFlame(Color.valueOf("c7d9a3"))),
     ambientSound: Sounds.loopSmelter,
     ambientSoundVolume: 0.55, //一定很吵，但这是我想要的
     buildVisibility: BuildVisibility.shown,
     category: Category.crafting,
     requirements: ItemStack.with(
-        Items.silicon, 50,
-        Items.carbide, 35,
-        Items.oxide, 25,
-        item.siliconNitride, 20,)
+    Items.silicon, 50,
+    Items.carbide, 35,
+    Items.oxide, 25,
+    item.siliconNitride, 20, )
 });
 exports.biomassSmelter = biomassSmelter;
 biomassSmelter.buildType = prov(() => extend(GenericCrafter.GenericCrafterBuild, biomassSmelter, {
@@ -458,9 +453,9 @@ biomassSmelter.buildType = prov(() => extend(GenericCrafter.GenericCrafterBuild,
     }
 }))
 biomassSmelter.consumeItems(ItemStack.with(
-    Items.carbide, 2,
-    Items.oxide, 3,
-    item.protein, 7,));
+Items.carbide, 2,
+Items.oxide, 3,
+item.protein, 7, ));
 biomassSmelter.consumePower(3);
 biomassSmelter.consumeLiquid(Liquids.water, 0.1)
     .optional = true;
@@ -477,22 +472,22 @@ Object.assign(stableBiomassSmelter, {
     hasPower: true,
     hasLiquids: false,
     drawer: new DrawMulti(
-        new DrawDefault(),
-        new DrawFlame(Color.valueOf("c7d9a3"))),
+    new DrawDefault(),
+    new DrawFlame(Color.valueOf("c7d9a3"))),
     ambientSound: Sounds.loopSmelter,
     ambientSoundVolume: 0.1,
     buildVisibility: BuildVisibility.shown,
     category: Category.crafting,
     requirements: ItemStack.with(
-        Items.silicon, 120,
-        Items.carbide, 150,
-        Items.oxide, 110,
-        item.biomassSteel, 100,)
+    Items.silicon, 120,
+    Items.carbide, 150,
+    Items.oxide, 110,
+    item.biomassSteel, 100, )
 })
 stableBiomassSmelter.consumeItems(ItemStack.with(
-    Items.carbide, 2,
-    Items.oxide, 3,
-    item.protein, 7,));
+Items.carbide, 2,
+Items.oxide, 3,
+item.protein, 7, ));
 stableBiomassSmelter.consumePower(5);
 
 const ammoniaPlant = new HeatCrafter("ammonia-plant");
@@ -510,85 +505,105 @@ Object.assign(ammoniaPlant, {
     hasPower: true,
     hasLiquids: true,
     drawer: new DrawMulti(
-        new DrawRegion("-bottom"),
-        new DrawLiquidTile(Liquids.hydrogen),
-        new DrawLiquidTile(Liquids.nitrogen),
-        new DrawLiquidTile(liquid.ammonia),
-        Object.assign(new DrawParticles(), {
-            alpha: 0.10,
-            particleRad: 10,
-            particleSize: 9,
-            particleLife: 110,
-            particles: 15,
-            rotateScl: -3,
-            reverse: true,
-            color: Color.valueOf("9eabf7"),
-        }),
-        Object.assign(new DrawParticles(), {
-            alpha: 0.10,
-            particleRad: 10,
-            particleSize: 9,
-            particleLife: 110,
-            particles: 15,
-            rotateScl: -3,
-            reverse: true,
-            color: Color.valueOf("efe3ff"),
-        }),
-        new DrawDefault(),
-        new DrawHeatInput(),),
+    new DrawRegion("-bottom"),
+    new DrawLiquidTile(Liquids.hydrogen),
+    new DrawLiquidTile(Liquids.nitrogen),
+    new DrawLiquidTile(liquid.ammonia),
+    Object.assign(new DrawParticles(), {
+        alpha: 0.10,
+        particleRad: 10,
+        particleSize: 9,
+        particleLife: 110,
+        particles: 15,
+        rotateScl: -3,
+        reverse: true,
+        color: Color.valueOf("9eabf7"),
+    }),
+    Object.assign(new DrawParticles(), {
+        alpha: 0.10,
+        particleRad: 10,
+        particleSize: 9,
+        particleLife: 110,
+        particles: 15,
+        rotateScl: -3,
+        reverse: true,
+        color: Color.valueOf("efe3ff"),
+    }),
+    new DrawDefault(),
+    new DrawHeatInput(), ),
     buildVisibility: BuildVisibility.shown,
     category: Category.crafting,
     requirements: ItemStack.with(
-        Items.graphite, 110,
-        Items.silicon, 100,
-        Items.tungsten, 75,
-        Items.oxide, 35,),
+    Items.graphite, 110,
+    Items.silicon, 100,
+    Items.tungsten, 75,
+    Items.oxide, 35, ),
 })
 ammoniaPlant.consumeLiquids(LiquidStack.with(
-    Liquids.hydrogen, 0.15,
-    Liquids.nitrogen, 0.05));
+Liquids.hydrogen, 0.15,
+Liquids.nitrogen, 0.05));
 ammoniaPlant.consumePower(0.6);
 
-const watergasStove = new HeatCrafter("watergas-stove");
+const watergasStove = new MultiCrafter("watergas-stove");
 exports.watergasStove = watergasStove;
 Object.assign(watergasStove, {
     craftEffect: Fx.none,
     ambientSound: Sounds.loopSmelter,
     ambientSoundVolume: 0.12,
-    outputLiquid: new LiquidStack(Liquids.hydrogen, 0.45),
-    heatRequirement: 8,
-    maxEfficiency: 5,
     liquidCapacity: 30,
-    craftTime: 60,
     size: 3,
     hasPower: true,
     hasLiquids: true,
     drawer: new DrawMulti(
-        new DrawRegion("-bottom"),
-        new DrawLiquidTile(Liquids.water),
-        new DrawLiquidTile(Liquids.hydrogen),
-        Object.assign(new DrawParticles(), {
-            alpha: 0.15,
-            particleRad: 12,
-            particleSize: 9,
-            particleLife: 110,
-            particles: 15,
-            rotateScl: -3,
-            reverse: true,
-            color: Color.valueOf("9eabf7"),
+    new DrawRegion("-bottom"),
+    new DrawLiquidTile(Liquids.water),
+    new DrawLiquidTile(Liquids.hydrogen),
+    Object.assign(new DrawParticles(), {
+        alpha: 0.15,
+        particleRad: 12,
+        particleSize: 9,
+        particleLife: 110,
+        particles: 15,
+        rotateScl: -3,
+        reverse: true,
+        color: Color.valueOf("9eabf7"),
+    }),
+    new DrawDefault(),
+    new DrawHeatInput(), ),
+    resolvedRecipes: Seq.with(
+    Object.assign(new Recipe(), {
+        input: Object.assign(new IOEntry(), {
+            fluids: LiquidStack.with(Liquids.water, 0.5),
+            items: ItemStack.with(Items.graphite, 1),
+            power: 2.5,
+            heat: 16
         }),
-        new DrawDefault(),
-        new DrawHeatInput(),),
+        output: Object.assign(new IOEntry(), {
+            fluids: LiquidStack.with(Liquids.hydrogen, 0.5),
+        }),
+        craftTime: 30
+    }),
+    Object.assign(new Recipe(), {
+        input: Object.assign(new IOEntry(), {
+            fluids: LiquidStack.with(Liquids.water, 40 / 60),
+            items: ItemStack.with(Items.graphite, 1),
+            power: 3.5,
+            heat: 24
+
+        }),
+        output: Object.assign(new IOEntry(), {
+            fluids: LiquidStack.with(liquid.naturalGas, 20 / 60),
+        }),
+        craftTime: 16
+    }), ),
+    menu: 'detailed',
     buildVisibility: BuildVisibility.shown,
     category: Category.crafting,
     requirements: ItemStack.with(
-        Items.silicon, 100,
-        Items.tungsten, 100,
-        Items.oxide, 55,)
+    Items.silicon, 100,
+    Items.tungsten, 100,
+    Items.oxide, 55, )
 })
-watergasStove.consumeLiquid(Liquids.water, 0.3);
-watergasStove.consumeItem(Items.graphite, 3);
-watergasStove.consumePower(2.5);
 
 const BMAStove = new MultiCrafter("BMA-stove");
 exports.BMAStove = BMAStove;
@@ -602,79 +617,61 @@ Object.assign(BMAStove, {
     rotateDraw: false,
     size: 3,
     liquidCapacity: 30,
-    liquidOutputDirections: [1, 3],
+    fluidOutputDirections: [1, 3],
     rotate: true,
     invertFlip: true,
     regionRotated1: 3,
-    drawer: Object.assign(new DrawRecipe(), {
-        defaultDrawer: 0,
-        drawers: [
-            new DrawMulti(
-                new DrawRegion("-bottom"),
-                new DrawArcSmelt(),
-                Object.assign(new DrawLiquidTile(liquid.naturalGas), {
-                    alpha: 0.5,
-                }),
-                Object.assign(new DrawLiquidTile(liquid.ammonia), {
-                    alpha: 0.5,
-                }), 
-                new DrawDefault(),
-                new DrawLiquidOutputs()),
-
-            new DrawMulti(
-                new DrawRegion("-bottom"),
-                new DrawArcSmelt(),
-                Object.assign(new DrawLiquidTile(liquid.naturalGas), {
-                    alpha: 0.5,
-                }), 
-                new DrawDefault(),
-                new DrawLiquidOutputs())
-        ]
+    drawer: new DrawMulti(
+    new DrawRegion("-bottom"),
+    new DrawArcSmelt(),
+    Object.assign(new DrawLiquidTile(liquid.naturalGas), {
+        alpha: 0.5,
     }),
-    resolvedRecipes: Seq.with(
-        Object.assign(new Recipe(), {
-            input: Object.assign(new IOEntry(), {
-                fluids: LiquidStack.with(
-                    liquid.naturalGas, 0.1,
-                    liquid.ammonia, 0.1
-                ),
-                power: 10,
-
-            }),
-            output: Object.assign(new IOEntry(), {
-                fluids: LiquidStack.with(
-                    Liquids.hydrogen, 0.3,
-                    Liquids.cyanogen, 0.05
-                )
-            }),
-            craftTime: 60
-        }),
-        Object.assign(new Recipe(), {
-            input: Object.assign(new IOEntry(), {
-                fluids: LiquidStack.with(
-                    liquid.naturalGas, 0.1
-                ),
-                items: ItemStack.with(Items.tungsten, 2),
-                power: 8,
-
-            }),
-            output: Object.assign(new IOEntry(), {
-                fluids: LiquidStack.with(
-                    Liquids.hydrogen, 0.2
-                ),
-                items: ItemStack.with(Items.carbide, 1)
-            }),
-            craftTime: 60
-        }),
+    Object.assign(new DrawLiquidTile(liquid.ammonia), {
+        alpha: 0.5,
+    }),
+    new DrawDefault()
     ),
+
+    resolvedRecipes: Seq.with(
+    Object.assign(new Recipe(), {
+        input: Object.assign(new IOEntry(), {
+            fluids: LiquidStack.with(
+            liquid.naturalGas, 0.1,
+            liquid.ammonia, 0.1),
+            power: 10,
+
+        }),
+        output: Object.assign(new IOEntry(), {
+            fluids: LiquidStack.with(
+            Liquids.hydrogen, 0.3,
+            Liquids.cyanogen, 0.05)
+        }),
+        craftTime: 60
+    }),
+    Object.assign(new Recipe(), {
+        input: Object.assign(new IOEntry(), {
+            fluids: LiquidStack.with(
+            liquid.naturalGas, 0.1),
+            items: ItemStack.with(Items.tungsten, 2),
+            power: 8,
+
+        }),
+        output: Object.assign(new IOEntry(), {
+            fluids: LiquidStack.with(
+            Liquids.hydrogen, 0.2),
+            items: ItemStack.with(Items.carbide, 1)
+        }),
+        craftTime: 60
+    }), ),
     menu: 'detailed',
     buildVisibility: BuildVisibility.shown,
     category: Category.crafting,
     requirements: ItemStack.with(
-        Items.silicon, 120,
-        Items.tungsten, 150,
-        Items.oxide, 80,
-        item.siliconNitride, 125,)
+    Items.silicon, 120,
+    Items.tungsten, 150,
+    Items.oxide, 80,
+    item.siliconNitride, 125, )
 })
 
 const laserIncinerator = new Incinerator("laser-incinerator");
@@ -685,10 +682,44 @@ Object.assign(laserIncinerator, {
     hasPower: true,
     hasLiquids: false,
     requirements: ItemStack.with(
-        Items.silicon, 8,
-        Items.tungsten, 12,)
+    Items.silicon, 8,
+    Items.tungsten, 12, )
 })
 laserIncinerator.consumePower(5);
+
+const atmosphericCondenser = new GenericCrafter("atmospheric-condenser");
+exports.atmosphericCondenser = atmosphericCondenser;
+Object.assign(atmosphericCondenser,{
+    craftEffect: Fx.none,
+    size: 3,
+    liquidCapacity: 30,
+    craftTime: 60,
+    hasPower: true,
+    hasLiquids: true,
+    outputLiquid: new LiquidStack(Liquids.water, 5 / 60),
+    drawer: new DrawMulti(
+    new DrawRegion("-bottom"),
+    new DrawLiquidTile(Liquids.water),
+    new DrawDefault(),
+    Object.assign(new DrawParticles(), {
+        alpha: 0.5,
+        particleRad: 10,
+        particleSize: 9,
+        particleLife: 60,
+        particles: 8,
+        rotateScl: -3,
+        reverse: true,
+        color: Color.valueOf("ffffff"),
+    })
+    ),
+    buildVisibility: BuildVisibility.shown,
+    category: Category.production,
+    requirements: ItemStack.with(
+    Items.graphite, 20,
+    Items.beryllium, 40,
+    ),
+})
+atmosphericCondenser.consumePower(1);
 
 const floorCrusher = extend(AttributeCrafter, "floor-crusher", {
     attribute: Attribute.sand,
@@ -698,9 +729,9 @@ const floorCrusher = extend(AttributeCrafter, "floor-crusher", {
     maxBoost: 2,
     craftEffect: Fx.mine,
     drawer: new DrawMulti(
-        new DrawMultiRotationRegion("-rotator", 2, 4, 3.6, 3, false),
-        new DrawMultiRotationRegion("-axis", 2, 4, 0, 3, false),
-        new DrawDefault()),
+    new DrawMultiRotationRegion("-rotator", 2, 4, 3.6, 3, false),
+    new DrawMultiRotationRegion("-axis", 2, 4, 0, 3, false),
+    new DrawDefault()),
     craftTime: 300 / 4,
     size: 2,
     ambientSound: Sounds.loopDrill,
@@ -709,8 +740,8 @@ const floorCrusher = extend(AttributeCrafter, "floor-crusher", {
     buildVisibility: BuildVisibility.shown,
     category: Category.production,
     requirements: ItemStack.with(
-        Items.graphite, 40,
-        Items.beryllium, 25,),
+    Items.graphite, 40,
+    Items.beryllium, 25, ),
     setStats() {
         this.super$setStats();
 
@@ -730,9 +761,9 @@ const largeFloorCrusher = extend(AttributeCrafter, "large-floor-crusher", {
     maxBoost: 2,
     craftEffect: Fx.mineBig,
     drawer: new DrawMulti(
-        new DrawMultiRotationRegion("-rotator", 1.2, 6, 3, 6, false),
-        new DrawMultiRotationRegion("-axis", 1.2, 6, 0, 6, false),
-        new DrawDefault()),
+    new DrawMultiRotationRegion("-rotator", 1.2, 6, 3, 6, false),
+    new DrawMultiRotationRegion("-axis", 1.2, 6, 0, 6, false),
+    new DrawDefault()),
     craftTime: 225 / 9,
     size: 3,
     ambientSound: Sounds.loopDrill,
@@ -757,9 +788,9 @@ const largeFloorCrusher = extend(AttributeCrafter, "large-floor-crusher", {
 
         this.stats.remove(Stat.input);
         this.stats.add(Stat.booster,
-            StatValues.speedBoosters("{0}" + StatUnit.timesSpeed.localized(),
-                consumer.amount, 2,
-                false, liquid => consumer.consumes(liquid)))
+        StatValues.speedBoosters("{0}" + StatUnit.timesSpeed.localized(),
+        consumer.amount, 2,
+        false, liquid => consumer.consumes(liquid)))
 
     },
 });
@@ -788,13 +819,13 @@ Object.assign(ammoniaCollector, {
     displayEfficiency: false,
     craftEffect: ammoniaTurbine,
     drawer: new DrawMulti(
-        new DrawRegion("-bottom"),
-        new DrawBlurSpin("-rotator", 3.6),
-        Object.assign(new DrawLiquidTile(liquid.ammonia), {
-            alpha: 0.75
-        }),
-        new DrawDefault(),
-        new DrawRegion("-top"),),
+    new DrawRegion("-bottom"),
+    new DrawBlurSpin("-rotator", 3.6),
+    Object.assign(new DrawLiquidTile(liquid.ammonia), {
+        alpha: 0.75
+    }),
+    new DrawDefault(),
+    new DrawRegion("-top"), ),
     craftTime: 120,
     size: 3,
     ambientSound: Sounds.loopHum,
@@ -808,8 +839,8 @@ Object.assign(ammoniaCollector, {
     buildVisibility: BuildVisibility.shown,
     category: Category.production,
     requirements: ItemStack.with(
-        Items.graphite, 40,
-        Items.silicon, 75,
-        Items.oxide, 55)
+    Items.graphite, 40,
+    Items.silicon, 75,
+    Items.oxide, 55)
 })
 ammoniaCollector.consumePower(1);
