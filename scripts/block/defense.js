@@ -602,6 +602,22 @@ Object.assign(new RegionPart("-side"), {
     }});
 }};*/
 
+Blocks.duo.ammoTypes.put(
+    item.nickel, Object.assign(new BasicBulletType(3, 7),{
+        width: 7,
+        height: 9,
+        lifetime: 60,
+        ammoMultiplier: 3,
+        reloadMultiplier: 1.2,
+        hitEffect: Fx.hitBulletColor,
+        despawnEffect: Fx.hitBulletColor,
+        hitColor: Pal.copperAmmoBack,
+        backColor: Pal.copperAmmoBack,
+        trailColor: Pal.copperAmmoBack,
+        frontColor: Pal.copperAmmoFront,
+    })
+)
+
 //撕裂
 Blocks.breach.ammoTypes.put(
 item.coagulantIngot, extend(BasicBulletType, 7.5, 85, {

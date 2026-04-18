@@ -24,7 +24,7 @@ Object.assign(assistantBattery,{
         item.siliconNitride, 5
     )
 })
-assistantBattery.consumePowerBuffered(15000);
+assistantBattery.consumePowerBuffered(25000);
 
 const oxidationChamber = extend(ThermalGenerator, "oxidation-chamber", {
     setBars() {

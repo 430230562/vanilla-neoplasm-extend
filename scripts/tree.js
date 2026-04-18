@@ -1,8 +1,14 @@
+const nodeRoot = TechTree.nodeRoot;
+const nodeProduce = TechTree.nodeProduce
+const node = TechTree.node;
+
 const item = require("vne/item");
 const liquid = require("vne/liquid");
 
 const unit = require("vne/unit");
 
+const core = require("vne/block/core");
+const distribution = require("vne/block/distribution");
 const defense = require("vne/block/defense");
 const env = require("vne/block/environment");
 const factory = require("vne/block/factory");
@@ -10,6 +16,7 @@ const liquidBlock = require("vne/block/liquidBlock");
 const power = require("vne/block/power");
 const unitFactory = require("vne/block/unitFactory");
 
+const planet = require("vne/planet");
 const sector = require("vne/sector");
 
 exports.modName = "vne"
@@ -18,7 +25,7 @@ exports.mod = Vars.mods.locateMod(exports.modName);
 //以下为科技树部分
 const addResearch = (content, research, children) => {
 	if (!content) {
-		throw new Error('content is null!');
+		//throw new Error('content is null!');
 	}
 	if (!research.parent) {
 		throw new Error('research.parent is empty!');
@@ -69,8 +76,8 @@ addResearch(item.protein, {
         Objectives.Produce(item.protein),
     )
 }, () => {
-    TechTree.nodeProduce(Items.dormantCyst, () => {}),
-    TechTree.nodeProduce(item.biomassSteel, () => {})
+    nodeProduce(Items.dormantCyst, () => {}),
+    nodeProduce(item.biomassSteel, () => {})
 })
 
 addResearch(item.coagulantIngot, {
@@ -102,18 +109,23 @@ addResearch(liquid.naturalGas, {
     )
 }, () => {})
 
+//distribution
+addResearch(distribution.ductJunction, {
+    parent: "duct"
+},() => {})
+
 //defense
 addResearch(defense.oxideWall, {
     parent: "beryllium-wall",
 }, () => {
-    TechTree.node(defense.oxideWallLarge, () => {
-        TechTree.node(defense.biomassWall, () => {
-            TechTree.node(defense.biomassWallLarge, () => {})
+    node(defense.oxideWallLarge, () => {
+        node(defense.biomassWall, () => {
+            node(defense.biomassWallLarge, () => {})
         })
     }),
-    TechTree.node(defense.explosive, () => {}),
-    TechTree.node(defense.siliconNitrideWall, () => {
-        TechTree.node(defense.siliconNitrideWallLarge, () => {})
+    node(defense.explosive, () => {}),
+    node(defense.siliconNitrideWall, () => {
+        node(defense.siliconNitrideWallLarge, () => {})
     })
 });
 
@@ -130,17 +142,17 @@ addResearch(factory.incubator, {
     parent: "silicon-arc-furnace",
     objectives: Seq.with(Objectives.OnSector(SectorPresets.intersect))
 }, () => {
-    TechTree.node(factory.arkyciteRefinery, () => {
-        TechTree.node(factory.cyanidePlant, () => {}),
-        TechTree.node(factory.BMAStove, () => {})
+    node(factory.arkyciteRefinery, () => {
+        node(factory.cyanidePlant, () => {}),
+        node(factory.BMAStove, () => {})
     })
-    TechTree.node(factory.irradiationChamber, () => {})
+    node(factory.irradiationChamber, () => {})
 });
 
 addResearch(factory.ammoniaPlant, {
     parent: "oxidation-chamber",
 }, () => {
-    TechTree.node(factory.watergasStove, () => {})
+    node(factory.watergasStove, () => {})
 });
 
 addResearch(factory.adsorbent, {
@@ -163,22 +175,22 @@ addResearch(factory.atmosphericCondenser,{
 addResearch(factory.siliconNitrideFurnace, {
     parent: "atmospheric-concentrator",
 }, () => {
-    TechTree.node(factory.biomassSmelter, () => {
-        TechTree.node(factory.stableBiomassSmelter, () => {})
+    node(factory.biomassSmelter, () => {
+        node(factory.stableBiomassSmelter, () => {})
     })
 })
 
 addResearch(factory.floorCrusher,{
     parent: "cliff-crusher"
 },() => {
-    TechTree.node(factory.largeFloorCrusher, () => {})
+    node(factory.largeFloorCrusher, () => {})
 })
 
 addResearch(factory.smallHeatRouter,{
     parent: "small-heat-redirector",
 },() => {
-    TechTree.node(factory.microHeatRedirector, () => {
-        TechTree.node(factory.microHeatRouter, () => {})
+    node(factory.microHeatRedirector, () => {
+        node(factory.microHeatRouter, () => {})
     })
 })
 
@@ -190,9 +202,9 @@ addResearch(liquidBlock.turbopump,{
 addResearch(liquidBlock.biomassConduit, {
     parent: "reinforced-conduit",
 }, () => {
-    TechTree.node(liquidBlock.biomassLiquidJunction,() => {
-        TechTree.node(liquidBlock.biomassLiquidRouter, () => {}),
-        TechTree.node(liquidBlock.biomassConduitBridge ,() => {})
+    node(liquidBlock.biomassLiquidJunction,() => {
+        node(liquidBlock.biomassLiquidRouter, () => {}),
+        node(liquidBlock.biomassConduitBridge ,() => {})
     })
 })
 
@@ -200,7 +212,7 @@ addResearch(liquidBlock.biomassConduit, {
 addResearch(power.nodeDiode,{
     parent: "beam-tower"
 },() => {
-    TechTree.node(power.assistantBattery, () => {})
+    node(power.assistantBattery, () => {})
 })
 
 addResearch(power.oxidationChamber,{
@@ -222,22 +234,22 @@ addResearch(unitFactory.unitIncubator, {
         Objectives.OnSector(sector.fumarole)
     )
 }, () => {
-    TechTree.node(unit.haploid,() => {}),
-    TechTree.node(unit.ribosome, () => {}),
-    TechTree.node(unit.bomber, () => {}),
-    TechTree.node(unitFactory.shaper, Seq.with(
+    node(unit.haploid,() => {}),
+    node(unit.ribosome, () => {}),
+    node(unit.bomber, () => {}),
+    node(unitFactory.shaper, Seq.with(
         Objectives.Research(factory.ammoniaPlant),
         Objectives.OnSector(sector.faultline)
     ), () => {
-        TechTree.node(unit.diploid, () => {}),
-        TechTree.node(unit.lysosome, () => {}),
-        TechTree.node(unit.cytoderm, () => {}),
-        TechTree.node(unitFactory.evolver, Seq.with(
+        node(unit.diploid, () => {}),
+        node(unit.lysosome, () => {}),
+        node(unit.cytoderm, () => {}),
+        node(unitFactory.evolver, Seq.with(
             Objectives.Produce(Items.dormantCyst)
         ), () => {
-            TechTree.node(unit.triploid, () => {}),
-            TechTree.node(unit.trichocyst, () => {}),
-            TechTree.node(unit.adenoma, () => {})
+            node(unit.triploid, () => {}),
+            node(unit.trichocyst, () => {}),
+            node(unit.adenoma, () => {})
         })
     })
 });
@@ -249,8 +261,14 @@ addResearch(sector.fumarole, {
         Objectives.SectorComplete(SectorPresets.intersect),
     )
 }, () => {
-    TechTree.node(sector.faultline, Seq.with(
+    node(sector.faultline, Seq.with(
         Objectives.SectorComplete(sector.fumarole),
         Objectives.Research(factory.ammoniaPlant)
     ), () => {})
 });
+
+
+//seltis
+planet.seltis.techTree = nodeRoot("seltis", planet.seltis, () => {
+    
+})

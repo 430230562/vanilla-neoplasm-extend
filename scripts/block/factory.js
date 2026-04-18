@@ -127,7 +127,7 @@ const arkyciteRefinery = extend(Separator, "arkycite-refinery", {
     setStats() {
         this.super$setStats();
 
-        this.stats.add(Stat.output, StatValues.liquid(liquid.naturalGas, 3, true));
+        this.stats.add(Stat.output, StatValues.liquid(liquid.naturalGas, 5, true));
     },
     setBars() {
         this.super$setBars();
@@ -166,7 +166,7 @@ arkyciteRefinery.buildType = prov(() => extend(Separator.SeparatorBuild, arkycit
         this.super$updateTile();
 
         if (this.efficiency > 0) {
-            let maxProduce = Math.min(this.block.liquidCapacity - this.liquids.get(liquid.naturalGas), Time.delta * this.efficiency * 0.05);
+            let maxProduce = Math.min(this.block.liquidCapacity - this.liquids.get(liquid.naturalGas), Time.delta * this.efficiency * 5 / 60);
             this.liquids.add(liquid.naturalGas, maxProduce)
         }
 
@@ -719,7 +719,7 @@ Object.assign(atmosphericCondenser,{
     Items.beryllium, 40,
     ),
 })
-atmosphericCondenser.consumePower(1);
+atmosphericCondenser.consumePower(0.5);
 
 const floorCrusher = extend(AttributeCrafter, "floor-crusher", {
     attribute: Attribute.sand,

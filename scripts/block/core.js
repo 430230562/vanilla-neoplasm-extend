@@ -157,6 +157,9 @@ new MendFieldAbility(125, 300, 8 * 8))
 
 function PowerCore(name, powerProduction) {
     const core = extend(CoreBlock, name, {
+        hasPower: true,
+        outputsPower: true,
+        consumesPower: false,
         setStats() {
             this.super$setStats();
 
@@ -166,12 +169,12 @@ function PowerCore(name, powerProduction) {
             this.super$setBars();
 
             this.addBar("power", func(e => new Bar(
-            prov(() => Core.bundle.format("bar.poweroutput")),
+            
+            prov(() => Core.bundle.format("bar.poweroutput",Strings.fixed(e.getPowerProduction() * 60, 1))),
             prov(() => Pal.powerBar),
-            floatp(() => powerProduction))))
-            //这里是否可以不需要prov()?
+            floatp(() => 1))))
         }
-    })
+    });
     core.buildType = prov(() => extend(CoreBlock.CoreBuild, core, {
         getPowerProduction() {
             return powerProduction

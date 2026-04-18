@@ -91,9 +91,24 @@ Object.assign(seltis, {
     meshLoader: prov(() => new MultiMesh(
     new NoiseMesh(
     seltis,
+    5,
+    5,
+    0.978,
+    5,
+    0.8,
+    0.5,
+    0.8,
+    Color.valueOf("a8a49c"),
+    Color.valueOf("c0bcb4"),
+    3,
+    0.5,
+    0.5,
+    0),
+    new NoiseMesh(
+    seltis,
     204,
     5,
-    0.998,
+    1.004,
     3,
     0.3,
     1,
@@ -103,23 +118,8 @@ Object.assign(seltis, {
     3,
     0.5,
     0.3,
-    0),
-    // 第二层 NoiseMesh
-    new NoiseMesh(
-    seltis,
-    5,
-    5,
-    1,
-    5,
-    0.6,
-    0.5,
-    0.8,
-    Color.valueOf("a8a49c"),
-    Color.valueOf("c0bcb4"),
-    3,
-    0.5,
-    0.5,
-    0))),
+    0))
+    ),
 
     cloudMeshLoader: () => new MultiMesh(
     new HexSkyMesh(seltis, 0, 0.05, 0.034, 5, Color.valueOf("87723e80"), 3, 0.3, 0.8, 0.3),
@@ -133,7 +133,7 @@ Object.assign(seltis, {
     visible: true,
     bloom: false,
     accessible: true,
-    alwaysUnlocked: true,
+    alwaysUnlocked: false,
     allowLaunchLoadout: true,
     allowLaunchSchematics: true,
     autoAssignPlanet: true,
@@ -141,6 +141,15 @@ Object.assign(seltis, {
     launchCapacityMultiplier: 1,
     clearSectorOnLose: false,
     allowLaunchToNumbered: false,
+    ruleSetter: r => {
+        r.waves = true;
+        r.airUseSpawns = true;
+        r.hideBannedBlocks = true;
+        r.planet = seltis;
+        r.bannedBlocks.addAll(
+            Blocks.conveyor
+        )
+    },
     startSector: 88,
     orbitRadius: 16,
     //defaultEnv: Env.terrestrial | Env.groundOil,
