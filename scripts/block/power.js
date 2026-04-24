@@ -61,7 +61,7 @@ const oxidationChamber = extend(ThermalGenerator, "oxidation-chamber", {
     attribute: Attribute.get("ammonia"),
     displayEfficiencyScale: 1 / 9,
     minEfficiency: 9 - 0.0001,
-    powerProduction: 15 / 9,
+    powerProduction: 18 / 9,
     displayEfficiency: false,
     generateEffect: ammoniaTurbine,
     effectChance: 0.04,

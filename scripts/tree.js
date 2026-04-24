@@ -270,5 +270,24 @@ addResearch(sector.fumarole, {
 
 //seltis
 planet.seltis.techTree = nodeRoot("seltis", planet.seltis, () => {
-    
+    node(distribution.nickelConveyor, () => {
+        node(distribution.manganeseConveyor, () => {
+            node(distribution.biomassConveyor, () => {}),
+            node(distribution.armoredConveyor, () => {})
+        }),
+        node(distribution.junction, () => {
+            node(distribution.router, () => {
+                node(distribution.distributor, () => {}),
+                node(distribution.overflowGate, () => {
+                    node(distribution.underflowGate, () => {}),
+                    node(distribution.sorter, () => {
+                        node(distribution.invertedSorter, () => {})
+                    })
+                })
+            }),
+            node(distribution.nickelBridge, () => {
+                node(distribution.stackBridge, () => {})
+            })
+        })
+    }),
 })

@@ -61,9 +61,13 @@ function BounceBulletType(speed, damage, range) {
                 team, x, y, vel
             } = b;
             let target = null;
-            if (entity instanceof Unit) {
+            /*if (entity instanceof Unit) {
                 target = Units.closestEnemy(team, x, y, range, unit => !b.hasCollided(unit.id));
             } else {
+                target = Units.findEnemyTile(team, x, y, range, build => !b.hasCollided(build.id));
+            }*/
+            target = Units.closestEnemy(team, x, y, range, unit => !b.hasCollided(unit.id));
+            if(target == null){
                 target = Units.findEnemyTile(team, x, y, range, build => !b.hasCollided(build.id));
             }
 

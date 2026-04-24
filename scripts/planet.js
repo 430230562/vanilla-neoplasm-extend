@@ -147,7 +147,7 @@ Object.assign(seltis, {
         r.hideBannedBlocks = true;
         r.planet = seltis;
         r.bannedBlocks.addAll(
-            Blocks.conveyor
+            Blocks.conveyor, Blocks.junction, Blocks.router
         )
     },
     startSector: 88,

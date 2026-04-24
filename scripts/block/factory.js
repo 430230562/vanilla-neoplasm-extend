@@ -100,20 +100,22 @@ const arkyciteRefinery = extend(Separator, "arkycite-refinery", {
     item.protein, 6),
     craftTime: 20,
     liquidCapacity: 160,
+    itemCapacity: 20,
     size: 3,
     hasPower: true,
     hasLiquids: true,
     drawer: new DrawMulti(
     new DrawRegion("-bottom"),
+    new DrawLiquidTile(Liquids.arkycite, 2),
     Object.assign(new DrawParticles(), {
-        alpha: 0.70,
+        alpha: 0.5,
         particleRad: 10,
         particleSize: 9,
-        particleLife: 60,
-        particles: 8,
+        particleLife: 180,
+        particles: 6,
         rotateScl: -3,
         reverse: true,
-        color: Color.valueOf("84a94b"),
+        color: Color.valueOf("848a86"),
     }),
     new DrawDefault()),
     buildVisibility: BuildVisibility.shown,
@@ -496,7 +498,7 @@ Object.assign(ammoniaPlant, {
     craftEffect: Fx.none,
     ambientSound: Sounds.loopSmelter,
     ambientSoundVolume: 0.06,
-    outputLiquid: new LiquidStack(liquid.ammonia, 0.1),
+    outputLiquid: new LiquidStack(liquid.ammonia, 8 / 60),
     heatRequirement: 5,
     maxEfficiency: 3,
     liquidCapacity: 30,
@@ -540,8 +542,8 @@ Object.assign(ammoniaPlant, {
     Items.oxide, 35, ),
 })
 ammoniaPlant.consumeLiquids(LiquidStack.with(
-Liquids.hydrogen, 0.15,
-Liquids.nitrogen, 0.05));
+Liquids.hydrogen, 12 / 60,
+Liquids.nitrogen, 4 / 60));
 ammoniaPlant.consumePower(0.6);
 
 const watergasStove = new MultiCrafter("watergas-stove");
@@ -833,7 +835,7 @@ Object.assign(ammoniaCollector, {
     hasLiquids: true,
     boostScale: 1 / 9,
     itemCapacity: 0,
-    outputLiquid: new LiquidStack(liquid.ammonia, 6 / 60),
+    outputLiquid: new LiquidStack(liquid.ammonia, 8 / 60),
     liquidCapacity: 30,
 
     buildVisibility: BuildVisibility.shown,
