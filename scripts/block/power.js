@@ -241,3 +241,17 @@ exports.biomassReactor = biomassReactor;
 biomassReactor.consumeItem(item.protein, 1);
 biomassReactor.consumeLiquid(liquid.ammonia, 0.1)
     .optional = true;
+    
+const monitor = new BeamNode("monitor");
+exports.monitor = monitor;
+Object.assign(monitor,{
+    range: 1,
+    laserColor1: Color.valueOf("00000000"),
+    laserColor2: Color.valueOf("00000000"),
+    buildVisibility: BuildVisibility.shown,
+    category: Category.power,
+    requirements: ItemStack.with(
+        Items.silicon, 15,
+        item.nickel, 25,
+    )
+})

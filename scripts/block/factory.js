@@ -846,3 +846,24 @@ Object.assign(ammoniaCollector, {
     Items.oxide, 55)
 })
 ammoniaCollector.consumePower(1);
+
+//
+const compressor = new GenericCrafter("compressor");
+exports.compressor = compressor
+Object.assign(compressor, {
+	craftEffect: Fx.pulverizeMedium,
+	outputItem: new ItemStack(Items.graphite, 2),
+	craftTime: 90,
+	size: 2,
+	hasItems: true,
+	hasLiquids: false,
+	alwaysUnlocked: true,
+	
+	buildVisibility: BuildVisibility.shown,
+	category: Category.crafting,
+	requirements: ItemStack.with(
+	    Items.copper, 30,
+		item.nickel, 25,
+	)
+})
+compressor.consumeItem(Items.coal, 3);

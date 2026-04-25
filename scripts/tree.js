@@ -10,6 +10,7 @@ const unit = require("vne/unit");
 const core = require("vne/block/core");
 const distribution = require("vne/block/distribution");
 const defense = require("vne/block/defense");
+const drill = require("vne/block/drill");
 const env = require("vne/block/environment");
 const factory = require("vne/block/factory");
 const liquidBlock = require("vne/block/liquidBlock");
@@ -288,6 +289,28 @@ planet.seltis.techTree = nodeRoot("seltis", planet.seltis, () => {
             node(distribution.nickelBridge, () => {
                 node(distribution.stackBridge, () => {})
             })
+        }),
+        node(power.monitor, () => {})
+    }),
+    node(drill.nickelDrill, () => {
+        node(drill.manganeseDrill, () => {}),
+        node(liquidBlock.hydraulicPump, () => {
+            node(liquidBlock.screwPump, () => {
+                node(liquidBlock.turbopump, () => {})
+            }),
+            node(liquidBlock.conduit, () => {
+                node(liquidBlock.liquidJunction, () => {
+                    node(liquidBlock.liquidRouter, () => {
+                        node(liquidBlock.liquidContainer, () => {
+                            node(liquidBlock.liquidTank, () => {})
+                        }),
+                        node(liquidBlock.conduitBridge, () => {
+                            node(liquidBlock.biomassConduitBridge, () => {})
+                        })
+                    })
+                })
+            })
         })
     }),
+    node(factory.compressor, () => {})
 })

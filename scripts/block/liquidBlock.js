@@ -1,5 +1,38 @@
 const item = require("vne/item");
 
+const hydraulicPump = new Pump("hydraulic-pump");
+exports.hydraulicPump = hydraulicPump;
+Object.assign(hydraulicPump, {
+	pumpAmount: 10 / 60,
+	buildVisibility: BuildVisibility.shown,
+	category: Category.liquid,
+	requirements: ItemStack.with(
+		Items.metaglass, 10,
+		Items.copper, 8,
+		item.nickel, 8,
+	)
+})
+
+const screwPump = new Pump("screw-pump");
+exports.screwPump = screwPump;
+Object.assign(screwPump, {
+	size: 2,
+	pumpAmount: 15 / 60,
+	health: 240,
+	liquidCapacity: 60,
+	hasPower: true,
+	buildVisibility: BuildVisibility.shown,
+	category: Category.liquid,
+	requirements: ItemStack.with(
+	    Items.copper, 35,
+		Items.silicon, 20,
+		Items.metaglass, 50,
+		item.nickel, 35,
+		item.manganese, 35,
+	)
+})
+screwPump.consumePower(0.3);
+
 const turbopump = extend(Pump, "turbopump", {
     hasPower: true,
     consumesPower: true,
@@ -52,6 +85,32 @@ turbopump.consumeLiquid(Liquids.hydrogen, 3 / 60)
     .optional = true;
 turbopump.consumePower(1);
 
+const currentConduit = new Conduit("current-conduit");
+exports.currentConduit = currentConduit;
+Object.assign(currentConduit, {
+	health: 45,
+	liquidCapacity: 25,
+	liquidPressure: 1,
+	buildVisibility: BuildVisibility.shown,
+	category: Category.liquid,
+	requirements: ItemStack.with(
+	    Items.graphite, 1,
+		Items.metaglass, 1,
+	),
+	hasPower: true,
+    consumesPower: true,
+    outputsPower: true,
+    conductivePower: true,
+}),
+currentConduit.buildType = prov(() => extend(Conduit.ConduitBuild, currentConduit, {
+    status() {
+        if (Mathf.equal(this.power.status, 0, 0.001)) return BlockStatus.noInput;
+        if (Mathf.equal(this.power.status, 1, 0.001)) return BlockStatus.active;
+        return BlockStatus.noOutput;
+    }
+}))
+currentConduit.consumePowerBuffered(50)
+
 const biomassConduit = new ArmoredConduit("biomass-conduit");
 exports.biomassConduit = biomassConduit;
 Object.assign(biomassConduit, {
@@ -79,6 +138,30 @@ biomassConduit.buildType = prov(() => extend(ArmoredConduit.ArmoredConduitBuild,
 }))
 biomassConduit.consumePowerBuffered(250)
 
+const liquidRouter = new LiquidRouter("liquid-router");
+exports.liquidRouter = liquidRouter;
+Object.assign(liquidRouter, {
+	buildVisibility: BuildVisibility.shown,
+	category: Category.liquid,
+	requirements: ItemStack.with(
+		Items.graphite, 4,
+		Items.metaglass, 2
+	),
+	liquidCapacity: 50,
+	hasPower: true,
+    consumesPower: true,
+    outputsPower: true,
+    conductivePower: true,
+});
+liquidRouter.buildType = prov(() => extend(LiquidRouter.LiquidRouterBuild, liquidRouter, {
+    status() {
+        if (Mathf.equal(this.power.status, 0, 0.001)) return BlockStatus.noInput;
+        if (Mathf.equal(this.power.status, 1, 0.001)) return BlockStatus.active;
+        return BlockStatus.noOutput;
+    }
+}))
+liquidRouter.consumePowerBuffered(75)
+
 const biomassLiquidRouter = new LiquidRouter("biomass-liquid-router");
 exports.biomassLiquidRouter = biomassLiquidRouter;
 Object.assign(biomassLiquidRouter, {
@@ -87,7 +170,7 @@ Object.assign(biomassLiquidRouter, {
     requirements: ItemStack.with(
     Items.beryllium, 3,
     item.biomassSteel, 1),
-    liquidCapacity: 75,
+    liquidCapacity: 125,
     hasPower: true,
     consumesPower: true,
     outputsPower: true,
@@ -105,6 +188,81 @@ biomassLiquidRouter.buildType = prov(() => extend(LiquidRouter.LiquidRouterBuild
     }
 }))
 biomassLiquidRouter.consumePowerBuffered(750)
+
+const liquidContainer = new LiquidRouter("liquid-container");
+exports.liquidContainer = liquidContainer;
+Object.assign(liquidContainer, {
+	buildVisibility: BuildVisibility.shown,
+	category: Category.liquid,
+	requirements: ItemStack.with(
+		Items.graphite, 5,
+		Items.metaglass, 15,
+		item.manganese, 15,
+	),
+	liquidCapacity: 500,
+	size: 2,
+	hasPower: true,
+    consumesPower: true,
+    outputsPower: true,
+    conductivePower: true,
+})
+liquidContainer.buildType = prov(() => extend(LiquidRouter.LiquidRouterBuild, liquidContainer, {
+    status() {
+        if (Mathf.equal(this.power.status, 0, 0.001)) return BlockStatus.noInput;
+        if (Mathf.equal(this.power.status, 1, 0.001)) return BlockStatus.active;
+        return BlockStatus.noOutput;
+    }
+}))
+liquidContainer.consumePowerBuffered(1500)
+
+const liquidTank = new LiquidRouter("liquid-tank");
+exports.liquidTank = liquidTank;
+Object.assign(liquidTank, {
+	buildVisibility: BuildVisibility.shown,
+	category: Category.liquid,
+	requirements: ItemStack.with(
+	    Items.graphite, 15,
+		Items.metaglass, 45,
+		item.manganese, 20,
+	),
+	liquidCapacity: 2000,
+	size: 3,
+	hasPower: true,
+    consumesPower: true,
+    outputsPower: true,
+    conductivePower: true,
+})
+liquidTank.buildType = prov(() => extend(LiquidRouter.LiquidRouterBuild, liquidTank, {
+    status() {
+        if (Mathf.equal(this.power.status, 0, 0.001)) return BlockStatus.noInput;
+        if (Mathf.equal(this.power.status, 1, 0.001)) return BlockStatus.active;
+        return BlockStatus.noOutput;
+    }
+}))
+liquidTank.consumePowerBuffered(6000)
+
+const liquidJunction = new LiquidJunction("liquid-junction");
+exports.liquidJunction = liquidJunction;
+Object.assign(liquidJunction, {
+	buildVisibility: BuildVisibility.shown,
+	category: Category.liquid,
+	requirements: ItemStack.with(
+		Items.graphite, 4,
+		Items.metaglass, 8
+	),
+	hasPower: true,
+    consumesPower: true,
+    outputsPower: true,
+    conductivePower: true,
+})
+liquidJunction.buildType = prov(() => extend(LiquidJunction.LiquidJunctionBuild, liquidJunction, {
+    status() {
+        if (Mathf.equal(this.power.status, 0, 0.001)) return BlockStatus.noInput;
+        if (Mathf.equal(this.power.status, 1, 0.001)) return BlockStatus.active;
+        return BlockStatus.noOutput;
+    }
+}))
+liquidJunction.consumePowerBuffered(75)
 
 const biomassLiquidJunction = new LiquidJunction("biomass-liquid-junction");
 exports.biomassLiquidJunction = biomassLiquidJunction;
@@ -132,6 +290,41 @@ biomassLiquidJunction.buildType = prov(() => extend(LiquidJunction.LiquidJunctio
 }))
 biomassLiquidJunction.consumePowerBuffered(750)
 
+const conduitBridge = new LiquidBridge("conduit-bridge");
+exports.conduitBridge = conduitBridge;
+Object.assign(conduitBridge, {
+	fadeIn: false,
+	moveArrows: false,
+	range: 6,
+	arrowSpacing: 6,
+	buildVisibility: BuildVisibility.shown,
+	category: Category.liquid,
+	requirements: ItemStack.with(
+		Items.graphite, 8,
+		Items.metaglass, 15,
+	),
+	hasPower: true,
+    consumesPower: true,
+    outputsPower: true,
+    conductivePower: true,
+})
+conduitBridge.buildType = prov(() => extend(LiquidBridge.LiquidBridgeBuild, conduitBridge, {
+	status() {
+		if (Mathf.equal(this.power.status, 0, 0.001)) return BlockStatus.noInput;
+		if (Mathf.equal(this.power.status, 1, 0.001)) return BlockStatus.active;
+		return BlockStatus.noOutput;
+	},
+	updateTransport(other) {
+		this.super$updateTransport(other);
+		
+		//怀疑没这么简单，但真就是把俩电网并起来这么简单
+		if (other.power.graph != this.power.graph) {
+			this.power.graph.addGraph(other.power.graph)
+		}
+	},
+}))
+conduitBridge.consumePowerBuffered(100)
+
 const biomassConduitBridge = new LiquidBridge("biomass-conduit-bridge");
 exports.biomassConduitBridge = biomassConduitBridge;
 Object.assign(biomassConduitBridge, {
@@ -143,7 +336,7 @@ Object.assign(biomassConduitBridge, {
     conductivePower: true,
     underBullets: true,
     health: 750,
-    range: 8,
+    range: 10,
     arrowSpacing: 6,
     buildVisibility: BuildVisibility.shown,
     category: Category.liquid,
@@ -214,6 +407,8 @@ biomassConduitBridge.buildType = prov(() => extend(LiquidBridge.LiquidBridgeBuil
 biomassConduitBridge.consumePowerBuffered(250)
 //biomassConduitBridge.consumePower(0.3);
 
+currentConduit.junctionReplacement = liquidJunction;
+currentConduit.bridgeReplacement = conduitBridge;
 biomassConduit.junctionReplacement = biomassLiquidJunction;
 biomassConduit.bridgeReplacement = biomassConduitBridge;
 

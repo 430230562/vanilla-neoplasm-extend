@@ -1210,6 +1210,7 @@ Object.assign(metastasis, {
     segmentScl: 3,
     segmentPhase: 5,
     segmentMag: 1.5,
+    crushDamage: 0.75,
     outlineColor: Pal.neoplasmOutline,
     envDisabled: Env.none,
     healFlash: true,
