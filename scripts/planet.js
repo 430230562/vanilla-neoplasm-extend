@@ -133,7 +133,7 @@ Object.assign(seltis, {
     visible: true,
     bloom: false,
     accessible: true,
-    alwaysUnlocked: false,
+    alwaysUnlocked: true,
     allowLaunchLoadout: true,
     allowLaunchSchematics: true,
     autoAssignPlanet: true,

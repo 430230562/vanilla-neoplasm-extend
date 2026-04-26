@@ -2,37 +2,36 @@ const item = require('vne/item')
 const liquid = require('vne/liquid')
 const status = require('vne/status')
 
-Attribute.add("biomass");
-Attribute.add("arkycite");
-Attribute.add("ammonia");
+Attribute.add("ammonia");//氨气
+Attribute.add("biomass");//生物质
+Attribute.add("floor-sand");//地面沙
 
 //地面挖沙机
-Blocks.stone.attributes.set(Attribute.sand, 1);
-Blocks.hotrock.attributes.set(Attribute.sand, 2);
-Blocks.magmarock.attributes.set(Attribute.sand, 2);
-Blocks.basalt.attributes.set(Attribute.sand, 2);
-Blocks.darksandWater.attributes.set(Attribute.sand, 2);
-Blocks.darksandTaintedWater.attributes.set(Attribute.sand, 2);
-Blocks.regolith.attributes.set(Attribute.sand, 1);
-Blocks.yellowStone.attributes.set(Attribute.sand, 1.5);
-Blocks.slag.attributes.set(Attribute.sand, 1.5);
-Blocks.yellowStonePlates.attributes.set(Attribute.sand, 1.5);
-Blocks.rhyolite.attributes.set(Attribute.sand, 1);
-Blocks.rhyoliteCrater.attributes.set(Attribute.sand, 1);
-Blocks.roughRhyolite.attributes.set(Attribute.sand, 1);
-Blocks.carbonStone.attributes.set(Attribute.sand, 0.7);
-Blocks.ferricStone.attributes.set(Attribute.sand, 0.5);
-Blocks.beryllicStone.attributes.set(Attribute.sand, 1.2);
-Blocks.redStone.attributes.set(Attribute.sand, 1.5);
-Blocks.denseRedStone.attributes.set(Attribute.sand, 1.5);
-Blocks.sandWater.attributes.set(Attribute.sand, 2);
-Blocks.water.attributes.set(Attribute.sand, 2);
-Blocks.deepwater.attributes.set(Attribute.sand, 2);
-Blocks.sand.attributes.set(Attribute.sand, 2);
+Blocks.stone.attributes.set(Attribute.get("floor-sand"), 1);
+Blocks.hotrock.attributes.set(Attribute.get("floor-sand"), 2);
+Blocks.magmarock.attributes.set(Attribute.get("floor-sand"), 2);
+Blocks.basalt.attributes.set(Attribute.get("floor-sand"), 2);
+Blocks.darksandWater.attributes.set(Attribute.get("floor-sand"), 2);
+Blocks.darksandTaintedWater.attributes.set(Attribute.get("floor-sand"), 2);
+Blocks.regolith.attributes.set(Attribute.get("floor-sand"), 1);
+Blocks.yellowStone.attributes.set(Attribute.get("floor-sand"), 1.5);
+Blocks.slag.attributes.set(Attribute.get("floor-sand"), 1.5);
+Blocks.yellowStonePlates.attributes.set(Attribute.get("floor-sand"), 1.5);
+Blocks.rhyolite.attributes.set(Attribute.get("floor-sand"), 1);
+Blocks.rhyoliteCrater.attributes.set(Attribute.get("floor-sand"), 1);
+Blocks.roughRhyolite.attributes.set(Attribute.get("floor-sand"), 1);
+Blocks.carbonStone.attributes.set(Attribute.get("floor-sand"), 0.7);
+Blocks.ferricStone.attributes.set(Attribute.get("floor-sand"), 0.5);
+Blocks.beryllicStone.attributes.set(Attribute.get("floor-sand"), 1.2);
+Blocks.redStone.attributes.set(Attribute.get("floor-sand"), 1.5);
+Blocks.denseRedStone.attributes.set(Attribute.get("floor-sand"), 1.5);
+Blocks.sandWater.attributes.set(Attribute.get("floor-sand"), 2);
+Blocks.water.attributes.set(Attribute.get("floor-sand"), 2);
+Blocks.deepwater.attributes.set(Attribute.get("floor-sand"), 2);
+Blocks.sand.attributes.set(Attribute.get("floor-sand"), 2);
 
 //arkycite
 Blocks.arkyicStone.attributes.set(Attribute.get("biomass"), 0.5)
-Blocks.arkyicStone.attributes.set(Attribute.get("arkycite"), 1.5)
 
 //盐水
 const brineFloorShallow = new Floor("brine-floor-shallow");
@@ -79,8 +78,12 @@ Object.assign(brineFloorDeep,{
 })
 
 //草
+const redGrassWall = new StaticWall("red-grass-wall");
+
 const redGrass = new Floor("red-grass");
 redGrass.attributes.set(Attribute.water, 0.1);
+
+const yellowGrassWall = new StaticWall("yellow-grass-wall");
 
 const yellowGrass = new Floor("yellow-grass");
 yellowGrass.attributes.set(Attribute.water, 0.1);
@@ -91,11 +94,12 @@ Object.assign(flower,{
 	hasShadow: false,
 })
 
+const darkSalt = new Floor("dark-salt");
+darkSalt.variants = 0;
+
 //neoplasm
 Blocks.redStone.attributes.set(Attribute.get("biomass"), 0.75);
-Blocks.redStone.attributes.set(Attribute.get("arkycite"), 1);
 Blocks.denseRedStone.attributes.set(Attribute.get("biomass"), 0.75);
-Blocks.denseRedStone.attributes.set(Attribute.get("arkycite"), 1);
 
 const neoplasmWall = new StaticWall("neoplasm-wall");
 
@@ -120,7 +124,6 @@ Object.assign(neoplasmSand, {
 	variants: 3,
 })
 neoplasmSand.attributes.set(Attribute.get("biomass"), 1.25);
-neoplasmSand.attributes.set(Attribute.get("arkycite"), 0.75);
 neoplasmSand.attributes.set(Attribute.water, -1);
 
 const neoplasmShallow = new Floor("neoplasm-shallow");
@@ -152,3 +155,8 @@ Object.assign(neoplasm, {
 	liquidMultiplier: 0.5,
 	damageTaken: 0.375,
 })
+
+new OreBlock("ore-nickel",item.nickel);//2
+new OreBlock("ore-manganese",item.manganese);//3
+//new OreBlock("ore-chromium", item.chromium);//4
+//new OreBlock("ore-iridium",item.iridium);//5
