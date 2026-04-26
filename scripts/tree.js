@@ -25,57 +25,56 @@ exports.mod = Vars.mods.locateMod(exports.modName);
 //新旧模组检测替换
 //以下为科技树部分
 const addResearch = (content, research, children) => {
-	if (!content) {
-		//throw new Error('content is null!');
-	}
-	if (!research.parent) {
-		throw new Error('research.parent is empty!');
-	}
-	var researchName = research.parent;
-	var customRequirements = research.requirements;
-	var objectives = research.objectives;
+    if (!content) {
+        //throw new Error('content is null!');
+    }
+    if (!research.parent) {
+        throw new Error('research.parent is empty!');
+    }
+    var researchName = research.parent;
+    var customRequirements = research.requirements;
+    var objectives = research.objectives;
 
-	var lastNode = TechTree.all.find(boolf(t => t.content == content));
-	if (lastNode != null) {
-		lastNode.remove();
-	}
+    var lastNode = TechTree.all.find(boolf(t => t.content == content));
+    if (lastNode != null) {
+        lastNode.remove();
+    }
 
-	//var node = new TechTree.TechNode(null, content, customRequirements !== undefined ? customRequirements : content.researchRequirements());
-	if(customRequirements != null && objectives != null){
-	    var node = new TechTree.node(content, customRequirements, objectives, children);
-	}else{
-	    var node = new TechTree.node(content, children);
-	}
-	var currentMod = exports.mod;
-	if (objectives) {
-		node.objectives.addAll(objectives);
-	}
+    //var node = new TechTree.TechNode(null, content, customRequirements !== undefined ? customRequirements : content.researchRequirements());
+    if (customRequirements != null && objectives != null) {
+        var node = new TechTree.node(content, customRequirements, objectives, children);
+    } else {
+        var node = new TechTree.node(content, children);
+    }
+    var currentMod = exports.mod;
+    if (objectives) {
+        node.objectives.addAll(objectives);
+    }
 
-	if (node.parent != null) {
-		node.parent.children.remove(node);
-	}
+    if (node.parent != null) {
+        node.parent.children.remove(node);
+    }
 
-	//寻找父级节点
-	var parent = TechTree.all.find(boolf(t => t.content.name.equals(researchName) || t.content.name.equals(currentMod.name + "-" + researchName)));
+    //寻找父级节点
+    var parent = TechTree.all.find(boolf(t => t.content.name.equals(researchName) || t.content.name.equals(currentMod.name + "-" + researchName)));
 
-	if (parent == null) {
-		throw new Error("Content '" + researchName + "' isn't in the tech tree, but '" + content.name + "' requires it to be researched.");
-	}
+    if (parent == null) {
+        throw new Error("Content '" + researchName + "' isn't in the tech tree, but '" + content.name + "' requires it to be researched.");
+    }
 
-	//添加子节点
-	if (!parent.children.contains(node)) {
-		parent.children.add(node);
-	}
-	//重定父级
-	node.parent = parent;
+    //添加子节点
+    if (!parent.children.contains(node)) {
+        parent.children.add(node);
+    }
+    //重定父级
+    node.parent = parent;
 };
 
 //item
 addResearch(item.protein, {
     parent: "beryllium",
     objectives: Seq.with(
-        Objectives.Produce(item.protein),
-    )
+    Objectives.Produce(item.protein), )
 }, () => {
     nodeProduce(Items.dormantCyst, () => {}),
     nodeProduce(item.biomassSteel, () => {})
@@ -84,36 +83,32 @@ addResearch(item.protein, {
 addResearch(item.coagulantIngot, {
     parent: "oxide",
     objectives: Seq.with(
-        Objectives.Produce(item.coagulantIngot),
-    )
+    Objectives.Produce(item.coagulantIngot), )
 }, () => {})
 
-addResearch(item.siliconNitride,{
+addResearch(item.siliconNitride, {
     parent: "oxide",
     objectives: Seq.with(
-        Objectives.Produce(item.siliconNitride),
-    )
-},() => {})
+    Objectives.Produce(item.siliconNitride), )
+}, () => {})
 
 //liquid
 addResearch(liquid.ammonia, {
     parent: "nitrogen",
     objectives: Seq.with(
-        Objectives.Produce(liquid.ammonia),
-    )
+    Objectives.Produce(liquid.ammonia), )
 }, () => {})
 
 addResearch(liquid.naturalGas, {
     parent: "hydrogen",
     objectives: Seq.with(
-        Objectives.Produce(liquid.naturalGas),
-    )
+    Objectives.Produce(liquid.naturalGas), )
 }, () => {})
 
 //distribution
 addResearch(distribution.ductJunction, {
     parent: "duct"
-},() => {})
+}, () => {})
 
 //defense
 addResearch(defense.oxideWall, {
@@ -130,9 +125,9 @@ addResearch(defense.oxideWall, {
     })
 });
 
-addResearch(defense.neoplasmCollecter,{
+addResearch(defense.neoplasmCollecter, {
     parent: "radar",
-},() => {})
+}, () => {})
 
 addResearch(defense.defuse, {
     parent: "diffuse",
@@ -165,13 +160,13 @@ addResearch(factory.laserIncinerator, {
     objectives: Seq.with(Objectives.Research(factory.adsorbent))
 }, () => {})
 
-addResearch(factory.ammoniaCollector,{
+addResearch(factory.ammoniaCollector, {
     parent: "vent-condenser",
-},() => {})
+}, () => {})
 
-addResearch(factory.atmosphericCondenser,{
+addResearch(factory.atmosphericCondenser, {
     parent: "vent-condenser",
-},() => {})
+}, () => {})
 
 addResearch(factory.siliconNitrideFurnace, {
     parent: "atmospheric-concentrator",
@@ -181,76 +176,78 @@ addResearch(factory.siliconNitrideFurnace, {
     })
 })
 
-addResearch(factory.floorCrusher,{
+addResearch(factory.floorCrusher, {
     parent: "cliff-crusher"
-},() => {
+}, () => {
     node(factory.largeFloorCrusher, () => {})
 })
 
-addResearch(factory.smallHeatRouter,{
+addResearch(factory.smallHeatRouter, {
     parent: "small-heat-redirector",
-},() => {
+}, () => {
     node(factory.microHeatRedirector, () => {
         node(factory.microHeatRouter, () => {})
     })
 })
 
 //liquid
-addResearch(liquidBlock.turbopump,{
+addResearch(liquidBlock.turbopump, {
     parent: "reinforced-pump",
 }, () => {})
 
 addResearch(liquidBlock.biomassConduit, {
     parent: "reinforced-conduit",
 }, () => {
-    node(liquidBlock.biomassLiquidJunction,() => {
+    node(liquidBlock.biomassLiquidJunction, () => {
         node(liquidBlock.biomassLiquidRouter, () => {}),
-        node(liquidBlock.biomassConduitBridge ,() => {})
+        node(liquidBlock.biomassConduitBridge, () => {})
     })
 })
 
 //power
-addResearch(power.nodeDiode,{
+addResearch(power.nodeDiode, {
     parent: "beam-tower"
-},() => {
+}, () => {
     node(power.assistantBattery, () => {})
 })
 
-addResearch(power.oxidationChamber,{
+addResearch(power.oxidationChamber, {
     parent: "turbine-condenser"
-},() => {});
+}, () => {});
 
-addResearch(power.biomassReactor, { 
+addResearch(power.biomassReactor, {
     parent: "chemical-combustion-chamber",
     objectives: Seq.with(
-        Objectives.Research(factory.ammoniaPlant),
-        Objectives.SectorComplete(sector.faultline)
-    )
+    Objectives.Research(factory.ammoniaPlant),
+    Objectives.SectorComplete(sector.faultline))
 }, () => {});
 
 //unitFactory
-addResearch(unitFactory.unitIncubator, { 
+addResearch(unitFactory.unitIncubator, {
     parent: "tank-fabricator",
     objectives: Seq.with(
-        Objectives.OnSector(sector.fumarole)
-    )
+    Objectives.OnSector(sector.fumarole))
 }, () => {
-    node(unit.haploid,() => {}),
+    node(unit.haploid, () => {}),
     node(unit.ribosome, () => {}),
     node(unit.bomber, () => {}),
     node(unitFactory.shaper, Seq.with(
-        Objectives.Research(factory.ammoniaPlant),
-        Objectives.OnSector(sector.faultline)
-    ), () => {
+    Objectives.Research(factory.ammoniaPlant),
+    Objectives.OnSector(sector.faultline)), () => {
         node(unit.diploid, () => {}),
         node(unit.lysosome, () => {}),
         node(unit.cytoderm, () => {}),
         node(unitFactory.evolver, Seq.with(
-            Objectives.Produce(Items.dormantCyst)
-        ), () => {
+        Objectives.Produce(Items.dormantCyst)), () => {
             node(unit.triploid, () => {}),
             node(unit.trichocyst, () => {}),
-            node(unit.adenoma, () => {})
+            node(unit.adenoma, () => {}),
+            node(unitFactory.evolver, () => {
+                node(unit.polyp, () => {}),
+                node(UnitTypes.renale, () => {}),
+                node(unit.sarcoma, () => {}),
+                node(unit.metastasis, () => {})
+            })
         })
     })
 });
@@ -259,13 +256,11 @@ addResearch(unitFactory.unitIncubator, {
 addResearch(sector.fumarole, {
     parent: "intersect",
     objectives: Seq.with(
-        Objectives.SectorComplete(SectorPresets.intersect),
-    )
+    Objectives.SectorComplete(SectorPresets.intersect), )
 }, () => {
     node(sector.faultline, Seq.with(
-        Objectives.SectorComplete(sector.fumarole),
-        Objectives.Research(factory.ammoniaPlant)
-    ), () => {})
+    Objectives.SectorComplete(sector.fumarole),
+    Objectives.Research(factory.ammoniaPlant)), () => {})
 });
 
 
@@ -289,28 +284,35 @@ planet.seltis.techTree = nodeRoot("seltis", planet.seltis, () => {
             node(distribution.nickelBridge, () => {
                 node(distribution.stackBridge, () => {})
             })
-        }),
-        node(power.monitor, () => {})
+        })
     }),
     node(drill.nickelDrill, () => {
-        node(drill.manganeseDrill, () => {}),
+        node(drill.manganeseDrill, () => {})
+    }),
+    node(liquidBlock.currentConduit, () => {
+        node(liquidBlock.biomassConduit, () => {}),
+        node(liquidBlock.liquidJunction, () => {
+            node(liquidBlock.biomassLiquidJunction, () => {}),
+            node(liquidBlock.liquidRouter, () => {
+                node(liquidBlock.biomassLiquidRouter, () => {}),
+                node(liquidBlock.liquidContainer, () => {
+                    node(liquidBlock.liquidTank, () => {})
+                }),
+                node(liquidBlock.conduitBridge, () => {
+                    node(liquidBlock.biomassConduitBridge, () => {})
+                })
+            })
+        }),
         node(liquidBlock.hydraulicPump, () => {
             node(liquidBlock.screwPump, () => {
                 node(liquidBlock.turbopump, () => {})
-            }),
-            node(liquidBlock.conduit, () => {
-                node(liquidBlock.liquidJunction, () => {
-                    node(liquidBlock.liquidRouter, () => {
-                        node(liquidBlock.liquidContainer, () => {
-                            node(liquidBlock.liquidTank, () => {})
-                        }),
-                        node(liquidBlock.conduitBridge, () => {
-                            node(liquidBlock.biomassConduitBridge, () => {})
-                        })
-                    })
-                })
             })
         })
     }),
-    node(factory.compressor, () => {})
+    node(factory.compressor, () => {
+        node(factory.arcFurnace, () => {}),
+        node(factory.desalination, () => {})
+    }),
+    node(power.monitor, () => {}),
+    node(core.ash, () => {})
 })

@@ -108,7 +108,7 @@ const arkyciteRefinery = extend(Separator, "arkycite-refinery", {
     new DrawRegion("-bottom"),
     new DrawLiquidTile(Liquids.arkycite, 2),
     Object.assign(new DrawParticles(), {
-        alpha: 0.5,
+        alpha: 0.8,
         particleRad: 10,
         particleSize: 9,
         particleLife: 180,
@@ -724,7 +724,7 @@ Object.assign(atmosphericCondenser,{
 atmosphericCondenser.consumePower(0.5);
 
 const floorCrusher = extend(AttributeCrafter, "floor-crusher", {
-    attribute: Attribute.sand,
+    attribute: Attribute.get("floor-sand"),
     baseEfficiency: 0,
     minEfficiency: 0.1,
     boostScale: 1 / 4,
@@ -756,7 +756,7 @@ exports.floorCrusher = floorCrusher;
 floorCrusher.consumePower(10 / 60);
 
 const largeFloorCrusher = extend(AttributeCrafter, "large-floor-crusher", {
-    attribute: Attribute.sand,
+    attribute: Attribute.get("floor-sand"),
     baseEfficiency: 0,
     minEfficiency: 0.1,
     boostScale: 1 / 9,
@@ -857,7 +857,6 @@ Object.assign(compressor, {
 	size: 2,
 	hasItems: true,
 	hasLiquids: false,
-	alwaysUnlocked: true,
 	
 	buildVisibility: BuildVisibility.shown,
 	category: Category.crafting,
@@ -867,3 +866,79 @@ Object.assign(compressor, {
 	)
 })
 compressor.consumeItem(Items.coal, 3);
+
+const arcFurnace = new MultiCrafter("arc-furnace");
+exports.arcFurnace = arcFurnace;
+Object.assign(arcFurnace,{
+    ambientSound: Sounds.loopSmelter,
+    ambientSoundVolume: 0.11,
+    craftEffect: Fx.none,
+    itemCapacity: 20,
+    hasPower: true,
+    hasItems: true,
+    rotateDraw: false,
+    size: 3,
+    drawer: new DrawMulti(
+    new DrawRegion("-bottom"),
+    new DrawArcSmelt(),
+    new DrawDefault()
+    ),
+    resolvedRecipes: Seq.with(
+    Object.assign(new Recipe(), {
+        input: Object.assign(new IOEntry(), {
+            items: ItemStack.with(Items.graphite, 1, Items.sand, 4),
+            power: 4,
+
+        }),
+        output: Object.assign(new IOEntry(), {
+            items: ItemStack.with(Items.silicon, 4)
+        }),
+        craftTime: 60
+    }),
+    Object.assign(new Recipe(), {
+        input: Object.assign(new IOEntry(), {
+            items: ItemStack.with(item.salt, 2, Items.sand, 3),
+            power: 4,
+        }),
+        output: Object.assign(new IOEntry(), {
+            items: ItemStack.with(Items.metaglass, 4)
+        }),
+        craftTime: 60
+    })
+    ),
+    menu: 'detailed',
+    buildVisibility: BuildVisibility.shown,
+    category: Category.crafting,
+    requirements: ItemStack.with(
+        Items.graphite, 80,
+        Items.copper, 55,
+		item.nickel, 25,
+	)
+})
+
+const desalination = new GenericCrafter("desalination");
+exports.desalination = desalination;
+Object.assign(desalination,{
+    craftEffect: Fx.none,
+	outputItem: new ItemStack(item.salt, 1),
+	outputLiquid: new LiquidStack(Liquids.water, 20 / 60),
+	craftTime: 120,
+	size: 2,
+	hasItems: true,
+	hasLiquids: true,
+	drawer: new DrawMulti(
+    new DrawRegion("-bottom"),
+    new DrawLiquidTile(liquid.brine, 1),
+    new DrawLiquidTile(Liquids.water, 1),
+    new DrawDefault(),
+    ),
+	buildVisibility: BuildVisibility.shown,
+	category: Category.crafting,
+	requirements: ItemStack.with(
+	    Items.graphite, 10,
+	    Items.silicon, 20,
+		item.nickel, 25,
+	)
+})
+desalination.consumePower(0.3);
+desalination.consumeLiquid(liquid.brine, 20 / 60)

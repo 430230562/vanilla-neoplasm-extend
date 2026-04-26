@@ -8,7 +8,6 @@ Object.assign(nickelDrill, {
 	drillTime: 480,
 	hardnessDrillMultiplier: 0,
 	size: 2,
-	alwaysUnlocked: true,
 	buildVisibility: BuildVisibility.shown,
 	category: Category.production,
 	requirements: ItemStack.with(
