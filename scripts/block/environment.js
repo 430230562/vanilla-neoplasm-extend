@@ -77,22 +77,13 @@ Object.assign(brineFloorDeep,{
 	drownTime:240
 })
 
-//草
-const redGrassWall = new StaticWall("red-grass-wall");
-
-const redGrass = new Floor("red-grass");
-redGrass.attributes.set(Attribute.water, 0.1);
-
-const yellowGrassWall = new StaticWall("yellow-grass-wall");
-
-const yellowGrass = new Floor("yellow-grass");
-yellowGrass.attributes.set(Attribute.water, 0.1);
-
 const flower = new Prop("flower");
 Object.assign(flower,{
 	variants: 6,
 	hasShadow: false,
 })
+
+const darkSaltWall = new StaticWall("dark-salt-wall");
 
 const darkSalt = new Floor("dark-salt");
 darkSalt.variants = 0;
@@ -102,6 +93,7 @@ Blocks.redStone.attributes.set(Attribute.get("biomass"), 0.75);
 Blocks.denseRedStone.attributes.set(Attribute.get("biomass"), 0.75);
 
 const neoplasmWall = new StaticWall("neoplasm-wall");
+neoplasmWall.variants = 3;
 
 const neoplasmStone = new Floor("neoplasm-stone");
 neoplasmStone.variants = 5;
@@ -116,6 +108,12 @@ Object.assign(neoplasmVent,{
 })
 neoplasmVent.attributes.set(Attribute.get("ammonia"), 1);
 
+const neoplasmSandWall = new Floor("neoplasm-sand-wall")
+Object.assign(neoplasmSandWall, {
+	variants: 4,
+})
+neoplasmSandWall.attributes.set(Attribute.sand, 2);
+
 const neoplasmSand = new Floor("neoplasm-sand")
 Object.assign(neoplasmSand, {
 	itemDrop: Items.sand,
@@ -125,21 +123,7 @@ Object.assign(neoplasmSand, {
 })
 neoplasmSand.attributes.set(Attribute.get("biomass"), 1.25);
 neoplasmSand.attributes.set(Attribute.water, -1);
-
-const neoplasmShallow = new Floor("neoplasm-shallow");
-Object.assign(neoplasmShallow, {
-	speedMultiplier: 0.75,
-	variants: 0,
-	status: status.neoplasmSlow,
-	statusDuration: 90,
-	liquidDrop: Liquids.neoplasm,
-	isLiquid: true,
-	cacheLayer: CacheLayer.water,
-	albedo: 0.9,
-	supportsOverlay: true,
-	liquidMultiplier: 0.25,
-})
-neoplasmShallow.attributes.set(Attribute.get("biomass"), 2);
+neoplasmSand.attributes.set(Attribute.get("floor-sand"), 2);
 
 const neoplasm = new Floor("neoplasm");
 Object.assign(neoplasm, {
@@ -153,7 +137,6 @@ Object.assign(neoplasm, {
 	albedo: 0.9,
 	supportsOverlay: true,
 	liquidMultiplier: 0.5,
-	damageTaken: 0.375,
 })
 
 new OreBlock("ore-nickel",item.nickel);//2

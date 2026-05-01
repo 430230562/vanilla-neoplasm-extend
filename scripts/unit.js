@@ -60,7 +60,7 @@ Object.assign(alter, {
 	constructor: () => new TankUnit.create()
 })
 alter.weapons.add(
-Object.assign(new StatWeapon("zerg-alter-weapon","alter",100), {
+Object.assign(new StatWeapon("vne-alter-weapon","alter",100), {
 	layerOffset: 0.0001,
 	reload: 60,
 	shootY: 2,
@@ -99,7 +99,7 @@ Object.assign(new StatWeapon("zerg-alter-weapon","alter",100), {
 		},
 		speed: 3.5,
 		damage: 50,
-		sprite: "zerg-wave",
+		sprite: "vne-wave",
 		width: 10,
 		height: 13,
 		lifetime: 52,
@@ -1403,3 +1403,159 @@ meiosis.abilities.addAll(
 		regenPerSlurp: 3.2
 	})
 );*/
+
+const purge = new TankUnitType("purge");
+exports.purge = purge;
+Object.assign(purge,{
+	squareShape: true,
+	omniMovement: false,
+	rotateMoveFirst: true,
+	envDisabled: 0,
+	speed: 0.4,
+	outlineColor: Color.valueOf("464a59"),
+	outlineRadius: 3,
+	treadRects: [new Rect(14,-24,30,80)],
+	treadFrames: 8,
+	hitSize: 29,
+	rotateSpeed: 2,
+	health: 9000,
+	armor: 13,
+	itemCapacity: 0,
+	crushDamage: 2,
+	constructor: () => new TankUnit.create(),
+})
+purge.weapons.add(
+	Object.assign(new Weapon("vne-purge-weapon"),{
+		reload: 180,
+		cooldownTime: 120,
+		mirror: false,
+		x: 0,
+		y: 0,
+		rotateSpeed: 1.4,
+		rotate: true,
+		shootY: 0.25,
+		shake: 6,
+		shootSound: Sounds.shootDisperse,
+
+		ejectEffect: Fx.none,
+		recoil: 5.5,
+
+		bullet: Object.assign(new RailBulletType(),{
+			shootEffect: Fx.railShoot,
+			length: 401,
+			pointEffectSpace: 60,
+			pierceEffect: Fx.railHit,
+			pointEffect: Fx.railTrail,
+			hitEffect: Fx.massiveExplosion,
+			smokeEffect: Fx.shootBig2,
+			damage: 750,
+			pierceDamageFactor: 0.8,
+			buildingDamageMultiplier: 1.1,
+			recoil: 0.8,
+		})
+	})
+)
+
+const fearless = new TankUnitType("fearless")
+exports.fearless = fearless;
+Object.assign(fearless, {
+	squareShape: true,
+	omniMovement: false,
+	rotateMoveFirst: true,
+	envDisabled: 0,
+	speed: 0.3,
+	outlineColor: Color.valueOf("464a59"),
+	outlineRadius: 3,
+	hitSize: 38,
+	rotateSpeed: 1.5,
+	health: 26000,
+	armor: 21,
+	itemCapacity: 0,
+	crushDamage: 4,
+	constructor: () => new TankUnit.create(),
+})
+fearless.weapons.add(
+    Object.assign(new StatWeapon("vne-fearless-weapon-0","reduceArmor",5),{
+    	layerOffset: 0.0001,
+    	reload: 45,
+    	shootY: 6,
+    	recoil: 4,
+    	rotate: true,
+    	rotateSpeed: 2.7,
+    	mirror: false,
+    	x: 0,
+    	y: -0.75,
+    	heatColor: Color.red,
+    	cooldownTime: 50,
+    	shootSound: Sounds.shootFuse,
+    	shoot: Object.assign(new ShootAlternate(8), {
+    		shots: 2,
+    	}),
+    	bullet: Object.assign(new ReduceArmorBulletType(8,290,5), {
+    		pierce: true,
+    		pierceBuilding: true,
+    		pierceCap: 4,
+    		smokeEffect: Fx.shootBigSmoke,
+    		shootEffect: Fx.shootBigColor,
+    		width: 16,
+    		height: 22.5,
+    		shrinkX: 0,
+    		shrinkY: 0,
+    		lifetime: 30,
+    		hitSize: 12,
+    		hitColor: Color.valueOf("d06b53"),
+    		backColor: Color.valueOf("d06b53"),
+    		trailColor: Color.valueOf("d06b53"),
+    		frontColor: Color.valueOf("ffffff"),
+    		trailWidth: 2.2,
+    		trailLength: 12,
+    		despawnEffect: Fx.hitBulletColor,
+    		hitEffect: Fx.hitBulletColor,
+    		fragBullets:7,
+    		fragRandomSpread: 0,
+    		fragSpread: 45 / 6,
+    		fragVelocityMin: 2,
+    		fragVelocityMax: 2,
+    		fragLifeMin: 1,
+    		fragLifeMax: 1,
+    		fragBullet: Object.assign(new BasicBulletType(4,10),{
+    			lifetime: 15,
+    			width: 6,
+    			height: 6,
+    			pierce: true,
+    			pierceBuilding: true,
+    			pierceCap: 2,
+    			frontColor: Color.valueOf("ffffff"),
+    			backColor: Color.valueOf("d06b53"),
+    		})
+    	})
+    }),
+    Object.assign(new Weapon("vne-fearless-weapon-1"),{
+        layerOffset: 0.01,
+    	reload: 8,
+    	shootY: 8.5,
+    	recoil: 1,
+    	rotate: true,
+    	rotateSpeed: 7.5,
+    	mirror: false,
+    	x: 0,
+    	y: -0.75,
+    	
+    	shoot: new ShootAlternate(2),
+    	
+    	bullet: Object.assign(new BasicBulletType(8,25), {
+    		width: 5,
+    		height: 5,
+    		shootEffect: Fx.shootSmall,
+    		smokeEffect: Fx.shootSmallSmoke,
+    		
+    		keepVelocity: true,
+    		lifetime: 36,
+    		trailWidth: 0.8,
+    		trailLength: 14,
+    		
+    		frontColor: Color.valueOf("ffffff"),
+    		backColor: Color.valueOf("d06b53"),
+    	})
+    })
+)
