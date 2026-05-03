@@ -7,6 +7,17 @@ const {
     DeathNeoplasmAbility, MoveLiquidAbility, DamageDownAbility
 } = require("vne/lib/ability")
 
+function StatWeapon(name, stat, num){
+	return extend(Weapon, {
+		name: name,
+		addStats(u, t){
+			this.super$addStats(u, t);
+			t.row();
+			t.add(Core.bundle.format(stat, num));
+		}
+	});
+}
+
 function Insect(name) {
     return extend(UnitType, name, {
         outlineColor: Pal.neoplasmOutline, //想不到吧，其实这个是瘤液单位的标记Color.valueOf("2e191d")
@@ -1491,7 +1502,7 @@ fearless.weapons.add(
     	shoot: Object.assign(new ShootAlternate(8), {
     		shots: 2,
     	}),
-    	bullet: Object.assign(new ReduceArmorBulletType(8,290,5), {
+    	bullet: Object.assign(new BasicBulletType(8,290,5), {
     		pierce: true,
     		pierceBuilding: true,
     		pierceCap: 4,

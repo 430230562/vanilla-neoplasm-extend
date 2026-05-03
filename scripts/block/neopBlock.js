@@ -5,19 +5,23 @@ const {
 const status = require("vne/status");
 const unit = require("vne/unit");
 
-const
-oppositeRotationArr = [2, 3, 0, 1],//0,1,2,3的反方向
+const oppositeRotationArr = [2, 3, 0, 1],//0,1,2,3的反方向
 posArr = [
-{x:-1, y:2}, {x:0, y:2}, {x:1, y:2},
-{x:2, y:1}, {x:2, y:0}, {x:2, y:-1},
-{x:1, y:-2}, {x:0, y:-2}, {x:-1, y:-2},
-{x:-2, y:-1}, {x:-2, y:0}, {x:-2, y:1}
-],
-toPosArr = [1,4,7,10], arr3 = [
+  // 右侧竖排 rotation 为 0
+  {x:2, y:-1},  {x:2, y:0},  {x:2, y:1},
+  // 正上一排 rotation 为 1
+  {x:-1, y:2}, {x:0, y:2}, {x:1, y:2},
+   // 左侧竖排 rotation 为 2
+  {x:-2, y:-1}, {x:-2, y:0}, {x:-2, y:1},
+  // 正下一排 y最小 rotation 为 3
+  {x:-1, y:-2},  {x:0, y:-2},  {x:1, y:-2}
+],//3格方块周围的12格
+toPosArr = [1,4,7,10], //对应隔一格的方块中心
+arr3 = [
 {x:-1, y:1}, {x:0, y:1}, {x:1, y:1},
 {x:-1, y:0}, {x:0, y:0}, {x:1, y:0},
 {x:-1, y:-1}, {x:0, y:-1}, {x:1, y:-1},
-];
+];//3格方块盖住的9格
 
 var nodeConsume = 20, turretConsume = 30;
 
@@ -39,11 +43,11 @@ function CanSpawnSize3(x, y) {
     let tile = Vars.world.tile(x + pos.x, y + pos.y);
     if (!tile) return false; // 超出地图边界视为不可建造
     let block = tile.block();
-    if (block != Blocks.air && block != neopNode) {
-      return false; // 遇到不允许的方块立即返回false
+    if (block != Blocks.air && block != neopNode && !(block instanceof Prop)) {
+      return false;
     }
   }
-  return true; // 全部符合
+  return true;
 }
 
 var neopCore = extend(CoreBlock, "neop-core", {
@@ -52,7 +56,7 @@ var neopCore = extend(CoreBlock, "neop-core", {
     update: true,
     health: 4000,
     armor: 9,
-    size: 1,
+    size: 3,
     solid: true,
     replaceable: false,
     hasShadow: true,
@@ -156,7 +160,7 @@ neopCore.buildType = prov(() => extend(CoreBlock.CoreBuild, neopCore, {
 
 
         if (this.liquids.get(Liquids.neoplasm) <= this.block.liquidCapacity) {
-            this.liquids.add(Liquids.neoplasm, 2 / 6);
+            this.liquids.add(Liquids.neoplasm, 1);
         }
 
         if (this.damaged()) {
@@ -171,28 +175,28 @@ neopCore.buildType = prov(() => extend(CoreBlock.CoreBuild, neopCore, {
         if (Time.time % 60 < 1) {
             //i 为旋转方位
             for (let i = 0; i < 4; i++) {
-                let PosTile = this.tile.nearby(i);
+                let PosTile = Vars.world.tile(this.tile.x + posArr[toPosArr[i]].x,this.tile.y + posArr[toPosArr[i]].y);
                 //ai指导: 蒙特卡洛
-                if (Mathf.chance(0.25) && PosTile != null && PosTile.block() == Blocks.air  && this.liquids.get(Liquids.neoplasm) >= nodeConsume) {
+                if (Mathf.chance(0.25) && PosTile != null && (PosTile.block() == Blocks.air || PosTile.block() instanceof Prop) && this.liquids.get(Liquids.neoplasm) >= nodeConsume) {
                     PosTile.setBlock(neopNode, this.team, i);
                     this.liquids.remove(Liquids.neoplasm, nodeConsume);
 
                     this.child[i] = PosTile.build
                     //this.child[i].parent = this
                 }
-
-                if (this.child[i] != null) {
-                    if (!this.child[i].dead) {
-                        ConveyNeoplasm(this, this.child[i], 30)
-                    } else {
-                        this.child[i] = null
-                    }
+            }
+            
+            for(let Pos of posArr){
+                let Posbuild = Vars.world.tile(this.tile.x + Pos.x, this.tile.y + Pos.y).build;
+                
+                if(Posbuild != null && Posbuild.team == this.team){
+                    ConveyNeoplasm(this, Posbuild, 20)
                 }
             }
         }
         
         this.super$updateTile();
-        //Vars.ui.showLabel("" + this.child[0] + "\n" + this.child[1] + "\n" + this.child[2] + "\n" + this.child[3], 0.01, this.x, this.y);
+        
     },
     collision(bullet) {
         this.super$collision(bullet);
@@ -277,7 +281,7 @@ neopNode.buildType = prov(() => extend(Building, {
         if (Time.time % 60 < 1) {
             //i 为旋转方位
             for (let i = 0; i < 4; i++) {
-                let PosTile = this.tile.nearby(i);
+                let PosTile = this.tile.nearby(i), nodeChance = 0.05;
 
                 //以自身旋转方向的反方向的建筑为parent
                 //感觉不会太稳定
@@ -286,18 +290,21 @@ neopNode.buildType = prov(() => extend(Building, {
                     this.child[4] = this.parent
 
                     continue
+                }else if(i == this.rotation){
+                    nodeChance = 0.25;
+                    //类似顶端抑制
                 }
                 //ai指导: 蒙特卡洛
-                if (this.parent != null && PosTile != null && PosTile.block() == Blocks.air){
-                    if(Mathf.chance(0.25) && this.liquids.get(Liquids.neoplasm) >= nodeConsume) {
+                if (this.parent != null && PosTile != null && (PosTile.block() == Blocks.air || PosTile.block() instanceof Prop)){
+                    if(Mathf.chance(nodeChance) && this.liquids.get(Liquids.neoplasm) >= nodeConsume) {
                         PosTile.setBlock(neopNode, this.team, i);
                         this.liquids.remove(Liquids.neoplasm, nodeConsume);
     
                         this.child[i] = PosTile.build
-                    }else if(Mathf.chance(0.05) && CanSpawnSize3(this.tile.x + posArr[toPosArr[i]].x,this.tile.y + posArr[toPosArr[i]].y) && this.liquids.get(Liquids.neoplasm) >= turretConsume){
+                    }else if(Mathf.chance(0.01) && CanSpawnSize3(this.tile.x + posArr[toPosArr[i]].x,this.tile.y + posArr[toPosArr[i]].y) && this.liquids.get(Liquids.neoplasm) >= turretConsume){
                         Vars.world.tile(this.tile.x + posArr[toPosArr[i]].x,this.tile.y + posArr[toPosArr[i]].y).setBlock(spawner, this.team);
                         this.liquids.remove(Liquids.neoplasm, turretConsume);
-                    }else if(Mathf.chance(0.05) && CanSpawnSize3(this.tile.x + posArr[toPosArr[i]].x,this.tile.y + posArr[toPosArr[i]].y) && this.liquids.get(Liquids.neoplasm) >= turretConsume){
+                    }else if(Mathf.chance(0.01) && CanSpawnSize3(this.tile.x + posArr[toPosArr[i]].x,this.tile.y + posArr[toPosArr[i]].y) && this.liquids.get(Liquids.neoplasm) >= turretConsume){
                         Vars.world.tile(this.tile.x + posArr[toPosArr[i]].x,this.tile.y + posArr[toPosArr[i]].y).setBlock(neopTurret, this.team);
                         this.liquids.remove(Liquids.neoplasm, turretConsume);
                     }
