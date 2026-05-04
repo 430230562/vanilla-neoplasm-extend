@@ -3,7 +3,10 @@ const liquid = require("vne/liquid")
 const status = require("vne/status");
 const {
     ReduceArmorBulletType
-} = require("vne/lib/bulletType")
+} = require("vne/lib/bulletType");
+const {
+    ToxicAbility
+} = require("vne/lib/ability");
 
 const neoplasmCollecter = extend(Radar, "neoplasm-collecter", {
     outlineColor: Color.valueOf("4a4b53"),
@@ -398,6 +401,33 @@ biomassWallLarge.buildType = prov(() => extend(Building, {
         return true
     }
 }))
+
+const nickelWall = new Wall("nickel-wall");
+exports.nickelWall = nickelWall;
+Object.assign(nickelWall, {
+	health: 360,
+	armor: 1,
+	size: 1,
+	alwaysUnlocked: true,
+	buildVisibility: BuildVisibility.shown,
+	category: Category.defense,
+	requirements: ItemStack.with(
+		item.nickel, 6,
+	),
+})
+
+const nickelWallLarge = new Wall("nickel-wall-large");
+exports.nickelWallLarge = nickelWallLarge;
+Object.assign(nickelWallLarge, {
+	health: 360 * 4,
+	armor: 1,
+	size: 2,
+	buildVisibility: BuildVisibility.shown,
+	category: Category.defense,
+	requirements: ItemStack.with(
+		item.nickel, 6 * 4,
+	),
+})
 
 Blocks.constructor.filter.add(siliconNitrideWallLarge,biomassWallLarge)
 
@@ -862,6 +892,72 @@ item.siliconNitride, Object.assign(new ArtilleryBulletType(2.5, 200, "shell"),{
         frontColor: Color.valueOf("8D79C8"),
     })
 })
+)
+
+const bottle = new UnitType("bottle");
+Object.assign(bottle, {
+    speed: 0,
+    isEnemy: false,
+    envDisabled: 0,
+    targetable: false,
+    hittable: false,
+    playerControllable: false,
+    createWreck: false,
+    createScorch: false,
+    logicControllable: false,
+    useUnitCap: false,
+    allowedInPayloads: false,
+    constructor: () => new TimedKillUnit.create(),
+    physics: false,
+    bounded: false,
+    hidden: true,
+    lifetime: 60 * 15,
+    health: 10000,
+    drawMinimap: false,
+    flying: false,
+    drawCell: false,
+    deathSound: Sounds.none,
+})
+bottle.abilities.add(
+new ToxicAbility(20, 15, 80))
+bottle.immunities.addAll(status.poisoned);
+
+Blocks.titan.ammoTypes.put(
+item.cyanide,Object.assign(new ArtilleryBulletType(2.5, 200, "shell"),{
+    hitEffect: new MultiEffect(Fx.titanExplosion, Fx.titanSmoke),
+    despawnEffect: Fx.none,
+    knockback: 2,
+    lifetime: 190,
+    height: 17,
+    width: 15,
+    splashDamageRadius: 65,
+    splashDamage: 120,
+    rangeChange: 12,
+    reloadMultiplier: 1.25,
+    scaledSplashDamage: true,
+    hitColor: Color.valueOf("89e8b6"),
+    backColor: Color.valueOf("89e8b6"),
+    trailColor: Color.valueOf("89e8b6"),
+    frontColor: Color.valueOf("89e8b6"),
+    ammoMultiplier: 1,
+    hitSound: Sounds.explosionTitan,
+
+    trailLength: 32,
+    trailWidth: 3.35,
+    trailSinScl: 2.5,
+    trailSinMag: 0.5,
+    trailEffect: Fx.vapor,
+    trailInterval: 3,
+    despawnShake: 7,
+
+    shootEffect: Fx.shootTitan,
+    smokeEffect: Fx.shootSmokeTitan,
+
+    trailInterp: v => Math.max(Mathf.slope(v), 0.8),
+    shrinkX: 0.2,
+    shrinkY: 0.1,
+    buildingDamageMultiplier: 0.25,
+    despawnUnit: bottle
 )
 
 //驱离

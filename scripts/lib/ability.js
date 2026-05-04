@@ -125,11 +125,11 @@ function ToxicAbility(damage, reload, range) {
 			this.j += Time.delta
 			if (this.i >= reload) {
 				Units.nearby(null, unit.x, unit.y, range, other => {
-					other.health -= damage;
+					other.damagePierce(damage);
 					other.apply(status.poisoned, 60 * 15);
 				})
 				Units.nearbyBuildings(unit.x, unit.y, range, b => {
-					b.health -= damage / 4
+					b.damage(damage / 4)
 					if(b.health <= 0){b.kill()}
 				})
 				this.i = 0
@@ -138,7 +138,7 @@ function ToxicAbility(damage, reload, range) {
 				Fx.titanSmoke.at(
 					unit.x + Mathf.range(range * 0.7071 - 20),
 					unit.y + Mathf.range(range * 0.7071 - 20),
-					Color.valueOf("92AB117F")
+					Color.valueOf("89e8b6")
 				)
 				this.j -= 15
 			}

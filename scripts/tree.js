@@ -242,7 +242,7 @@ addResearch(unitFactory.unitIncubator, {
             node(unit.triploid, () => {}),
             node(unit.trichocyst, () => {}),
             node(unit.adenoma, () => {}),
-            node(unitFactory.evolver, () => {
+            node(unitFactory.laboratory, () => {
                 node(unit.polyp, () => {}),
                 node(UnitTypes.renale, () => {}),
                 node(unit.sarcoma, () => {}),
@@ -260,7 +260,13 @@ addResearch(sector.fumarole, {
 }, () => {
     node(sector.faultline, Seq.with(
     Objectives.SectorComplete(sector.fumarole),
-    Objectives.Research(factory.ammoniaPlant)), () => {})
+    Objectives.Research(factory.ammoniaPlant)), () => {
+        node(sector.sinkhole, Seq.with(
+        Objectives.SectorComplete(sector.faultline),
+        Objectives.Research(factory.siliconNitrideFurnace),
+        Objectives.Research(defense.defuse)
+        ), () => {})
+    })
 });
 
 
@@ -314,5 +320,13 @@ planet.seltis.techTree = nodeRoot("seltis", planet.seltis, () => {
         node(factory.desalination, () => {})
     }),
     node(power.monitor, () => {}),
-    node(core.ash, () => {})
+    node(core.ash, () => {}),
+    node(defense.nickelWall, () => {
+        node(defense.nickelWallLarge, () => {})
+    }),
+    node(sector.mesa,Seq.with(
+    Objectives.SectorComplete(sector.sinkhole),
+    Objectives.Research(Blocks.copperWall),
+    Objectives.Research(planet.seltis)
+    ), () => {})
 })

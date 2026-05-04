@@ -160,7 +160,7 @@ neopCore.buildType = prov(() => extend(CoreBlock.CoreBuild, neopCore, {
 
 
         if (this.liquids.get(Liquids.neoplasm) <= this.block.liquidCapacity) {
-            this.liquids.add(Liquids.neoplasm, 1);
+            this.liquids.add(Liquids.neoplasm, 3 / 6);
         }
 
         if (this.damaged()) {
@@ -190,7 +190,7 @@ neopCore.buildType = prov(() => extend(CoreBlock.CoreBuild, neopCore, {
                 let Posbuild = Vars.world.tile(this.tile.x + Pos.x, this.tile.y + Pos.y).build;
                 
                 if(Posbuild != null && Posbuild.team == this.team){
-                    ConveyNeoplasm(this, Posbuild, 20)
+                    ConveyNeoplasm(this, Posbuild, 5)
                 }
             }
         }
@@ -267,6 +267,10 @@ neopNode.buildType = prov(() => extend(Building, {
             }
             this.parent = this.child[4]
             this._needsResolve = false; // 只执行一次，随后关闭
+        }
+        
+        if (this.liquids.get(Liquids.neoplasm) <= this.block.liquidCapacity) {
+            this.liquids.add(Liquids.neoplasm, 2 / 60);
         }
 
         if (this.damaged() && this.parent != null && !this.parent.dead) {

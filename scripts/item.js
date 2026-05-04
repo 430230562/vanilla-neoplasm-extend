@@ -10,6 +10,12 @@ const salt = new Item("salt",Color.valueOf("c3c1bb"));
 exports.salt = salt;
 Object.assign(salt,{})
 
+const cyanide = new Item("cyanide",Color.valueOf("89e8b6"));
+exports.cyanide = cyanide;
+Object.assign(cyanide,{
+    explosiveness: 0.4
+})
+
 const coagulantIngot = new Item("coagulant-ingot", Color.valueOf("D6A17C"));
 exports.coagulantIngot = coagulantIngot;
 Object.assign(coagulantIngot, {
