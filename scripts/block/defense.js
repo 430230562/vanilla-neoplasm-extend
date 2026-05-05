@@ -957,7 +957,12 @@ item.cyanide,Object.assign(new ArtilleryBulletType(2.5, 200, "shell"),{
     shrinkX: 0.2,
     shrinkY: 0.1,
     buildingDamageMultiplier: 0.25,
-    despawnUnit: bottle
+    fragBullets: 1,
+    fragBullet: Object.assign(new BasicBulletType(6, 9), {
+        despawnUnit: bottle
+        lifetime: 1,
+    })
+})
 )
 
 //驱离
