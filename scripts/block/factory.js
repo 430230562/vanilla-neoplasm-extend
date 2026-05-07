@@ -21,7 +21,7 @@ Object.assign(microHeatRedirector, {
     category: Category.crafting,
     requirements: ItemStack.with(
         Items.graphite, 3,
-        item.biomassSteel, 1, ),
+        item.biomassSteel, 1,),
     size: 1,
     drawer: new DrawMulti(
         new DrawDefault(),
@@ -37,7 +37,7 @@ Object.assign(smallHeatRouter, {
     category: Category.crafting,
     requirements: ItemStack.with(
         Items.graphite, 8,
-        Items.surgeAlloy, 8, ),
+        Items.surgeAlloy, 8,),
     size: 2,
     drawer: new DrawMulti(
         new DrawDefault(),
@@ -56,7 +56,7 @@ Object.assign(microHeatRouter, {
     category: Category.crafting,
     requirements: ItemStack.with(
         Items.graphite, 3,
-        item.biomassSteel, 1, ),
+        item.biomassSteel, 1,),
     size: 1,
     drawer: new DrawMulti(
         new DrawDefault(),
@@ -127,8 +127,8 @@ const arkyciteRefinery = extend(Separator, "arkycite-refinery", {
         Items.graphite, 60,
         Items.silicon, 60,
         Items.tungsten, 25,
-        Items.oxide, 25, ),
-    
+        Items.oxide, 25,),
+
     setStats() {
         this.super$setStats();
         
@@ -388,7 +388,7 @@ Object.assign(siliconNitrideFurnace, {
     requirements: ItemStack.with(
         Items.silicon, 120,
         Items.tungsten, 80,
-        Items.oxide, 75, )
+        Items.oxide, 75,)
 });
 siliconNitrideFurnace.consumeItem(Items.silicon, 3)
 siliconNitrideFurnace.consumeLiquid(Liquids.nitrogen, 8 / 60)
@@ -423,7 +423,7 @@ const biomassSmelter = extend(GenericCrafter, "biomass-smelter", {
         Items.silicon, 50,
         Items.carbide, 35,
         Items.oxide, 25,
-        item.siliconNitride, 20, )
+        item.siliconNitride, 20,)
 });
 exports.biomassSmelter = biomassSmelter;
 biomassSmelter.buildType = prov(() => extend(GenericCrafter.GenericCrafterBuild, biomassSmelter, {
@@ -516,12 +516,12 @@ Object.assign(stableBiomassSmelter, {
         Items.silicon, 120,
         Items.carbide, 150,
         Items.oxide, 110,
-        item.biomassSteel, 100, )
+        item.biomassSteel, 100,)
 })
 stableBiomassSmelter.consumeItems(ItemStack.with(
     Items.carbide, 2,
     Items.oxide, 3,
-    item.protein, 7, ));
+    item.protein, 7,));
 stableBiomassSmelter.consumePower(5);
 
 const ammoniaPlant = new HeatCrafter("ammonia-plant");
@@ -564,14 +564,14 @@ Object.assign(ammoniaPlant, {
             color: Color.valueOf("efe3ff"),
         }),
         new DrawDefault(),
-        new DrawHeatInput(), ),
+        new DrawHeatInput(),),
     buildVisibility: BuildVisibility.shown,
     category: Category.crafting,
     requirements: ItemStack.with(
         Items.graphite, 110,
         Items.silicon, 100,
         Items.tungsten, 75,
-        Items.oxide, 35, ),
+        Items.oxide, 35,),
 })
 ammoniaPlant.consumeLiquids(LiquidStack.with(
     Liquids.hydrogen, 12 / 60,
@@ -603,7 +603,7 @@ Object.assign(watergasStove, {
             color: Color.valueOf("9eabf7"),
         }),
         new DrawDefault(),
-        new DrawHeatInput(), ),
+        new DrawHeatInput(),),
     resolvedRecipes: Seq.with(
         Object.assign(new Recipe(), {
             input: Object.assign(new IOEntry(), {
@@ -623,13 +623,12 @@ Object.assign(watergasStove, {
                 items: ItemStack.with(Items.graphite, 1),
                 power: 3.5,
                 heat: 24
-                
             }),
             output: Object.assign(new IOEntry(), {
                 fluids: LiquidStack.with(liquid.naturalGas, 20 / 60),
             }),
             craftTime: 16
-        }), ),
+        })),
     menu: 'detailed',
     buildVisibility: BuildVisibility.shown,
     category: Category.crafting,
@@ -697,7 +696,7 @@ Object.assign(BMAStove, {
                 items: ItemStack.with(Items.carbide, 1)
             }),
             craftTime: 60
-        }), ),
+        })),
     menu: 'detailed',
     buildVisibility: BuildVisibility.shown,
     category: Category.crafting,

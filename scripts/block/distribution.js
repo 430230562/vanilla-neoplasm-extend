@@ -26,7 +26,7 @@ Object.assign(nickelConveyor, {
 	health: 55,
 	speed: 0.05,
 	displayedSpeed: 6.5,
-	
+
 	hasPower: true,
 	consumesPower: true,
 	outputsPower: true,
@@ -54,7 +54,7 @@ Object.assign(manganeseConveyor, {
 	health: 80,
 	speed: 0.11,
 	displayedSpeed: 15.7,
-	
+
 	hasPower: true,
 	consumesPower: true,
 	outputsPower: true,
@@ -81,7 +81,7 @@ Object.assign(armoredConveyor, {
 	health: 220,
 	speed: 0.11,
 	displayedSpeed: 15.7,
-	
+
 	hasPower: true,
 	consumesPower: true,
 	outputsPower: true,
@@ -109,7 +109,7 @@ Object.assign(biomassConveyor, {
 		Items.silicon, 1,
 		item.biomassSteel, 1,
 	),
-	
+
 	hasPower: true,
 	consumesPower: true,
 	outputsPower: true,
@@ -137,7 +137,7 @@ Object.assign(junction, {
 	capacity: 1,
 	health: 55,
 	solid: false,
-	
+
 	hasPower: true,
 	consumesPower: true,
 	outputsPower: true,
@@ -167,7 +167,7 @@ Object.assign(nickelBridge, {
 		item.nickel, 10,
 	),
 	solid: false,
-	
+
 	hasPower: true,
 	consumesPower: true,
 	outputsPower: true,
@@ -181,7 +181,7 @@ nickelBridge.buildType = prov(() => extend(ItemBridge.ItemBridgeBuild, nickelBri
 	},
 	updateTransport(other) {
 		this.super$updateTransport(other);
-		
+
 		//怀疑没这么简单，但真就是把俩电网并起来这么简单
 		if (other.power.graph != this.power.graph) {
 			this.power.graph.addGraph(other.power.graph)
@@ -206,7 +206,7 @@ Object.assign(stackBridge, {
 		item.biomassSteel, 8,
 	),
 	solid: false,
-	
+
 	hasPower: true,
 	consumesPower: true,
 	outputsPower: true,
@@ -220,7 +220,7 @@ stackBridge.buildType = prov(() => extend(ItemBridge.ItemBridgeBuild, stackBridg
 	},
 	updateTransport(other) {
 		this.super$updateTransport(other);
-		
+
 		//怀疑没这么简单，但真就是把俩电网并起来这么简单
 		if (other.power.graph != this.power.graph) {
 			this.power.graph.addGraph(other.power.graph)
@@ -228,11 +228,11 @@ stackBridge.buildType = prov(() => extend(ItemBridge.ItemBridgeBuild, stackBridg
 	},
 	updateTile() {
 		this.super$updateTile();
-		
+
 		for (let i = 0; i < 8; i++) {
 			let p = Geometry.d8[i];
 			let other = this.nearby(p.x, p.y);
-			
+
 			if (other != null && other.block instanceof StackConveyor && other.cooldown > 1) {
 				other.cooldown = 1
 			}
@@ -251,7 +251,7 @@ Object.assign(router, {
 		item.nickel, 2,
 	),
 	solid: false,
-	
+
 	hasPower: true,
 	consumesPower: true,
 	outputsPower: true,
@@ -277,7 +277,7 @@ Object.assign(distributor, {
 	),
 	size: 2,
 	solid: false,
-	
+
 	hasPower: true,
 	consumesPower: true,
 	outputsPower: true,
@@ -302,7 +302,7 @@ Object.assign(sorter, {
 		item.nickel, 4
 	),
 	solid: false,
-	
+
 	hasPower: true,
 	consumesPower: true,
 	outputsPower: true,
@@ -328,7 +328,7 @@ Object.assign(invertedSorter, {
 	),
 	invert: true,
 	solid: false,
-	
+
 	hasPower: true,
 	consumesPower: true,
 	outputsPower: true,
@@ -353,7 +353,7 @@ Object.assign(overflowGate, {
 		item.nickel, 4
 	),
 	solid: false,
-	
+
 	hasPower: true,
 	consumesPower: true,
 	outputsPower: true,
@@ -379,7 +379,7 @@ Object.assign(underflowGate, {
 	),
 	invert: true,
 	solid: false,
-	
+
 	hasPower: true,
 	consumesPower: true,
 	outputsPower: true,
