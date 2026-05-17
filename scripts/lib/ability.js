@@ -119,28 +119,25 @@ exports.DeathNeoplasmAbility = DeathNeoplasmAbility;
 function ToxicAbility(damage, reload, range) {
 	return extend(Ability, {
 		i: 0,
-		j: 75,
 		update(unit) {
 			this.i += Time.delta
-			this.j += Time.delta
 			if (this.i >= reload) {
 				Units.nearby(null, unit.x, unit.y, range, other => {
 					other.damagePierce(damage);
 					other.apply(status.poisoned, 60 * 15);
 				})
+				
 				Units.nearbyBuildings(unit.x, unit.y, range, b => {
 					b.damage(damage / 4)
 					if(b.health <= 0){b.kill()}
 				})
-				this.i = 0
-			}
-			if (this.j >= 15) {
+				
 				Fx.titanSmoke.at(
 					unit.x + Mathf.range(range * 0.7071 - 20),
 					unit.y + Mathf.range(range * 0.7071 - 20),
-					Color.valueOf("89e8b6")
+					Color.valueOf("89e8b67f")
 				)
-				this.j -= 15
+				this.i = 0
 			}
 		},
 		/*draw(unit){

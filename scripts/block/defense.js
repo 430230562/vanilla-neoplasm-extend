@@ -8,6 +8,8 @@ const {
     ToxicAbility
 } = require("vne/lib/ability");
 
+const passable = new Stat("passable",StatCat.function);
+
 const neoplasmCollecter = extend(Radar, "neoplasm-collecter", {
     outlineColor: Color.valueOf("4a4b53"),
     fogRadius: 14,
@@ -80,9 +82,7 @@ neoplasmCollecter.buildType = prov(() => extend(Radar.RadarBuild, neoplasmCollec
     }
 }))
 
-const reinforcedForceProjector = new ForceProjector("reinforced-force-projector");
-exports.reinforcedForceProjector = reinforcedForceProjector;
-Object.assign(reinforcedForceProjector, {
+const reinforcedForceProjector = extend(ForceProjector, "reinforced-force-projector", {
     radius: 70.34,
     sides: 4,
     shieldRotation: 45,
@@ -91,10 +91,10 @@ Object.assign(reinforcedForceProjector, {
     hasLiquids: false,
     cooldownNormal: 40 / 60,
     cooldownBrokenBase: 50 / 60,
+    size: 1,
     phaseRadiusBoost: 0,
     phaseShieldBoost: 400,
     phaseUseTime: 600,
-    size: 1,
     itemConsumer: new ConsumeItems([new ItemStack(item.siliconNitride, 1)]),
     //coolantConsumer: new ConsumeLiquid(liquid.naturalGas, 0.1),
     buildVisibility: BuildVisibility.shown,
@@ -102,13 +102,64 @@ Object.assign(reinforcedForceProjector, {
     requirements: ItemStack.with(
     Items.silicon, 120,
     Items.oxide, 80,
-    item.siliconNitride, 120, )
-})
+    item.siliconNitride, 120, ),
+
+    setStats() {
+        this.super$setStats();
+
+        this.stats.add(passable, false);
+        
+        this.stats.remove(Stat.booster);
+        
+        if(this.itemConsumer && this.itemConsumer instanceof ConsumeItems){
+        this.stats.add(Stat.booster, StatValues.itemBoosters("+{0} " + StatUnit.shieldHealth.localized(), this.stats.timePeriod, this.phaseShieldBoost, this.phaseRadiusBoost, this.itemConsumer.items));
+        }
+    },
+    setBars(){
+        this.super$setBars();
+        
+        this.removeBar("liquid")
+    }
+});
+reinforcedForceProjector.buildType = prov(() => extend(ForceProjector.ForceBuild, reinforcedForceProjector, {
+    updateTile() {
+        this.super$updateTile();
+
+        let realRadius = this.realRadius();
+        //嘻嘻，我一定要成为解构大佬
+        let {
+            x, y, broken, team, block, buildup, hit
+        } = this
+
+        if (realRadius > 0 && !broken) {
+            Units.nearbyEnemies(null, x, y, realRadius, unit => {
+                if (unit.team != team && Intersector.isInRegularPolygon(block.sides, x, y, realRadius, block.shieldRotation, unit.x, unit.y)) {
+                    if (unit.isMissile()) {
+                        unit.kill()
+
+                        buildup -= unit.health * 2 * Vars.state.rules.unitDamage(unit.team)
+                        block.hitSound.at(unit.x, unit.y, 1 + Mathf.range(0.1), block.hitSoundVolume);
+                        block.absorbEffect.at(unit);
+                        hit = 1
+                    }
+                    //stop
+                    unit.vel.setZero();
+                    //get out
+                    unit.impulse(
+                    Math.cos(Angles.angle(x, y, unit.x, unit.y) * Math.PI / 180) * unit.type.hitSize * unit.type.hitSize,
+                    Math.sin(Angles.angle(x, y, unit.x, unit.y) * Math.PI / 180) * unit.type.hitSize * unit.type.hitSize)
+
+                    if (Mathf.chanceDelta(0.12 * Time.delta)) {
+                        Fx.circleColorSpark.at(unit.x, unit.y, team.color);
+                    }
+                }
+            })
+        }
+    }
+}))
 reinforcedForceProjector.consumePower(2);
 
-const reinforcedForceProjectorLarge = new ForceProjector("reinforced-force-projector-large");
-exports.reinforcedForceProjectorLarge = reinforcedForceProjectorLarge;
-Object.assign(reinforcedForceProjectorLarge, {
+const reinforcedForceProjectorLarge = extend(ForceProjector, "reinforced-force-projector-large", {
     radius: 70.34 * 1.7725,
     sides: 8,
     shieldRotation: 22.5,
@@ -120,17 +171,70 @@ Object.assign(reinforcedForceProjectorLarge, {
     phaseRadiusBoost: 0,
     phaseShieldBoost: 800,
     phaseUseTime: 400,
+    size: 3,
     itemConsumer: new ConsumeItems([new ItemStack(item.siliconNitride, 1)]),
     //coolantConsumer: new ConsumeLiquid(liquid.naturalGas, 0.1),
-    size: 3,
     buildVisibility: BuildVisibility.shown,
     category: Category.effect,
     requirements: ItemStack.with(
     Items.silicon, 250,
     Items.oxide, 175,
     Items.carbide, 105,
-    item.siliconNitride, 230, )
-})
+    item.siliconNitride, 230, ),
+
+    setStats() {
+        this.super$setStats();
+
+        this.stats.add(passable, false);
+        
+        this.stats.remove(Stat.booster);
+        
+        if(this.itemConsumer && this.itemConsumer instanceof ConsumeItems){
+        this.stats.add(Stat.booster, StatValues.itemBoosters("+{0} " + StatUnit.shieldHealth.localized(), this.stats.timePeriod, this.phaseShieldBoost, this.phaseRadiusBoost, this.itemConsumer.items));
+        }
+    },
+    setBars(){
+        this.super$setBars();
+        
+        this.removeBar("liquid")
+    }
+});
+reinforcedForceProjectorLarge.buildType = prov(() => extend(ForceProjector.ForceBuild, reinforcedForceProjectorLarge, {
+    updateTile() {
+        this.super$updateTile();
+
+        let realRadius = this.realRadius();
+        //嘻嘻，我一定要成为解构大佬
+        let {
+            x, y, broken, team, block, buildup, hit
+        } = this
+
+        if (realRadius > 0 && !broken) {
+            Units.nearbyEnemies(null, x, y, realRadius, unit => {
+                if (unit.team != team && Intersector.isInRegularPolygon(block.sides, x, y, realRadius, block.shieldRotation, unit.x, unit.y)) {
+                    if (unit.isMissile()) {
+                        unit.kill()
+
+                        buildup -= unit.health * 2 * Vars.state.rules.unitDamage(unit.team)
+                        block.hitSound.at(unit.x, unit.y, 1 + Mathf.range(0.1), block.hitSoundVolume);
+                        block.absorbEffect.at(unit);
+                        hit = 1
+                    }
+                    //stop
+                    unit.vel.setZero();
+                    //get out
+                    unit.impulse(
+                    Math.cos(Angles.angle(x, y, unit.x, unit.y) * Math.PI / 180) * unit.type.hitSize * unit.type.hitSize,
+                    Math.sin(Angles.angle(x, y, unit.x, unit.y) * Math.PI / 180) * unit.type.hitSize * unit.type.hitSize)
+
+                    if (Mathf.chanceDelta(0.12 * Time.delta)) {
+                        Fx.circleColorSpark.at(unit.x, unit.y, team.color);
+                    }
+                }
+            })
+        }
+    }
+}))
 reinforcedForceProjectorLarge.consumePower(6);
 
 const coagulantIngotWall = new Wall("coagulant-ingot-wall");
@@ -355,14 +459,14 @@ Object.assign(biomassWall, {
 biomassWall.buildType = prov(() => extend(Building, {
     collision(bullet) {
 
-        if(bullet.type.speed >= 0.1){
+        if (bullet.type.speed >= 0.1) {
             bullet.remove()
-            
-            bullet.type.hitEffect.at(bullet.x,bullet.y)
-            
-            let eventuallyDamage = Math.max(bullet.damage * bullet.type.buildingDamageMultiplier - this.block.armor,0)
+
+            bullet.type.hitEffect.at(bullet.x, bullet.y)
+
+            let eventuallyDamage = Math.max(bullet.damage * bullet.type.buildingDamageMultiplier - this.block.armor, 0)
             this.damage(eventuallyDamage * Vars.state.rules.blockDamage(bullet.team))
-        }else{
+        } else {
             //激光电弧
             this.super$collision(bullet)
         }
@@ -387,13 +491,13 @@ Object.assign(biomassWallLarge, {
 })
 biomassWallLarge.buildType = prov(() => extend(Building, {
     collision(bullet) {
-        if(bullet.type.speed >= 0.1){
+        if (bullet.type.speed >= 0.1) {
             bullet.remove()
-            bullet.type.hitEffect.at(bullet.x,bullet.y)
-            
-            let eventuallyDamage = Math.max(bullet.damage * bullet.type.buildingDamageMultiplier - this.block.armor,0)
+            bullet.type.hitEffect.at(bullet.x, bullet.y)
+
+            let eventuallyDamage = Math.max(bullet.damage * bullet.type.buildingDamageMultiplier - this.block.armor, 0)
             this.damage(eventuallyDamage * Vars.state.rules.blockDamage(bullet.team))
-        }else{
+        } else {
             //激光电弧
             this.super$collision(bullet)
         }
@@ -405,31 +509,29 @@ biomassWallLarge.buildType = prov(() => extend(Building, {
 const nickelWall = new Wall("nickel-wall");
 exports.nickelWall = nickelWall;
 Object.assign(nickelWall, {
-	health: 360,
-	armor: 1,
-	size: 1,
-	alwaysUnlocked: true,
-	buildVisibility: BuildVisibility.shown,
-	category: Category.defense,
-	requirements: ItemStack.with(
-		item.nickel, 6,
-	),
+    health: 360,
+    armor: 1,
+    size: 1,
+    alwaysUnlocked: true,
+    buildVisibility: BuildVisibility.shown,
+    category: Category.defense,
+    requirements: ItemStack.with(
+    item.nickel, 6, ),
 })
 
 const nickelWallLarge = new Wall("nickel-wall-large");
 exports.nickelWallLarge = nickelWallLarge;
 Object.assign(nickelWallLarge, {
-	health: 360 * 4,
-	armor: 1,
-	size: 2,
-	buildVisibility: BuildVisibility.shown,
-	category: Category.defense,
-	requirements: ItemStack.with(
-		item.nickel, 6 * 4,
-	),
+    health: 360 * 4,
+    armor: 1,
+    size: 2,
+    buildVisibility: BuildVisibility.shown,
+    category: Category.defense,
+    requirements: ItemStack.with(
+    item.nickel, 6 * 4, ),
 })
 
-Blocks.constructor.filter.add(siliconNitrideWallLarge,biomassWallLarge)
+Blocks.constructor.filter.add(siliconNitrideWallLarge, biomassWallLarge)
 
 const explosive = new Wall("explosive");
 exports.explosive = explosive;
@@ -633,20 +735,19 @@ Object.assign(new RegionPart("-side"), {
 }};*/
 
 Blocks.duo.ammoTypes.put(
-    item.nickel, Object.assign(new BasicBulletType(3, 7),{
-        width: 7,
-        height: 9,
-        lifetime: 60,
-        ammoMultiplier: 3,
-        reloadMultiplier: 1.2,
-        hitEffect: Fx.hitBulletColor,
-        despawnEffect: Fx.hitBulletColor,
-        hitColor: Pal.copperAmmoBack,
-        backColor: Pal.copperAmmoBack,
-        trailColor: Pal.copperAmmoBack,
-        frontColor: Pal.copperAmmoFront,
-    })
-)
+item.nickel, Object.assign(new BasicBulletType(3, 7), {
+    width: 7,
+    height: 9,
+    lifetime: 60,
+    ammoMultiplier: 3,
+    reloadMultiplier: 1.2,
+    hitEffect: Fx.hitBulletColor,
+    despawnEffect: Fx.hitBulletColor,
+    hitColor: Pal.copperAmmoBack,
+    backColor: Pal.copperAmmoBack,
+    trailColor: Pal.copperAmmoBack,
+    frontColor: Pal.copperAmmoFront,
+}))
 
 //撕裂
 Blocks.breach.ammoTypes.put(
@@ -706,7 +807,7 @@ item.siliconNitride, Object.assign(new BasicBulletType(8, 60), {
     buildingDamageMultiplier: 0.3,
     status: StatusEffects.slow,
     statusDuration: 10,
-    
+
     fragBullets: 3,
     fragRandomSpread: 0,
     fragSpread: 30 / 2,
@@ -839,7 +940,7 @@ item.coagulantIngot, extend(ArtilleryBulletType, 2.5, 240, "shell", {
 }))
 
 Blocks.titan.ammoTypes.put(
-item.siliconNitride, Object.assign(new ArtilleryBulletType(2.5, 200, "shell"),{
+item.siliconNitride, Object.assign(new ArtilleryBulletType(2.5, 200, "shell"), {
     hitEffect: new MultiEffect(Fx.titanExplosion, Fx.titanSmoke),
     despawnEffect: Fx.none,
     knockback: 2,
@@ -891,8 +992,7 @@ item.siliconNitride, Object.assign(new ArtilleryBulletType(2.5, 200, "shell"),{
         backColor: Color.valueOf("8D79C8"),
         frontColor: Color.valueOf("8D79C8"),
     })
-})
-)
+}))
 
 const bottle = new UnitType("bottle");
 Object.assign(bottle, {
@@ -919,11 +1019,11 @@ Object.assign(bottle, {
     deathSound: Sounds.none,
 })
 bottle.abilities.add(
-new ToxicAbility(20, 15, 80))
+new ToxicAbility(20, 15, 96))
 bottle.immunities.addAll(status.poisoned);
 
 Blocks.titan.ammoTypes.put(
-item.cyanide,Object.assign(new ArtilleryBulletType(2.5, 200, "shell"),{
+item.cyanide, Object.assign(new ArtilleryBulletType(2.5, 200, "shell"), {
     hitEffect: new MultiEffect(Fx.titanExplosion, Fx.titanSmoke),
     despawnEffect: Fx.none,
     knockback: 2,
@@ -959,11 +1059,10 @@ item.cyanide,Object.assign(new ArtilleryBulletType(2.5, 200, "shell"),{
     buildingDamageMultiplier: 0.25,
     fragBullets: 1,
     fragBullet: Object.assign(new BasicBulletType(6, 9), {
-        despawnUnit: bottle
-        lifetime: 1,
+        despawnUnit: bottle,
+        lifetime: 1
     })
-})
-)
+}))
 
 //驱离
 Blocks.disperse.ammoTypes.put(
@@ -1038,7 +1137,7 @@ item.siliconNitride, Object.assign(new BasicBulletType(), {
 
     status: StatusEffects.slow,
     statusDuration: 10,
-    
+
     fragBullets: 3,
     fragRandomSpread: 0,
     fragSpread: 30 / 2,
@@ -1065,7 +1164,7 @@ item.siliconNitride, Object.assign(new BasicBulletType(), {
         frontColor: Color.white,
         trailWidth: 1,
         trailLength: 10,
-        
+
         hitEffect: Fx.hitBulletColor,
         despawnEffect: Fx.hitBulletColor,
         status: StatusEffects.slow,
