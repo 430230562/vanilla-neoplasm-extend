@@ -23,7 +23,7 @@ arr3 = [
 {x:-1, y:-1}, {x:0, y:-1}, {x:1, y:-1},
 ];//3格方块盖住的9格
 
-var nodeConsume = 20, turretConsume = 30;
+var nodeConsume = 40, turretConsume = 100;
 
 function ConveyNeoplasm(giver, receiver, amount) {
     if(!giver && !receiver)return false
@@ -43,7 +43,7 @@ function CanSpawnSize3(x, y) {
     let tile = Vars.world.tile(x + pos.x, y + pos.y);
     if (!tile) return false; // 超出地图边界视为不可建造
     let block = tile.block();
-    if (block != Blocks.air && block != neopNode && !(block instanceof Prop)) {
+    if (block != Blocks.air && block != neopNode && !(block.alwaysReplace)) {
       return false;
     }
   }
@@ -61,7 +61,7 @@ var neopCore = extend(CoreBlock, "neop-core", {
     replaceable: false,
     hasShadow: true,
     hasLiquids: true,
-    liquidCapacity: 900,
+    liquidCapacity: 1200,
     itemCapacity: 100,
     unitCapModifier: 25,
     canPlaceOn(tile,team,rotation){
@@ -177,7 +177,7 @@ neopCore.buildType = prov(() => extend(CoreBlock.CoreBuild, neopCore, {
             for (let i = 0; i < 4; i++) {
                 let PosTile = Vars.world.tile(this.tile.x + posArr[toPosArr[i]].x,this.tile.y + posArr[toPosArr[i]].y);
                 //ai指导: 蒙特卡洛
-                if (Mathf.chance(0.25) && PosTile != null && (PosTile.block() == Blocks.air || PosTile.block() instanceof Prop) && this.liquids.get(Liquids.neoplasm) >= nodeConsume) {
+                if (Mathf.chance(0.25) && PosTile != null && (PosTile.block() == Blocks.air || PosTile.block().alwaysReplace) && this.liquids.get(Liquids.neoplasm) >= nodeConsume) {
                     PosTile.setBlock(neopNode, this.team, i);
                     this.liquids.remove(Liquids.neoplasm, nodeConsume);
 
@@ -299,7 +299,7 @@ neopNode.buildType = prov(() => extend(Building, {
                     //类似顶端抑制
                 }
                 //ai指导: 蒙特卡洛
-                if (this.parent != null && PosTile != null && (PosTile.block() == Blocks.air || PosTile.block() instanceof Prop)){
+                if (this.parent != null && PosTile != null && (PosTile.block() == Blocks.air || PosTile.block().alwaysReplace)){
                     if(Mathf.chance(nodeChance) && this.liquids.get(Liquids.neoplasm) >= nodeConsume) {
                         PosTile.setBlock(neopNode, this.team, i);
                         this.liquids.remove(Liquids.neoplasm, nodeConsume);
@@ -308,7 +308,7 @@ neopNode.buildType = prov(() => extend(Building, {
                     }else if(Mathf.chance(0.01) && CanSpawnSize3(this.tile.x + posArr[toPosArr[i]].x,this.tile.y + posArr[toPosArr[i]].y) && this.liquids.get(Liquids.neoplasm) >= turretConsume){
                         Vars.world.tile(this.tile.x + posArr[toPosArr[i]].x,this.tile.y + posArr[toPosArr[i]].y).setBlock(spawner, this.team);
                         this.liquids.remove(Liquids.neoplasm, turretConsume);
-                    }else if(Mathf.chance(0.01) && CanSpawnSize3(this.tile.x + posArr[toPosArr[i]].x,this.tile.y + posArr[toPosArr[i]].y) && this.liquids.get(Liquids.neoplasm) >= turretConsume){
+                    }else if(Mathf.chance(0.005) && CanSpawnSize3(this.tile.x + posArr[toPosArr[i]].x,this.tile.y + posArr[toPosArr[i]].y) && this.liquids.get(Liquids.neoplasm) >= turretConsume){
                         Vars.world.tile(this.tile.x + posArr[toPosArr[i]].x,this.tile.y + posArr[toPosArr[i]].y).setBlock(neopTurret, this.team);
                         this.liquids.remove(Liquids.neoplasm, turretConsume);
                     }

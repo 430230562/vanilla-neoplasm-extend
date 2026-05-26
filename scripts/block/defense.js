@@ -8,7 +8,8 @@ const {
     ToxicAbility
 } = require("vne/lib/ability");
 
-const passable = new Stat("passable",StatCat.function);
+const passable = new Stat("passable", StatCat.function);
+const coolingAmount = new Stat("coolingamount", StatCat.function);
 
 const neoplasmCollecter = extend(Radar, "neoplasm-collecter", {
     outlineColor: Color.valueOf("4a4b53"),
@@ -86,38 +87,37 @@ const reinforcedForceProjector = extend(ForceProjector, "reinforced-force-projec
     radius: 70.34,
     sides: 4,
     shieldRotation: 45,
-    shieldHealth: 1200,
+    shieldHealth: 1600,
     consumeCoolant: false,
     hasLiquids: false,
-    cooldownNormal: 40 / 60,
-    cooldownBrokenBase: 50 / 60,
+    cooldownNormal: 10 / 60,
+    cooldownBrokenBase: 20 / 60,
     size: 1,
     phaseRadiusBoost: 0,
-    phaseShieldBoost: 400,
-    phaseUseTime: 600,
-    itemConsumer: new ConsumeItems([new ItemStack(item.siliconNitride, 1)]),
+    //phaseShieldBoost: 1200,
+    //phaseUseTime: 300,
+    //itemConsumer: new ConsumeItems([new ItemStack(item.siliconNitride, 1)]),
     //coolantConsumer: new ConsumeLiquid(liquid.naturalGas, 0.1),
     buildVisibility: BuildVisibility.shown,
     category: Category.effect,
     requirements: ItemStack.with(
-    Items.silicon, 120,
+    Items.silicon, 75,
+    Items.tungsten, 45,
     Items.oxide, 80,
-    item.siliconNitride, 120, ),
+    item.siliconNitride, 120),
 
     setStats() {
         this.super$setStats();
 
         this.stats.add(passable, false);
-        
+
         this.stats.remove(Stat.booster);
+
         
-        if(this.itemConsumer && this.itemConsumer instanceof ConsumeItems){
-        this.stats.add(Stat.booster, StatValues.itemBoosters("+{0} " + StatUnit.shieldHealth.localized(), this.stats.timePeriod, this.phaseShieldBoost, this.phaseRadiusBoost, this.itemConsumer.items));
-        }
     },
-    setBars(){
+    setBars() {
         this.super$setBars();
-        
+
         this.removeBar("liquid")
     }
 });
@@ -137,7 +137,7 @@ reinforcedForceProjector.buildType = prov(() => extend(ForceProjector.ForceBuild
                     if (unit.isMissile()) {
                         unit.kill()
 
-                        buildup -= unit.health * 2 * Vars.state.rules.unitDamage(unit.team)
+                        buildup += unit.health * 2 * Vars.state.rules.unitDamage(unit.team)
                         block.hitSound.at(unit.x, unit.y, 1 + Mathf.range(0.1), block.hitSoundVolume);
                         block.absorbEffect.at(unit);
                         hit = 1
@@ -163,39 +163,37 @@ const reinforcedForceProjectorLarge = extend(ForceProjector, "reinforced-force-p
     radius: 70.34 * 1.7725,
     sides: 8,
     shieldRotation: 22.5,
-    shieldHealth: 3600,
+    shieldHealth: 8000,
     consumeCoolant: false,
     hasLiquids: false,
-    cooldownNormal: 80 / 60,
-    cooldownBrokenBase: 100 / 60,
+    cooldownNormal: 20 / 60,
+    cooldownBrokenBase: 40 / 60,
     phaseRadiusBoost: 0,
-    phaseShieldBoost: 800,
-    phaseUseTime: 400,
+    //phaseShieldBoost: 2400,
+    //phaseUseTime: 150,
     size: 3,
-    itemConsumer: new ConsumeItems([new ItemStack(item.siliconNitride, 1)]),
+    //itemConsumer: new ConsumeItems([new ItemStack(item.siliconNitride, 1)]),
     //coolantConsumer: new ConsumeLiquid(liquid.naturalGas, 0.1),
     buildVisibility: BuildVisibility.shown,
     category: Category.effect,
     requirements: ItemStack.with(
-    Items.silicon, 250,
+    Items.silicon, 275,
     Items.oxide, 175,
-    Items.carbide, 105,
-    item.siliconNitride, 230, ),
+    Items.carbide, 135,
+    item.siliconNitride, 300),
 
     setStats() {
         this.super$setStats();
 
         this.stats.add(passable, false);
-        
+
         this.stats.remove(Stat.booster);
+
         
-        if(this.itemConsumer && this.itemConsumer instanceof ConsumeItems){
-        this.stats.add(Stat.booster, StatValues.itemBoosters("+{0} " + StatUnit.shieldHealth.localized(), this.stats.timePeriod, this.phaseShieldBoost, this.phaseRadiusBoost, this.itemConsumer.items));
-        }
     },
-    setBars(){
+    setBars() {
         this.super$setBars();
-        
+
         this.removeBar("liquid")
     }
 });
@@ -215,7 +213,7 @@ reinforcedForceProjectorLarge.buildType = prov(() => extend(ForceProjector.Force
                     if (unit.isMissile()) {
                         unit.kill()
 
-                        buildup -= unit.health * 2 * Vars.state.rules.unitDamage(unit.team)
+                        buildup += unit.health * 2 * Vars.state.rules.unitDamage(unit.team)
                         block.hitSound.at(unit.x, unit.y, 1 + Mathf.range(0.1), block.hitSoundVolume);
                         block.absorbEffect.at(unit);
                         hit = 1
@@ -236,6 +234,74 @@ reinforcedForceProjectorLarge.buildType = prov(() => extend(ForceProjector.Force
     }
 }))
 reinforcedForceProjectorLarge.consumePower(6);
+
+const forceProjectorCondenser = extend(Block, "force-projector-condenser", {
+    update: true,
+    health: 240,
+    size: 1,
+    solid: true,
+    replaceable: false,
+    hasShadow: true,
+    hasLiquids: true,
+    hasItems: true,
+    hasPower: true,
+    conductivePower: true,
+    liquidCapacity: 15,
+    coolingAmount: 20,
+    buildVisibility: BuildVisibility.shown,
+    category: Category.effect,
+
+    setStats() {
+        this.super$setStats();
+
+        //this.stats.remove(Stat.booster);
+
+        this.stats.add(coolingAmount, this.coolingAmount, StatUnit.perSecond);
+
+        /*if(this.itemConsumer && this.itemConsumer instanceof ConsumeItems){
+        this.stats.add(Stat.booster, StatValues.itemBoosters("+{0} " + StatUnit.shieldHealth.localized(), this.stats.timePeriod, this.phaseShieldBoost, this.phaseRadiusBoost, this.itemConsumer.items));
+        }*/
+    },
+    setBars() {
+        this.super$setBars();
+
+        //this.removeBar("liquid")
+    }
+})
+forceProjectorCondenser.buildType = prov(() => extend(Building, {
+    updateTile() {
+        // 提前检查并确定倍率
+        let hasHydrogen = this.liquids.get(Liquids.hydrogen) > 0.0001;
+        let mul = hasHydrogen ? 2.5 : 1;
+        let cooldown = (20 / 60) * mul;
+
+        let shouldConsume = false;
+        let hasProcessedProjector = false;
+
+        for (let i = 0; i < 4; i++) {
+            const p = Geometry.d4[i];
+            const other = this.nearby(p.x, p.y);
+
+            // 提前退出条件
+            if (!other || !(other.block instanceof ForceProjector)) continue;
+
+            hasProcessedProjector = true;
+
+            if (other.buildup >= cooldown) {
+                other.buildup = Math.max(0, other.buildup - cooldown);
+                shouldConsume = true;
+            }
+        }
+
+        // 只在找到力场投影器且满足条件时消耗氢气
+        if (hasProcessedProjector && shouldConsume && hasHydrogen) {
+            this.liquids.remove(Liquids.hydrogen, 1.5 / 60);
+        }
+    },
+    acceptLiquid(source, liquid) {
+        return (liquid == Liquids.hydrogen && this.liquids.get(Liquids.hydrogen) < 15)
+    }
+}))
 
 const coagulantIngotWall = new Wall("coagulant-ingot-wall");
 exports.coagulantIngotWall = coagulantIngotWall;
@@ -694,7 +760,7 @@ Items.oxide, extend(BasicBulletType, {
         let puddle = Puddles.get(tile);
         if (puddle != null && puddle.liquid == Liquids.neoplasm) {
             puddle.remove();
-            b.type.despawnEffect.at(b.x, b.y);
+            //b.type.despawnEffect.at(b.x, b.y);
         }
     }
 }))

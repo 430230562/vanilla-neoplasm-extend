@@ -6,10 +6,8 @@ function getClass(name){
 };
 
 module.exports = {
-    MultiCrafter : getClass("multicraft.MultiCrafter"),
-    DrawRecipe : getClass("multicraft.DrawRecipe"),
-    IOEntry : getClass("multicraft.IOEntry"),
-    Recipe : getClass("multicraft.Recipe")
+    MultiCrafter : getClass("MultiCraft.MultiCrafter"),
+    
 }
 
 print(">>>>>MultiCrafter JavaScript loaded.")

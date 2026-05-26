@@ -26,7 +26,7 @@ exports.mod = Vars.mods.locateMod(exports.modName);
 //以下为科技树部分
 const addResearch = (content, research, children) => {
     if (!content) {
-        //throw new Error('content is null!');
+        throw new Error('content is null!');
     }
     if (!research.parent) {
         throw new Error('research.parent is empty!');
