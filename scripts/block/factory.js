@@ -620,6 +620,123 @@ Object.assign(laserIncinerator, {
 })
 laserIncinerator.consumePower(5);
 
+const nonventCondenser = extend(AttributeCrafter,"nonvent-condenser",{
+    attribute: Attribute.steam,
+    group: BlockGroup.liquids,
+    minEfficiency: 9 - 0.0001,
+    baseEfficiency: 0,
+    displayEfficiency: false,
+    craftEffect: ammoniaTurbine,
+    drawer: new DrawMulti(
+        new DrawRegion("-bottom"),
+        new DrawBlurSpin("-rotator", 3.6),
+        Object.assign(new DrawLiquidTile(Liquids.water), {
+            alpha: 0.75
+        }),
+        new DrawDefault(),
+        new DrawRegion("-top"), ),
+    craftTime: 60,
+    size: 3,
+    ambientSound: Sounds.loopHum,
+    ambientSoundVolume: 0.06,
+    hasLiquids: true,
+    boostScale: 1 / 9,
+    itemCapacity: 0,
+    outputLiquid: new LiquidStack(Liquids.water, 80 / 60),
+    liquidCapacity: 240,
+    
+    buildVisibility: BuildVisibility.shown,
+    category: Category.production,
+    requirements: ItemStack.with(
+        Items.graphite, 40,
+        Items.beryllium, 80,
+    ),
+    setBars() {
+        this.super$setBars();
+
+        this.addBar("instability", func(e => new Bar(
+        prov(() => Core.bundle.get("bar.instability")),
+        prov(() => Pal.sap),
+        floatp(() => e.getInstability()))));
+    }
+})
+exports.nonventCondenser = nonventCondenser;
+nonventCondenser.buildType = prov(() => extend(AttributeCrafter.AttributeCrafterBuild, nonventCondenser, {
+    volatility: 0,
+
+    getInstability() {
+        return this.volatility;
+    },
+    updateTile(){
+        this.super$updateTile();
+        
+        if(this.liquids.get(Liquids.water) > this.block.liquidCapacity - 0.01){
+            this.volatility += 0.0025 * Math.min(Time.delta, 4);
+        } else if (this.volatility >= 0) {
+            this.volatility -= 0.005 * Math.min(Time.delta, 4);
+        }
+        
+        if (this.volatility >= 0.999) {
+            this.damage(1)
+        }
+    },
+    draw(){
+        this.super$draw();
+        
+        
+    },
+    write(write) {
+        this.super$write(write);
+
+        write.f(this.volatility);
+    },
+    read(read, revision) {
+        this.super$read(read, revision);
+
+        this.volatility = read.f();
+    }
+}))
+nonventCondenser.consumePower(0.5);
+
+
+const pneumaticCondenser = new AttributeCrafter("pneumatic-condenser");
+exports.pneumaticCondenser = pneumaticCondenser;
+Object.assign(pneumaticCondenser,{
+    attribute: Attribute.steam,
+    group: BlockGroup.liquids,
+    minEfficiency: 9 - 0.0001,
+    baseEfficiency: 0,
+    displayEfficiency: false,
+    craftEffect: ammoniaTurbine,
+    drawer: new DrawMulti(
+        new DrawRegion("-bottom"),
+        new DrawBlurSpin("-rotator", 3.6),
+        Object.assign(new DrawLiquidTile(Liquids.water), {
+            alpha: 0.75
+        }),
+        new DrawDefault(),
+        new DrawRegion("-top"), ),
+    craftTime: 60,
+    size: 3,
+    ambientSound: Sounds.loopHum,
+    ambientSoundVolume: 0.06,
+    hasLiquids: true,
+    boostScale: 1 / 9,
+    itemCapacity: 0,
+    outputLiquid: new LiquidStack(Liquids.water, 80 / 60),
+    liquidCapacity: 240,
+    
+    buildVisibility: BuildVisibility.shown,
+    category: Category.production,
+    requirements: ItemStack.with(
+        Items.graphite, 30,
+        Items.tungsten, 45,
+        Items.oxide, 50,
+        item.siliconNitride, 20,
+    ),
+})
+pneumaticCondenser.consumeLiquid(Liquids.hydrogen, 0.2)
+
 const atmosphericCondenser = new GenericCrafter("atmospheric-condenser");
 exports.atmosphericCondenser = atmosphericCondenser;
 Object.assign(atmosphericCondenser, {
