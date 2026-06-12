@@ -38,7 +38,7 @@ function Insect(name) {
             Object.assign(new LiquidRegenAbility(), {
                 liquid: Liquids.neoplasm,
                 slurpEffect: Fx.neoplasmHeal,
-                regenPerSlurp: 24,
+                regenPerSlurp: 18,
                 slurpSpeed: 2.5
             }));
             this.immunities.add(status.neoplasmSlow)
@@ -134,7 +134,7 @@ Object.assign(haploid, {
     drag: 0.11,
     hitSize: 11,
     rotateSpeed: 3,
-    health: 240,
+    health: 160,
     armor: 1,
     legStraightness: 0.3,
     stepShake: 0,
@@ -168,11 +168,11 @@ Object.assign(new Weapon("vne-haploid-weapon"), {
     x: 0,
     y: 1,
     shootY: 4,
-    reload: 25,
+    reload: 20,
     cooldownTime: 42,
     shootSound: Sounds.plantBreak,
     heatColor: Color.valueOf("84a94b"),
-    bullet: Object.assign(new MissileBulletType(3, 10), {
+    bullet: Object.assign(new MissileBulletType(3, 17), {
         backColor: Color.valueOf("84a94b"),
         frontColor: Color.valueOf("84a94b"),
         hitEffect: Fx.none,
@@ -206,7 +206,7 @@ Object.assign(diploid, {
     drag: 0.4,
     hitSize: 12,
     rotateSpeed: 3,
-    health: 660,
+    health: 500,
     legCount: 6,
     legLength: 13,
     legMoveSpace: 1.4,
@@ -233,13 +233,13 @@ Object.assign(new Weapon(), {
     inaccuracy: 1,
     shootSound: Sounds.shootArtillerySmall,
     heatColor: Color.valueOf("84a94b"),
-    bullet: Object.assign(new ArtilleryBulletType(3, 20), {
+    bullet: Object.assign(new ArtilleryBulletType(3, 30), {
         knockback: 0.8,
         lifetime: 80,
         width: 11,
         height: 11,
         collidesTiles: false,
-        splashDamageRadius: 8 * 2.25,
+        splashDamageRadius: 8 * 2.75,
         splashDamage: 60,
 
         backColor: Color.valueOf("84a94b"),
@@ -249,7 +249,7 @@ Object.assign(new Weapon(), {
         lightOpacity: 0,
 
         status: StatusEffects.corroded,
-        statusDuration: 40,
+        statusDuration: 60,
 
         fragBullets: 2,
         fragBullet: new Acid(18)
@@ -275,7 +275,7 @@ Object.assign(polarBody, {
     maxRange: 6,
     lifetime: 95,
     outlineColor: Pal.neoplasmOutline,
-    health: 45,
+    health: 85,
     lowAltitude: true,
 })
 polarBody.parts.add(
@@ -295,7 +295,7 @@ Object.assign(new Weapon(), {
     mirror: false,
     reload: 1,
     shootOnDeath: true,
-    bullet: Object.assign(new ExplosionBulletType(170, 35), {
+    bullet: Object.assign(new ExplosionBulletType(200, 35), {
         shootEffect: new MultiEffect(
         Fx.massiveExplosion,
         new WrapEffect(
@@ -320,7 +320,7 @@ Object.assign(triploid, {
     drag: 0.1,
     hitSize: 19,
     rotateSpeed: 3,
-    health: 1350,
+    health: 960,
     armor: 5,
 
     fogRadius: 40,
@@ -362,7 +362,7 @@ new Weapon("vne-triploid-weapon"), {
     x: 29 / 4,
     y: -11 / 4,
     shootY: 1.5,
-    reload: 120,
+    reload: 100,
     layerOffset: 0.01,
     rotateSpeed: 2,
     rotate: true,
@@ -383,8 +383,8 @@ Object.assign(bivalents, {
     drag: 0.1,
     hitSize: 26,
     rotateSpeed: 3,
-    health: 5600,
-    armor: 10,
+    health: 6000,
+    armor: 6,
     targetPriority: 1,
 
     fogRadius: 40,
@@ -455,7 +455,7 @@ const ribosome = new Insect("ribosome");
 exports.ribosome = ribosome;
 Object.assign(ribosome, {
     constructor: () => new UnitEntity.create(),
-    health: 210,
+    health: 120,
     speed: 3.5,
     flying: true,
     lowAltitude: true,
@@ -470,12 +470,12 @@ Object.assign(new Weapon("vne-ribosome-weapon"), {
     x: 0,
     y: 1,
     shootY: 4,
-    reload: 25,
+    reload: 20,
     shootCone: 60,
     cooldownTime: 42,
     shootSound: Sounds.plantBreak,
     heatColor: Color.valueOf("84a94b"),
-    bullet: Object.assign(new MissileBulletType(3, 10), {
+    bullet: Object.assign(new MissileBulletType(3, 19), {
         backColor: Color.valueOf("84a94b"),
         frontColor: Color.valueOf("84a94b"),
         hitEffect: Fx.none,
@@ -515,7 +515,7 @@ const lysosome = new Insect("lysosome");
 exports.lysosome = lysosome;
 Object.assign(lysosome, {
     constructor: () => new UnitEntity.create(),
-    health: 520,
+    health: 440,
     speed: 2,
     accel: 0.08,
     drag: 0.016,
@@ -546,7 +546,7 @@ Object.assign(new Weapon(), {
         shots: 3,
         shotDelay: 7.5,
     }),
-    bullet: Object.assign(new BombBulletType(27, 25), {
+    bullet: Object.assign(new BombBulletType(40, 28), {
         width: 10,
         height: 14,
         hitEffect: Fx.flakExplosion,
@@ -577,7 +577,7 @@ const trichocyst = new Insect("trichocyst");
 exports.trichocyst = trichocyst;
 Object.assign(trichocyst, {
     constructor: () => new UnitEntity.create(),
-    health: 1200,
+    health: 880,
     speed: 1.667,
     accel: 0.08,
     drag: 0.016,
@@ -597,10 +597,10 @@ Object.assign(new Weapon("vne-trichocyst-weapon"), {
     mirror: false,
     shootCone: 15,
     shootY: 0,
-    reload: 90,
+    reload: 100,
     ejectEffect: Fx.none,
     shootSound: Sounds.plantBreak,
-    bullet: Object.assign(new BasicBulletType(6, 200), {
+    bullet: Object.assign(new BasicBulletType(6, 250), {
         ammoMultiplier: 1,
         width: 7,
         height: 21,
@@ -652,8 +652,8 @@ Object.assign(centrosome, {
     speed: 1.25,
     rotateSpeed: 3.2,
     accel: 0.1,
-    health: 4500,
-    armor: 5,
+    health: 3500,
+    armor: 4,
     hitSize: 20,
 
     engineSize: 4.8,
@@ -684,7 +684,7 @@ centrosome.weapons.add(Object.assign(new Weapon("vne-centrosome-weapon"), {
     baseRotation: -30,
     shoot: new ShootSpread(2, 10),
     shootSound: Sounds.plantBreak,
-    bullet: Object.assign(new BasicBulletType(4, 150), {
+    bullet: Object.assign(new BasicBulletType(4, 210), {
         lifetime: 60,
         width: 16,
         height: 16,
@@ -783,7 +783,7 @@ Object.assign(new Weapon(), {
     mirror: false,
     minWarmup: 0.95,
     shootWarmupSpeed: 0.05,
-    bullet: new ExplosionBulletType(90, 48),
+    bullet: new ExplosionBulletType(110, 48),
 }))
 
 const cytoderm = new Insect("cytoderm");
@@ -839,7 +839,7 @@ Object.assign(new PointDefenseWeapon("vne-cytoderm-weapon"), {
     })
 }))
 cytoderm.abilities.add(
-new DamageDownAbility(18, 120),
+new DamageDownAbility(24, 120),
 new ForceFieldAbility(40, 0.2, 400, 60 * 6))
 
 //unit.vne-adenoma.name = 腺瘤
@@ -906,7 +906,7 @@ Object.assign(new Weapon("vne-adenoma-weapon"), {
     cooldownTime: 40,
     heatColor: Color.valueOf("c33e2b"),
     shootSound: Sounds.shootScatter,
-    bullet: extend(FlakBulletType, 4, 9, {
+    bullet: extend(FlakBulletType, 4, 17, {
         lifetime: 48,
         recoil: 1.2,
         shootEffect: Fx.shootSmall,
@@ -985,7 +985,7 @@ Object.assign(sarcoma, {
     speed: 0.8,
     hitSize: 14,
     targetPriority: 1,
-    health: 1200,
+    health: 1300,
     omniMovement: false,
     rotateSpeed: 2,
     segments: 3,

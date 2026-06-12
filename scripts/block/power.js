@@ -1,10 +1,10 @@
 const item = require("vne/item");
 const liquid = require("vne/liquid");
-const {ammoniaTurbine} = require("vne/effect");
+const { ammoniaTurbine } = require("vne/effect");
 
 const nodeDiode = new PowerDiode("node-diode");
 exports.nodeDiode = nodeDiode;
-Object.assign(nodeDiode,{
+Object.assign(nodeDiode, {
     buildVisibility: BuildVisibility.shown,
     category: Category.power,
     requirements: ItemStack.with(
@@ -16,7 +16,7 @@ Object.assign(nodeDiode,{
 
 const assistantBattery = new Battery('assistant-battery');
 exports.assistantBattery = assistantBattery;
-Object.assign(assistantBattery,{
+Object.assign(assistantBattery, {
     buildVisibility: BuildVisibility.shown,
     category: Category.power,
     requirements: ItemStack.with(
@@ -29,33 +29,33 @@ assistantBattery.consumePowerBuffered(25000);
 const oxidationChamber = extend(ThermalGenerator, "oxidation-chamber", {
     setBars() {
         this.super$setBars();
-        
+
         this.addBar("outputLiquid", func(e => new Bar(
-        prov(() => {
-            if (e.getOutputLiquid() != null) {
-                return e.getOutputLiquid()
-                    .liquid.localizedName
-            } else {
-                return Core.bundle.get("bar.liquid")
-            }
-        }),
-        prov(() => {
-            if (e.getOutputLiquid() != null) {
-                return e.getOutputLiquid()
-                    .liquid.color
-            } else {
-                return Color.white
-            }
-        }),
-        floatp(() => {
-            if (e.getOutputLiquid() != null) {
-                return e.getOutputLiquid()
-                    .amount / this.liquidCapacity
-            } else {
-                return 0
-            }
-        })
-        
+            prov(() => {
+                if (e.getOutputLiquid() != null) {
+                    return e.getOutputLiquid()
+                        .liquid.localizedName
+                } else {
+                    return Core.bundle.get("bar.liquid")
+                }
+            }),
+            prov(() => {
+                if (e.getOutputLiquid() != null) {
+                    return e.getOutputLiquid()
+                        .liquid.color
+                } else {
+                    return Color.white
+                }
+            }),
+            floatp(() => {
+                if (e.getOutputLiquid() != null) {
+                    return e.getOutputLiquid()
+                        .amount / this.liquidCapacity
+                } else {
+                    return 0
+                }
+            })
+
         )))
     },
     attribute: Attribute.get("ammonia"),
@@ -70,13 +70,13 @@ const oxidationChamber = extend(ThermalGenerator, "oxidation-chamber", {
     ambientSoundVolume: 0.06,
 
     drawer: new DrawMulti(
-    new DrawDefault(),
-    Object.assign(new DrawWarmupRegion(),{
-        color: Color.valueOf("57c3c2"),
-        sinScl: 8 * 9
-    }),
-    new DrawBlurSpin("-rotator0",0.4),
-    new DrawBlurSpin("-rotator1",-0.4)
+        new DrawDefault(),
+        Object.assign(new DrawWarmupRegion(), {
+            color: Color.valueOf("57c3c2"),
+            sinScl: 8 * 9
+        }),
+        new DrawBlurSpin("-rotator0", 0.4),
+        new DrawBlurSpin("-rotator1", -0.4)
     ),
 
     hasLiquids: true,
@@ -87,8 +87,8 @@ const oxidationChamber = extend(ThermalGenerator, "oxidation-chamber", {
     buildVisibility: BuildVisibility.shown,
     category: Category.power,
     requirements: ItemStack.with(
-    Items.silicon, 35,
-    Items.tungsten, 25, ),
+        Items.silicon, 35,
+        Items.tungsten, 25,),
 });
 exports.oxidationChamber = oxidationChamber;
 oxidationChamber.buildType = prov(() => extend(ThermalGenerator.ThermalGeneratorBuild, oxidationChamber, {
@@ -101,20 +101,20 @@ oxidationChamber.buildType = prov(() => extend(ThermalGenerator.ThermalGenerator
             this.productionEfficiency = 0
         }
     },
-    totalProgress(){
+    totalProgress() {
         return this.workTime
     },
-    getOutputLiquid(){
-        return {liquid: Liquids.water, amount: this.liquids.get(Liquids.water)}
+    getOutputLiquid() {
+        return { liquid: Liquids.water, amount: this.liquids.get(Liquids.water) }
     },
     write(write) {
-		this.super$write(write);
-		write.f(this.workTime);
-	},
-	read(read, revision) {
-		this.super$read(read, revision);
-		this.workTime = read.f();
-	}
+        this.super$write(write);
+        write.f(this.workTime);
+    },
+    read(read, revision) {
+        this.super$read(read, revision);
+        this.workTime = read.f();
+    }
 }))
 oxidationChamber.consumeLiquid(Liquids.ozone, 4 / 60);
 
@@ -141,36 +141,36 @@ const biomassReactor = extend(ConsumeGenerator, "biomass-reactor", {
     explosionMinWarmup: 0.25,
 
     drawer: new DrawMulti(
-    new DrawRegion("-bottom"),
-    new DrawLiquidTile(liquid.ammonia, 4),
-    Object.assign(new DrawCultivator(), {
-        plantColor: Color.valueOf("8c1225"),
-        plantColorLight: Color.valueOf("e8803f"),
-    }),
-    Object.assign(new DrawCells(), {
-        color: Color.valueOf("c33e2b"),
-        particleColorFrom: Color.valueOf("e8803f"),
-        particleColorTo: Color.valueOf("8c1225"),
-        particles: 75,
-        range: 4.5,
-    }),
-    new DrawDefault(), ),
+        new DrawRegion("-bottom"),
+        new DrawLiquidTile(liquid.ammonia, 4),
+        Object.assign(new DrawCultivator(), {
+            plantColor: Color.valueOf("8c1225"),
+            plantColorLight: Color.valueOf("e8803f"),
+        }),
+        Object.assign(new DrawCells(), {
+            color: Color.valueOf("c33e2b"),
+            particleColorFrom: Color.valueOf("e8803f"),
+            particleColorTo: Color.valueOf("8c1225"),
+            particles: 75,
+            range: 4.5,
+        }),
+        new DrawDefault(),),
 
     buildVisibility: BuildVisibility.shown,
     category: Category.power,
     requirements: ItemStack.with(
-    Items.graphite, 80,
-    Items.silicon, 75,
-    Items.tungsten, 125,
-    Items.oxide, 75),
+        Items.graphite, 80,
+        Items.silicon, 75,
+        Items.tungsten, 125,
+        Items.oxide, 75),
 
     setBars() {
         this.super$setBars();
 
         this.addBar("instability", func(e => new Bar(
-        prov(() => Core.bundle.get("bar.instability")),
-        prov(() => Pal.sap),
-        floatp(() => e.getInstability()))));
+            prov(() => Core.bundle.get("bar.instability")),
+            prov(() => Pal.sap),
+            floatp(() => e.getInstability()))));
     }
 
 });
@@ -195,14 +195,14 @@ biomassReactor.buildType = prov(() => extend(ConsumeGenerator.ConsumeGeneratorBu
         }
 
         if (this.productionEfficiency > 0) {
-            if (this.liquids.get(this.coolantLiquid) < 0.001) {
+            if (this.liquids.get(this.coolantLiquid) < 0.001 && this.team != Vars.state.rules.waveTeam) {
                 this.volatility += fullness * 0.0025 * Math.min(Time.delta, 4);
             } else if (this.volatility >= 0) {
                 this.volatility -= 0.005 * Math.min(Time.delta, 4);
             }
-            
-            if(Mathf.chance(0.5 * this.volatility)){
-                Fx.reactorsmoke.at(this.x + Mathf.range(20),this.y + Mathf.range(20))
+
+            if (Mathf.chance(0.5 * this.volatility)) {
+                Fx.reactorsmoke.at(this.x + Mathf.range(20), this.y + Mathf.range(20))
             }
         }
 
@@ -224,7 +224,7 @@ biomassReactor.buildType = prov(() => extend(ConsumeGenerator.ConsumeGeneratorBu
     },
     //听说有人会在快爆了的时候拆掉防爆
     onDeconstructed() {
-        if(this.volatility >= 0.5)this.onDestroyed();
+        if (this.volatility >= 0.5) this.onDestroyed();
     },
     write(write) {
         this.super$write(write);
@@ -241,10 +241,10 @@ exports.biomassReactor = biomassReactor;
 biomassReactor.consumeItem(item.protein, 1);
 biomassReactor.consumeLiquid(liquid.ammonia, 0.1)
     .optional = true;
-    
+
 const monitor = new BeamNode("monitor");
 exports.monitor = monitor;
-Object.assign(monitor,{
+Object.assign(monitor, {
     range: 1,
     laserColor1: Color.valueOf("00000000"),
     laserColor2: Color.valueOf("00000000"),

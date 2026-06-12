@@ -45,6 +45,18 @@ function ReduceArmorBulletType(speed, damage, amount) {
 }
 exports.ReduceArmorBulletType = ReduceArmorBulletType;
 
+function PercentDamageBulletType(speed, damage, percent) {
+    return extend(BasicBulletType, speed, damage, {
+        hitEntity(b, entity, health) {
+            this.super$hitEntity(b, entity, health);
+                if(entity != null){
+                entity.damage(entity.maxHealth * percent / 100);
+                }
+        }
+    });
+}
+exports.PercentDamageBulletType = PercentDamageBulletType;
+        
 function BounceBulletType(speed, damage, range) {
     return extend(BasicBulletType, speed, damage, {
         pierceCap: 12,

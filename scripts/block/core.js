@@ -27,29 +27,29 @@ Object.assign(election, {
     constructor: () => new UnitEntity.create(),
 })
 election.weapons.add(
-Object.assign(new Weapon("vne-election-weapon"), {
-    top: false,
-    y: 5 / 4,
-    x: 10 / 4,
-    reload: 30,
-    ejectEffect: Fx.none,
-    recoil: 2,
-    shootSound: Sounds.shootMissile,
-    inaccuracy: 3,
-    alternate: true,
-    bullet: Object.assign(new MissileBulletType(4, 17), {
-        homingPower: 0.08,
-        lifetime: 50,
-        keepVelocity: false,
-        hitSound: Sounds.none,
-        shootEffect: Fx.sparkShoot,
-        smokeEffect: Fx.shootBigSmoke,
-        frontColor: Color.white,
-        buildingDamageMultiplier: 0.001,
-    })
-}))
+    Object.assign(new Weapon("vne-election-weapon"), {
+        top: false,
+        y: 5 / 4,
+        x: 10 / 4,
+        reload: 30,
+        ejectEffect: Fx.none,
+        recoil: 2,
+        shootSound: Sounds.shootMissile,
+        inaccuracy: 3,
+        alternate: true,
+        bullet: Object.assign(new MissileBulletType(4, 17), {
+            homingPower: 0.08,
+            lifetime: 50,
+            keepVelocity: false,
+            hitSound: Sounds.none,
+            shootEffect: Fx.sparkShoot,
+            smokeEffect: Fx.shootBigSmoke,
+            frontColor: Color.white,
+            buildingDamageMultiplier: 0.001,
+        })
+    }))
 election.abilities.add(
-new MendFieldAbility(75, 300, 8 * 6))
+    new MendFieldAbility(75, 300, 8 * 6))
 
 const atom = new UnitType("atom");
 Object.assign(atom, {
@@ -75,33 +75,33 @@ Object.assign(atom, {
     constructor: () => new UnitEntity.create(),
 })
 atom.weapons.add(
-Object.assign(new Weapon("vne-atom-weapon"), {
-    reload: 60,
-    x: 0,
-    y: 0,
-    shootY: 5,
-    recoil: 1,
-    top: false,
-    layerOffset: -0.01,
-    rotate: false,
-    mirror: false,
-    shoot: new ShootHelix(),
-    shootSound: Sounds.shootAvert,
+    Object.assign(new Weapon("vne-atom-weapon"), {
+        reload: 60,
+        x: 0,
+        y: 0,
+        shootY: 5,
+        recoil: 1,
+        top: false,
+        layerOffset: -0.01,
+        rotate: false,
+        mirror: false,
+        shoot: new ShootHelix(),
+        shootSound: Sounds.shootAvert,
 
-    bullet: Object.assign(new BasicBulletType(5, 42), {
-        width: 7,
-        height: 12,
-        lifetime: 25,
-        shootEffect: Fx.sparkShoot,
-        smokeEffect: Fx.shootBigSmoke,
-        frontColor: Color.white,
-        trailWidth: 1.5,
-        trailLength: 5,
-        buildingDamageMultiplier: 0.001,
-    })
-}))
+        bullet: Object.assign(new BasicBulletType(5, 42), {
+            width: 7,
+            height: 12,
+            lifetime: 25,
+            shootEffect: Fx.sparkShoot,
+            smokeEffect: Fx.shootBigSmoke,
+            frontColor: Color.white,
+            trailWidth: 1.5,
+            trailLength: 5,
+            buildingDamageMultiplier: 0.001,
+        })
+    }))
 atom.abilities.add(
-MendFieldAbility(100, 300, 8 * 7))
+    MendFieldAbility(100, 300, 8 * 7))
 
 const molecule = new UnitType("molecule");
 Object.assign(molecule, {
@@ -127,33 +127,33 @@ Object.assign(molecule, {
     constructor: () => new UnitEntity.create(),
 })
 molecule.weapons.add(
-Object.assign(new Weapon("vne-molecule-weapon"), {
-    top: false,
-    mirror: false,
-    rotate: true,
-    y: -10 / 4,
-    x: 0,
-    reload: 50,
-    ejectEffect: Fx.none,
-    recoil: 2,
-    shootSound: Sounds.shootMissile,
-    inaccuracy: 3,
-    shoot: Object.assign(new ShootPattern(), {
-        shots: 3,
-        shotDelay: 5,
-    }),
-    bullet: Object.assign(new MissileBulletType(4, 9), {
-        homingPower: 0.08,
-        lifetime: 50,
-        keepVelocity: false,
-        smokeEffect: Fx.none,
-        frontColor: Color.white,
-        hitSound: Sounds.none,
-        buildingDamageMultiplier: 0.001,
-    })
-}))
+    Object.assign(new Weapon("vne-molecule-weapon"), {
+        top: false,
+        mirror: false,
+        rotate: true,
+        y: -10 / 4,
+        x: 0,
+        reload: 50,
+        ejectEffect: Fx.none,
+        recoil: 2,
+        shootSound: Sounds.shootMissile,
+        inaccuracy: 3,
+        shoot: Object.assign(new ShootPattern(), {
+            shots: 3,
+            shotDelay: 5,
+        }),
+        bullet: Object.assign(new MissileBulletType(4, 9), {
+            homingPower: 0.08,
+            lifetime: 50,
+            keepVelocity: false,
+            smokeEffect: Fx.none,
+            frontColor: Color.white,
+            hitSound: Sounds.none,
+            buildingDamageMultiplier: 0.001,
+        })
+    }))
 molecule.abilities.add(
-new MendFieldAbility(125, 300, 8 * 8))
+    new MendFieldAbility(125, 300, 8 * 8))
 
 function PowerCore(name, powerProduction) {
     const core = extend(CoreBlock, name, {
@@ -169,10 +169,10 @@ function PowerCore(name, powerProduction) {
             this.super$setBars();
 
             this.addBar("power", func(e => new Bar(
-            
-            prov(() => Core.bundle.format("bar.poweroutput",Strings.fixed(e.getPowerProduction() * 60, 1))),
-            prov(() => Pal.powerBar),
-            floatp(() => 1))))
+
+                prov(() => Core.bundle.format("bar.poweroutput", Strings.fixed(e.getPowerProduction() * 60, 1))),
+                prov(() => Pal.powerBar),
+                floatp(() => 1))))
         }
     });
     core.buildType = prov(() => extend(CoreBlock.CoreBuild, core, {
@@ -197,70 +197,70 @@ Object.assign(ash, {
     buildVisibility: BuildVisibility.shown,
     category: Category.effect,
     requirements: ItemStack.with(
-    Items.copper, 1000,
-    item.nickel, 500
+        Items.copper, 1000,
+        item.nickel, 500
     )
 })
 
 /*const albus = CoreBlock("albus");
 exports.albus = albus;
 Object.assign(albus, {
-	unitType: atom,
-	health: 5500,
-	armor: 3,
-	itemCapacity: 12000,
-	size: 4,
+    unitType: atom,
+    health: 5500,
+    armor: 3,
+    itemCapacity: 12000,
+    size: 4,
 	
-	unitCapModifier: 18,
-	researchCostMultiplier: 0.05,
+    unitCapModifier: 18,
+    researchCostMultiplier: 0.05,
 	
-	buildVisibility: BuildVisibility.shown,
-	category: Category.effect,
-	requirements: ItemStack.with(
-		item.nickel, 5000,
-		Items.graphite, 2000,
-		Items.silicon, 2000,
-	)
+    buildVisibility: BuildVisibility.shown,
+    category: Category.effect,
+    requirements: ItemStack.with(
+        item.nickel, 5000,
+        Items.graphite, 2000,
+        Items.silicon, 2000,
+    )
 })
 
 const annular = new CoreBlock("annular");
 exports.annular = annular
 Object.assign(annular, {
-	unitType: molecule,
-	size: 5,
-	health: 8800,
-	armor: 5,
-	itemCapacity: 15000,
+    unitType: molecule,
+    size: 5,
+    health: 8800,
+    armor: 5,
+    itemCapacity: 15000,
 	
-	unitCapModifier: 24,
-	researchCostMultiplier: 0.05,
+    unitCapModifier: 24,
+    researchCostMultiplier: 0.05,
 	
-	buildVisibility: BuildVisibility.shown,
-	category: Category.effect,
-	requirements: ItemStack.with(
-		item.nickel, 12000,
-		Items.silicon, 5000,
-		item.chromium, 4000,
-	)
+    buildVisibility: BuildVisibility.shown,
+    category: Category.effect,
+    requirements: ItemStack.with(
+        item.nickel, 12000,
+        Items.silicon, 5000,
+        item.chromium, 4000,
+    )
 })*/
 
 /*const coreFix = new Block("core-fix");
 Object.assign(coreFix,{
-	buildVisibility: BuildVisibility.editorOnly,
-	category: Category.effect,
-	update: true,
-	alwaysUnlocked: true,
+    buildVisibility: BuildVisibility.editorOnly,
+    category: Category.effect,
+    update: true,
+    alwaysUnlocked: true,
 })
 coreFix.buildType = prov(() => extend(Building,{
-	updateTile(){
-		this.tile.circle(5, cons(tile => {
-			if(tile.block() == Blocks.coreShard){
-				tile.setBlock(ash,this.team);
-			}
-		}))
-		this.team.core().items.add(item.nickel, 200)
-		this.team.core().items.add(Items.graphite, 100)
-		
-		this.tile.setBlock(Blocks.air)
-	}
+    updateTile(){
+        this.tile.circle(5, cons(tile => {
+            if(tile.block() == Blocks.coreShard){
+                tile.setBlock(ash,this.team);
+            }
+        }))
+        this.team.core().items.add(item.nickel, 200)
+        this.team.core().items.add(Items.graphite, 100)
+    	
+        this.tile.setBlock(Blocks.air)
+    }
 }))*/
