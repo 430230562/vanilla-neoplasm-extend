@@ -765,7 +765,7 @@ defuse.ammo(
             }
         }
     })
-    )
+)
 defuse.buildType = prov(() => extend(ItemTurret.ItemTurretBuild, defuse, {
     findTarget() {
         if (this.target == null) {
@@ -983,7 +983,9 @@ Blocks.sublimate.ammoTypes.put(
         flareColor: Color.valueOf("57c3c2"),
         lightColor: Color.valueOf("57c3c2"),
         hitColor: Color.valueOf("57c3c2"),
-    }),
+    })
+)
+Blocks.sublimate.ammoTypes.put(
     liquid.naturalGas, Object.assign(new ContinuousFlameBulletType(), {
         damage: 630 / 12,
         length: 130,
