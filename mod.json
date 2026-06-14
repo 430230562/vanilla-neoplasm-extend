@@ -6,8 +6,8 @@
     "minGameVersion": 154,
     "author": "pardon",
     "version": 0.32,
-    "java": true,
-    "main": "MultiCraft.MultiCrafterMod",
     "repo": "430230562/vanilla-neoplasm-extend",
-    "hideBrowser": false
-}
+    "hideBrowser": false,
+    "dependencies": [
+        "multi-crafter-lib"
+    ]}

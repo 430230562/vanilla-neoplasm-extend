@@ -1,6 +1,7 @@
 const item = require("vne/item");
 const liquid = require("vne/liquid")
 const status = require("vne/status");
+const effect = require("vne/effect");
 const {
     ReduceArmorBulletType, PercentDamageBulletType, BounceBulletType
 } = require("vne/lib/bulletType");
@@ -146,8 +147,8 @@ reinforcedForceProjector.buildType = prov(() => extend(ForceProjector.ForceBuild
                     unit.vel.setZero();
                     //get out
                     unit.impulse(
-                        Math.cos(Angles.angle(x, y, unit.x, unit.y) * Math.PI / 180) * unit.type.hitSize * unit.type.hitSize,
-                        Math.sin(Angles.angle(x, y, unit.x, unit.y) * Math.PI / 180) * unit.type.hitSize * unit.type.hitSize)
+                        Math.cos(Angles.angle(x, y, unit.x, unit.y) * Math.PI / 180) * unit.type.hitSize * unit.type.hitSize * 16,
+                        Math.sin(Angles.angle(x, y, unit.x, unit.y) * Math.PI / 180) * unit.type.hitSize * unit.type.hitSize * 16)
 
                     if (Mathf.chanceDelta(0.12 * Time.delta)) {
                         Fx.circleColorSpark.at(unit.x, unit.y, team.color);
@@ -222,8 +223,8 @@ reinforcedForceProjectorLarge.buildType = prov(() => extend(ForceProjector.Force
                     unit.vel.setZero();
                     //get out
                     unit.impulse(
-                        Math.cos(Angles.angle(x, y, unit.x, unit.y) * Math.PI / 180) * unit.type.hitSize * unit.type.hitSize,
-                        Math.sin(Angles.angle(x, y, unit.x, unit.y) * Math.PI / 180) * unit.type.hitSize * unit.type.hitSize)
+                        Math.cos(Angles.angle(x, y, unit.x, unit.y) * Math.PI / 180) * unit.type.hitSize * unit.type.hitSize * 16,
+                        Math.sin(Angles.angle(x, y, unit.x, unit.y) * Math.PI / 180) * unit.type.hitSize * unit.type.hitSize * 16)
 
                     if (Mathf.chanceDelta(0.12 * Time.delta)) {
                         Fx.circleColorSpark.at(unit.x, unit.y, team.color);
@@ -763,7 +764,8 @@ defuse.ammo(
                 //b.type.despawnEffect.at(b.x, b.y);
             }
         }
-    }))
+    })
+    )
 defuse.buildType = prov(() => extend(ItemTurret.ItemTurretBuild, defuse, {
     findTarget() {
         if (this.target == null) {
@@ -931,12 +933,40 @@ Blocks.breach.ammoTypes.put(
         buildingDamageMultiplier: 0.3,
     }))
 
+Blocks.diffuse.ammoTypes.put(
+    item.cyanide, extend(BasicBulletType, {
+        speed: 4,
+        damage: 20,
+        knockback: 3,
+        width: 25,
+        hitSize: 7,
+        height: 20,
+        shootEffect: Fx.shootBigColor,
+        smokeEffect: Fx.shootSmokeSquareSparse,
+        ammoMultiplier: 3,
+        hitColor: Color.valueOf("89e8b6"),
+        backColor: Color.valueOf("89e8b6"),
+        trailColor: Color.valueOf("89e8b6"),
+        frontColor: Color.valueOf("89e8b6"),
+
+        trailEffect: effect.cyanideTail,
+
+        removeAfterPierce: false,
+        pierce: true,
+        pierceBuilding: true,
+        hitEffect: Fx.hitSquaresColor,
+        despawnEffect: Fx.hitSquaresColor,
+        status: status.poisoned,
+        statusDuration: 300,
+    })
+)
+
 //升华
 Blocks.sublimate.ammoTypes.put(
     liquid.ammonia, Object.assign(new ContinuousFlameBulletType(), {
         damage: 960 / 12,
         rangeChange: 5.5 * 8,
-        ammoMultiplier: 15 / 18,
+        ammoMultiplier: 1,
         length: 130 + 5.5 * 8,
         knockback: 1.2,
         pierceCap: 4,
@@ -953,7 +983,27 @@ Blocks.sublimate.ammoTypes.put(
         flareColor: Color.valueOf("57c3c2"),
         lightColor: Color.valueOf("57c3c2"),
         hitColor: Color.valueOf("57c3c2"),
-    }))
+    }),
+    liquid.naturalGas, Object.assign(new ContinuousFlameBulletType(), {
+        damage: 630 / 12,
+        length: 130,
+        knockback: 3,
+        pierceCap: 2,
+        buildingDamageMultiplier: 0.3,
+        timescaleDamage: true,
+
+        colors: [
+            Color.valueOf("8ca9e6e6"),
+            Color.valueOf("a9beecCC"),
+            Color.valueOf("c6d4f2B3"),
+            Color.valueOf("e2eaf99a"),
+            Color.valueOf("FFFFFF80")],
+
+        flareColor: Color.valueOf("a9beec"),
+        lightColor: Color.valueOf("a9beec"),
+        hitColor: Color.valueOf("a9beec")
+    })
+)
 
 //泰坦
 Blocks.titan.ammoTypes.put(

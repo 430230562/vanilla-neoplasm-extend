@@ -196,23 +196,23 @@ exports.laboratory = laboratory;
 Object.assign(laboratory, {
 	size: 3,
 	plans: Seq.with(
-		new UnitPlan(unit.polyp, 60 * 40, ItemStack.with()),
-		new UnitPlan(UnitTypes.renale, 60 * 60, ItemStack.with()),
-		new UnitPlan(unit.sarcoma, 60 * 120, ItemStack.with()),
-		new UnitPlan(unit.metastasis , 60 * 200, ItemStack.with())
+		new UnitPlan(UnitTypes.renale, 60 * 30, ItemStack.with()),
+        new UnitPlan(unit.polyp, 60 * 45, ItemStack.with()),
+		new UnitPlan(unit.sarcoma, 60 * 90, ItemStack.with()),
+		new UnitPlan(unit.metastasis , 60 * 120, ItemStack.with())
 	),
 	//目前仅敌方可用
 	buildVisibility: BuildVisibility.shown,
 	category: Category.units,
 	requirements: ItemStack.with(
-	    Items.carbide, 200,
+	    Items.carbide, 120,
 		Items.dormantCyst, 75,
-		item.siliconNitride, 125,
-		item.biomassSteel, 225,
+		item.siliconNitride, 75,
+		item.biomassSteel, 25,
 	),
 })
 laboratory.consumeLiquid(Liquids.neoplasm, 20 / 60)
-laboratory.consumePower(6);
+laboratory.consumePower(3);
 laboratory.buildType = prov(() => extend(UnitFactory.UnitFactoryBuild, laboratory,{
     a: 0,
     draw(){
