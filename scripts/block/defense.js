@@ -598,6 +598,30 @@ Object.assign(nickelWallLarge, {
         item.nickel, 6 * 4,),
 })
 
+const manganeseWall = new Wall("manganese-wall");
+exports.manganeseWall = manganeseWall;
+Object.assign(manganeseWall, {
+    health: 480,
+    armor: 3,
+    size: 1,
+    buildVisibility: BuildVisibility.shown,
+    category: Category.defense,
+    requirements: ItemStack.with(
+        item.manganese, 6,),
+})
+
+const manganeseWallLarge = new Wall("manganese-wall-large");
+exports.manganeseWallLarge = manganeseWallLarge;
+Object.assign(manganeseWallLarge, {
+    health: 480 * 4,
+    armor: 3,
+    size: 2,
+    buildVisibility: BuildVisibility.shown,
+    category: Category.defense,
+    requirements: ItemStack.with(
+        item.manganese, 6 * 4,),
+})
+
 Blocks.constructor.filter.add(siliconNitrideWallLarge, biomassWallLarge)
 
 const explosive = new Wall("explosive");

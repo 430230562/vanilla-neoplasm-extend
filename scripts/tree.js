@@ -142,13 +142,15 @@ addResearch(factory.incubator, {
         node(factory.cyanidePlant, () => { }),
             node(factory.BMAStove, () => { })
     })
-    node(factory.irradiationChamber, () => { })
+    node(factory.activator, () => {
+        node(factory.irradiationChamber, () => { })
+    })
 });
 
 addResearch(factory.ammoniaPlant, {
     parent: "oxidation-chamber",
     objectives: Seq.with(Objectives.Produce(Liquids.nitrogen),
-        Objectives.sectorComplete(SectorPresets.caldera)
+        Objectives.SectorComplete(SectorPresets.caldera)
     )
 }, () => {
     node(factory.watergasStove, () => { })
@@ -246,17 +248,17 @@ addResearch(unitFactory.unitIncubator, {
                     node(unitFactory.evolver, Seq.with(
                         Objectives.Produce(Items.dormantCyst),
                         Objectives.SectorComplete(sector.sinkhole)
-                        ), () => {
-                            node(unit.triploid, () => { }),
-                                node(unit.trichocyst, () => { }),
-                                node(unit.adenoma, () => { }),
-                                node(unitFactory.laboratory, () => {
-                                    node(unit.polyp, () => { }),
-                                        node(UnitTypes.renale, () => { }),
-                                        node(unit.sarcoma, () => { }),
-                                        node(unit.metastasis, () => { })
-                                })
-                        })
+                    ), () => {
+                        node(unit.triploid, () => { }),
+                            node(unit.trichocyst, () => { }),
+                            node(unit.adenoma, () => { }),
+                            node(unitFactory.laboratory, () => {
+                                node(unit.polyp, () => { }),
+                                    node(UnitTypes.renale, () => { }),
+                                    node(unit.sarcoma, () => { }),
+                                    node(unit.metastasis, () => { })
+                            })
+                    })
             })
 });
 
@@ -330,7 +332,10 @@ planet.seltis.techTree = nodeRoot("seltis", planet.seltis, () => {
         node(power.monitor, () => { }),
         node(core.ash, () => { }),
         node(defense.nickelWall, () => {
-            node(defense.nickelWallLarge, () => { })
+            node(defense.nickelWallLarge, () => { }),
+            node(defense.manganeseWall, () => {
+                node(defense.manganeseWallLarge, () => { })
+            })
         }),
         node(sector.mesa, Seq.with(
             Objectives.SectorComplete(sector.sinkhole),

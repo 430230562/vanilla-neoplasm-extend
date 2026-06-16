@@ -298,6 +298,33 @@ cyanidePlant.addRecipe(ItemStack.with(Items.oxide, 2), LiquidStack.with(Liquids.
     120
 )
 
+const mixer = new GenericCrafter("mixer");
+exports.mixer = mixer;
+Object.assign(mixer, {
+    craftEffect: Fx.none,
+    outputLiquid: new LiquidStack(Liquids.cryofluid, 15 / 60),
+    craftTime: 40,
+    size: 3,
+    hasPower: true,
+    hasLiquids: true,
+    hasItems: true,
+    drawer: new DrawMulti(
+        new DrawRegion("-bottom"),
+        new DrawLiquidTile(Liquids.water),
+        new DrawLiquidTile(Liquids.cryofluid),
+        new DrawDefault()
+    ),
+    buildVisibility: BuildVisibility.shown,
+    category: Category.crafting,
+    requirements: ItemStack.with(
+        Items.silicon, 40,
+        Items.beryllium, 65,
+        Items.oxide, 60
+    )
+})
+mixer.consumeLiquid(Liquids.water, 15 / 60);
+mixer.consumeItem(Items.silicon, 1);
+
 const adsorbent = new GenericCrafter("adsorbent");
 exports.adsorbent = adsorbent;
 Object.assign(adsorbent, {
