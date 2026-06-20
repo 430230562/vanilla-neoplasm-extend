@@ -304,6 +304,8 @@ forceProjectorCondenser.buildType = prov(() => extend(Building, {
     }
 }))
 
+
+
 const coagulantIngotWall = new Wall("coagulant-ingot-wall");
 exports.coagulantIngotWall = coagulantIngotWall;
 Object.assign(coagulantIngotWall, {

@@ -118,6 +118,40 @@ oxidationChamber.buildType = prov(() => extend(ThermalGenerator.ThermalGenerator
 }))
 oxidationChamber.consumeLiquid(Liquids.ozone, 4 / 60);
 
+const beyondReactor = extend(VariableReactor, "beyond-reactor", {
+    maxHeat: 20,
+    powerProduction: 36,
+    unstableSpeed: 0,
+    liquidCapacity: 40,
+    size:3,
+    buildVisibility: BuildVisibility.shown,
+    category: Category.power,
+    requirements: ItemStack.with(
+        Items.silicon, 225,
+        Items.tungsten, 175,
+        Items.oxide, 125,
+        item.siliconNitride, 130
+    ),
+
+    setBars() {
+        this.super$setBars();
+
+        this.removeBar("instability");
+    }
+});
+exports.beyondReactor = beyondReactor;
+beyondReactor.buildType = prov(() => extend(VariableReactor.VariableReactorBuild, beyondReactor, {
+    updateEfficiencyMultiplier() {
+        if (this.liquids.get(Liquids.cryofluid) > 0.0001) {
+            let efficiency = Mathf.clamp(this.heat / this.block.maxHeat)
+        } else {
+            let efficiency = 0
+        }
+    }
+}))
+beyondReactor.consumeLiquid(Liquids.cryofluid, 15 / 60);
+beyondReactor.consumeLiquid(Liquids.neoplasm, 20 / 60).optional = true;
+
 const biomassReactor = extend(ConsumeGenerator, "biomass-reactor", {
     ambientSound: Sounds.loopBio,
     ambientSoundVolume: 0.24,
@@ -239,9 +273,9 @@ biomassReactor.buildType = prov(() => extend(ConsumeGenerator.ConsumeGeneratorBu
 }))
 exports.biomassReactor = biomassReactor;
 biomassReactor.consumeItem(item.protein, 1);
-biomassReactor.consumeLiquid(liquid.ammonia, 0.1)
-    .optional = true;
+biomassReactor.consumeLiquid(liquid.ammonia, 0.1).optional = true;
 
+//
 const monitor = new BeamNode("monitor");
 exports.monitor = monitor;
 Object.assign(monitor, {

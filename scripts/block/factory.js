@@ -324,6 +324,7 @@ Object.assign(mixer, {
 })
 mixer.consumeLiquid(Liquids.water, 15 / 60);
 mixer.consumeItem(Items.silicon, 1);
+mixer.consumePower(36/60);
 
 const adsorbent = new GenericCrafter("adsorbent");
 exports.adsorbent = adsorbent;
@@ -609,7 +610,7 @@ watergasStove.addRecipe(
     ItemStack.with(Items.graphite, 1), LiquidStack.with(Liquids.water, 0.5), 1.5, 16,
     ItemStack.with(), LiquidStack.with(Liquids.hydrogen, 0.5), 0, 0,
     30
-)
+);
 watergasStove.addRecipe(
     ItemStack.with(Items.graphite, 1), LiquidStack.with(Liquids.water, 40 / 60), 3.5, 24,
     ItemStack.with(), LiquidStack.with(liquid.naturalGas, 20 / 60), 0, 0,
@@ -655,12 +656,12 @@ BMAStove.addRecipe(
     ItemStack.with(), LiquidStack.with(liquid.naturalGas, 0.1, liquid.ammonia, 0.1), 10, 0,
     ItemStack.with(), LiquidStack.with(Liquids.hydrogen, 0.3, Liquids.cyanogen, 0.05), 0, 0,
     60
-),
-    BMAStove.addRecipe(
-        ItemStack.with(Items.tungsten, 2), LiquidStack.with(liquid.naturalGas, 0.1), 8, 0,
-        ItemStack.with(Items.carbide, 1), LiquidStack.with(Liquids.hydrogen, 0.2), 0, 0,
-        60
-    )
+);
+BMAStove.addRecipe(
+    ItemStack.with(Items.tungsten, 2), LiquidStack.with(liquid.naturalGas, 0.1), 8, 0,
+    ItemStack.with(Items.carbide, 1), LiquidStack.with(Liquids.hydrogen, 0.2), 0, 0,
+    60
+);
 
 const laserIncinerator = new Incinerator("laser-incinerator");
 exports.laserIncinerator = laserIncinerator;

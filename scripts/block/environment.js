@@ -95,10 +95,21 @@ Blocks.denseRedStone.attributes.set(Attribute.get("biomass"), 0.75);
 const neoplasmWall = new StaticWall("neoplasm-wall");
 neoplasmWall.variants = 3;
 
+//百种纹理,随心搭配()
 const neoplasmStone = new Floor("neoplasm-stone");
-neoplasmStone.variants = 5;
+neoplasmStone.variants = 4;
 neoplasmStone.attributes.set(Attribute.get("biomass"), 1.25);
 neoplasmStone.attributes.set(Attribute.water, -1);
+
+const denseNeoplasmStone = new Floor("dense-neoplasm-stone");
+denseNeoplasmStone.variants = 4;
+denseNeoplasmStone.attributes.set(Attribute.get("biomass"), 1.25);
+denseNeoplasmStone.attributes.set(Attribute.water, -1);
+
+const roughNeoplasmStone = new Floor("rough-neoplasm-stone");
+roughNeoplasmStone.variants = 4;
+roughNeoplasmStone.attributes.set(Attribute.get("biomass"), 1.25);
+roughNeoplasmStone.attributes.set(Attribute.water, -1);
 
 const neoplasmVent = new SteamVent("neoplasm-vent");
 Object.assign(neoplasmVent,{
