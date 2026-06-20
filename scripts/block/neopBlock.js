@@ -26,7 +26,7 @@ arr3 = [
 var nodeConsume = 40, turretConsume = 100;
 
 function ConveyNeoplasm(giver, receiver, amount) {
-    if(!giver && !receiver)return false
+    if(!giver.liquids && !receiver.liquids)return false
     let conveyAmount = Math.min(amount, giver.liquids.get(Liquids.neoplasm), receiver.block.liquidCapacity - receiver.liquids.get(Liquids.neoplasm))
 
     if (conveyAmount >= 0) {
