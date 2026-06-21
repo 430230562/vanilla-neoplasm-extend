@@ -25,15 +25,15 @@ Vanilla neoplasm? Sounds delicious!
 1. 下载发行包（release）或将本仓库打包为 mod：
    - 如果仓库已有打包好的 .zip/.mod：下载并放入 Mindustry 的 mods 目录。
 2. 手动从源码打包（示例）：
-   - 在仓库根目录，确保 mod.hjson 位于根目录并包含所有资源后执行：
+   - 在仓库根目录,确保 mod.hjson 位于根目录并包含所有资源后执行：
      - Linux / macOS / Windows (Git Bash):
        zip -r vne.zip . -x ".git/*"
-     - 把生成的 vne.zip 移动到 Mindustry/mods 文件夹中，或重命名为 vne.mod（按 Mindustry 习惯）。
-3. 启动 Mindustry，确认 mod 已加载。
+     - 把生成的 vne.zip 移动到 Mindustry/mods 文件夹中,或重命名为 vne.mod（按 Mindustry 习惯）。
+3. 启动 Mindustry,确认 mod 已加载。
 
 使用说明（游戏内）
 - 在游戏的模组/内容浏览器中寻找 "Vanilla Neoplasm Extend" 或 vne 的内容。
-- 可在沙盒/多人对战/地图中使用新增方块、单位与流体。某些方块（如合成氨厂、激光焚化炉、吸附器）拥有特定交互与能源需求，请参照游戏内描述与工具提示。
+- 可在沙盒/多人对战/地图中使用新增方块、单位与流体。某些方块（如合成氨厂、激光焚化炉、吸附器）拥有特定交互与能源需求,请参照游戏内描述与工具提示。
 
 开发与构建（面向贡献者）
 - 代码/资源组织：
@@ -48,7 +48,7 @@ Vanilla neoplasm? Sounds delicious!
   - 在 PR 描述中说明变更目的、影响的 game content 与兼容性（尤其是 minGameVersion 变更）。
 
 报告问题与反馈
-- 使用 GitHub Issues（仓库 Issues）提交 bug 报告、平衡建议或翻译修正，尽量提供重现步骤与日志截图。
+- 使用 GitHub Issues（仓库 Issues）提交 bug 报告、平衡建议或翻译修正,尽量提供重现步骤与日志截图。
 
 版权与许可证
 - 本项目采用 GNU General Public License v3.0 (GPL-3.0)。参见 LICENSE 文件或仓库中的许可声明。
@@ -56,4 +56,4 @@ Vanilla neoplasm? Sounds delicious!
 致谢
 - 作者/原始贡献者：pardon  
 - 灵感来源：Mindustry 社区与原版 neoplasm 内容。  
-- 翻译贡献：项目包含多语种 bundle 文件（中文/日文/韩文/西班牙语/葡萄牙语等），感谢社区协助翻译。
+- 翻译贡献：项目包含多语种 bundle 文件（中文/日文/韩文/西班牙语/葡萄牙语等）,感谢社区协助翻译。

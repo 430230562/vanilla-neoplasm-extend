@@ -8,6 +8,6 @@
     "version": 0.32,
     "repo": "430230562/vanilla-neoplasm-extend",
     "hideBrowser": false,
-    "dependencies": [
+    "softDependencies": [
         "multi-crafter-lib"
     ]}

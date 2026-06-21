@@ -182,7 +182,7 @@ nickelBridge.buildType = prov(() => extend(ItemBridge.ItemBridgeBuild, nickelBri
 	updateTransport(other) {
 		this.super$updateTransport(other);
 
-		//怀疑没这么简单，但真就是把俩电网并起来这么简单
+		//怀疑没这么简单,但真就是把俩电网并起来这么简单
 		if (other.power.graph != this.power.graph) {
 			this.power.graph.addGraph(other.power.graph)
 		}
@@ -221,7 +221,7 @@ stackBridge.buildType = prov(() => extend(ItemBridge.ItemBridgeBuild, stackBridg
 	updateTransport(other) {
 		this.super$updateTransport(other);
 
-		//怀疑没这么简单，但真就是把俩电网并起来这么简单
+		//怀疑没这么简单,但真就是把俩电网并起来这么简单
 		if (other.power.graph != this.power.graph) {
 			this.power.graph.addGraph(other.power.graph)
 		}

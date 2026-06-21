@@ -121,7 +121,13 @@ addResearch(defense.oxideWall, {
     }),
         node(defense.explosive, () => { }),
         node(defense.siliconNitrideWall, () => {
-            node(defense.siliconNitrideWallLarge, () => { })
+            node(defense.siliconNitrideWallLarge, () => { }),
+            node(defense.reinforcedForceProjector,Seq.with(
+                Objectives.OnSector(sector.badland)
+            ), () => {
+                node(defense.reinforcedForceProjectorLarge, () => {}),
+                node(defense.forceProjectorCondenser , () => {})
+            })
         })
 });
 
@@ -252,11 +258,21 @@ addResearch(unitFactory.unitIncubator, {
                         node(unit.triploid, () => { }),
                             node(unit.trichocyst, () => { }),
                             node(unit.adenoma, () => { }),
-                            node(unitFactory.laboratory, () => {
-                                node(unit.polyp, () => { }),
-                                    node(UnitTypes.renale, () => { }),
-                                    node(unit.sarcoma, () => { }),
-                                    node(unit.metastasis, () => { })
+                            node(unitFactory.laboratory, Seq.with(
+                                Objectives.SectorComplete(sector.badland)
+                            ), () => {
+                                node(unit.polyp, Seq.with(
+                                    Objectives.Research(unitFactory.laboratory)
+                                ), () => { }),
+                                    node(UnitTypes.renale, Seq.with(
+                                        Objectives.Research(unitFactory.laboratory)
+                                    ), () => { }),
+                                    node(unit.sarcoma, Seq.with(
+                                        Objectives.Research(unitFactory.laboratory)
+                                    ), () => { }),
+                                    node(unit.metastasis, Seq.with(
+                                        Objectives.Research(unitFactory.laboratory)
+                                    ), () => { })
                             })
                     })
             })
@@ -275,7 +291,12 @@ addResearch(sector.fumarole, {
                 Objectives.SectorComplete(sector.faultline),
                 Objectives.Research(factory.siliconNitrideFurnace),
                 Objectives.Research(defense.defuse)
-            ), () => { })
+            ), () => {
+                node(sector.badland, Seq.with(
+                    Objectives.SectorComplete(sector.sinkhole),
+                    objectives.Produce(Items.thorium)
+                ), () => { })
+            })
         })
 });
 
@@ -333,9 +354,9 @@ planet.seltis.techTree = nodeRoot("seltis", planet.seltis, () => {
         node(core.ash, () => { }),
         node(defense.nickelWall, () => {
             node(defense.nickelWallLarge, () => { }),
-            node(defense.manganeseWall, () => {
-                node(defense.manganeseWallLarge, () => { })
-            })
+                node(defense.manganeseWall, () => {
+                    node(defense.manganeseWallLarge, () => { })
+                })
         }),
         node(sector.mesa, Seq.with(
             Objectives.SectorComplete(sector.sinkhole),

@@ -275,6 +275,28 @@ Object.assign(geneForgeAlpha, {
 })
 geneForgeAlpha.consumePower(3)
 
+const geneForgeBeta = new UnitAssembler("gene-forge-beta");
+exports.geneForgeBeta = geneForgeBeta;
+Object.assign(geneForgeBeta, {
+    size: 5,
+    areaSize: 13,
+    plans: Seq.with(
+        new AssemblerUnitPlan(unit.centrosome, 60 * 30, PayloadStack.list(
+            unit.ribosome, 4,
+            unit.renale, 3
+        ))
+    ),
+    buildVisibility: BuildVisibility.shown,
+    category: Category.units,
+    requirements: ItemStack.with(
+        Items.carbide, 120,
+        Items.thorium, 200,
+        item.siliconNitride, 125,
+        item.biomassSteel, 75,
+    ),
+})
+geneForgeBeta.consumePower(3)
+
 /*const reincubator = new Reconstructor("reincubator");
 exports.reincubator = reincubator;
 Object.assign(reincubator,{

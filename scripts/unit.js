@@ -20,7 +20,7 @@ function StatWeapon(name, stat, num){
 
 function Insect(name) {
     return extend(UnitType, name, {
-        outlineColor: Pal.neoplasmOutline, //想不到吧，其实这个是瘤液单位的标记Color.valueOf("2e191d")
+        outlineColor: Pal.neoplasmOutline, //想不到吧,其实这个是瘤液单位的标记Color.valueOf("2e191d")
         envDisabled: Env.none,
         healFlash: true,
         healColor: Pal.neoplasm1,
@@ -885,7 +885,7 @@ Object.assign(adenoma, {
                 }
                 //先找血量最低且没状态的瘤液单位
                 );
-                //很奇怪，原版没有unit.dead()这个function
+                //很奇怪,原版没有unit.dead()这个function
             }
             
             if (this.following != null) {
@@ -1082,7 +1082,7 @@ const spore = extend(UnitType, "spore", {
         }
         if (unit.healthMultiplier < 8) {
             unit.healthMultiplier = 8
-            //折合约960血，其实不算硬
+            //折合约960血,其实不算硬
         }
     }
 })
@@ -1128,7 +1128,7 @@ const mycelium = extend(UnitType, "mycelium", {
         }
         if (unit.healthMultiplier < 12) {
             unit.healthMultiplier = 12
-            //折合约1200血，其实不算硬
+            //折合约1200血,其实不算硬
         }
     }
 })
@@ -1174,7 +1174,7 @@ const sac = new extend(UnitType, "sac", {
         }
         if (unit.healthMultiplier < 20) {
             unit.healthMultiplier = 20
-            //折合约1800血，其实不算硬
+            //折合约1800血,其实不算硬
         }
 
     }

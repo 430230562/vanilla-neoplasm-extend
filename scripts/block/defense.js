@@ -127,7 +127,7 @@ reinforcedForceProjector.buildType = prov(() => extend(ForceProjector.ForceBuild
         this.super$updateTile();
 
         let realRadius = this.realRadius();
-        //嘻嘻，我一定要成为解构大佬
+        //嘻嘻,我一定要成为解构大佬
         let {
             x, y, broken, team, block, buildup, hit
         } = this
@@ -203,7 +203,7 @@ reinforcedForceProjectorLarge.buildType = prov(() => extend(ForceProjector.Force
         this.super$updateTile();
 
         let realRadius = this.realRadius();
-        //嘻嘻，我一定要成为解构大佬
+        //嘻嘻,我一定要成为解构大佬
         let {
             x, y, broken, team, block, buildup, hit
         } = this
@@ -659,7 +659,7 @@ explosive.buildType = prov(() => extend(Building, {
     onDestroyed() {
         this.super$onDestroyed();
 
-        //很奇怪，即使puddle.amount为0，地块依旧判断为存在血浆
+        //很奇怪,即使puddle.amount为0,地块依旧判断为存在血浆
         if (this.tile != null && this.items.get(this.exploreItem) > 0) this.tile.circle(5, cons(other => {
             Puddles.deposit(other, Liquids.neoplasm, this.items.get(this.exploreItem) * 5);
         }))

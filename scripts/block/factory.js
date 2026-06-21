@@ -324,7 +324,7 @@ Object.assign(mixer, {
 })
 mixer.consumeLiquid(Liquids.water, 15 / 60);
 mixer.consumeItem(Items.silicon, 1);
-mixer.consumePower(36/60);
+mixer.consumePower(36 / 60);
 
 const adsorbent = new GenericCrafter("adsorbent");
 exports.adsorbent = adsorbent;
@@ -409,7 +409,7 @@ const biomassSmelter = extend(GenericCrafter, "biomass-smelter", {
         new DrawDefault(),
         new DrawFlame(Color.valueOf("c7d9a3"))),
     ambientSound: Sounds.loopSmelter,
-    ambientSoundVolume: 0.55, //一定很吵，但这是我想要的
+    ambientSoundVolume: 0.55, //一定很吵,但这是我想要的
     buildVisibility: BuildVisibility.shown,
     category: Category.crafting,
     requirements: ItemStack.with(

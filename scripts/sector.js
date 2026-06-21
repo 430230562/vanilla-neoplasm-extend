@@ -23,6 +23,12 @@ Object.assign(sinkhole, {
     difficulty: 5
 })
 
+const badland = new SectorPreset("[Neop4]badland",Planets.erekir,6);
+exports.badland = badland;
+Object.assign(badland,{
+    difficulty: 6
+})
+
 const mesa = new SectorPreset("[NeopI]mesa", planet.seltis, 88);
 exports.mesa = mesa;
 Object.assign(mesa,{
