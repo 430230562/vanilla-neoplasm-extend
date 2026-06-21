@@ -281,9 +281,9 @@ Object.assign(geneForgeBeta, {
     size: 5,
     areaSize: 13,
     plans: Seq.with(
-        new AssemblerUnitPlan(unit.centrosome, 60 * 30, PayloadStack.list(
+        new AssemblerUnitPlan(unit.centrosome, 60 * 45, PayloadStack.list(
             unit.ribosome, 4,
-            unit.renale, 3
+            UnitTypes.renale, 3
         ))
     ),
     buildVisibility: BuildVisibility.shown,

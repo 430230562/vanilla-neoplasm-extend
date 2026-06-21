@@ -9,5 +9,3 @@ module.exports = {
     MultiCrafter : getClass("MultiCraft.MultiCrafter"),
     
 }
-
-print(">>>>>MultiCrafter JavaScript loaded.")

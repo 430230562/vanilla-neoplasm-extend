@@ -2,8 +2,8 @@ const internalMods = require("internal-mod");
 
 if (internalMods.tryInstallInternalMods()) {
     // 这里能确保所有内置mod都已安装
+    Log.info("[@] MultiCrafter JavaScript loaded.", modName)
     Log.info("[@] 所有内置mod已安装", modName);
-    Log.info("MultiCrafter JavaScript loaded.",modName)
 }
 
 require("vne/item");
@@ -30,4 +30,4 @@ require("vne/tree");
 
 require("vne/report");
 
-print("vanilla neoplasm extend successfully loaded")
+Log.info("[@] 原版瘤液拓展已正确加载", modName);
