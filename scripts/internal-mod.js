@@ -1,9 +1,9 @@
-const thisModName = modName; // modName是自带的变量,不用手动改
+const thisModName = modName; // modName是自带的变量，不用手动改
 
 // 可直接修改部分
-// 注意：为了确保模组加载顺序正确,mod.json 的 softDependencies 需要添加所依赖模组内部名
+// 注意：为了确保模组加载顺序正确，mod.json 的 softDependencies 需要添加所依赖模组内部名
 const config = {
-    modsPath: "libs", // 内置模组的文件夹路径,相对于mod根目录
+    modsPath: "libs", // 内置模组的文件夹路径，相对于mod根目录
 };
 
 function getInternalMods() {
@@ -11,24 +11,34 @@ function getInternalMods() {
     const modsFi = root.child(config.modsPath);
 
     if (!modsFi.exists() || !modsFi.isDirectory()) {
-        throw new Error("Internal mods path isn't existed or not a directory.");
+        Log.err("Internal mods path isn't existed or not a directory.");
+        return [];
     }
 
     const internalModInfo = [];
     modsFi.walk(modFi => {
-        const rootFi = modFi.isDirectory() ? modFi : new ZipFi(modFi);
-        const meta = Vars.mods.findMeta(rootFi);
+        let tmpFi = Vars.tmpDirectory.child(modFi.name());
+        modFi.copyTo(tmpFi);
+
+        const modRootFi = tmpFi.isDirectory() ? tmpFi : new ZipFi(tmpFi);
+        const meta = Vars.mods.findMeta(resolveRoot(modRootFi));
         if (meta == null) {
-            throw new Error("No meta file found for internal mod:" + rootFi.absolutePath());
+            throw new Error("No meta file found for internal mod:" + modFi.absolutePath());
         }
+
+        tmpFi.delete();
 
         internalModInfo.push({
             meta: meta,
             fi: modFi,
-            rootFi: rootFi,
         });
     });
     return internalModInfo;
+
+    function resolveRoot(fi) {
+        const files = fi.list();
+        return files.length == 1 && files[0].isDirectory() ? files[0] : fi;
+    }
 }
 
 function importInternalMods() {
@@ -38,7 +48,7 @@ function importInternalMods() {
     const versionMismatched = [];
     const disabled = [];
     internalMods.forEach(mod => {
-        const { internalName, version } = mod.meta;
+        const {internalName, version} = mod.meta;
         const installed = Vars.mods.getMod(internalName);
 
         if (installed) {
@@ -68,12 +78,12 @@ exports.tryInstallInternalMods = function () {
         result = importInternalMods();
     } catch (e) {
         afterLoaded(() =>
-            Vars.ui.showException(thisModName + "无法导入内置的库模组,请联系作者", new RuntimeException(e)),
+            Vars.ui.showException(thisModName + "无法导入内置的库模组，请联系作者", new java.lang.RuntimeException(e)),
         );
         return;
     }
 
-    const { imported, versionMismatched, disabled } = result;
+    const {imported, versionMismatched, disabled} = result;
     if (imported.length || versionMismatched.length || disabled.length) {
         afterLoaded(() => {
             showImportInfo(imported, versionMismatched, disabled);
@@ -99,7 +109,7 @@ function showImportInfo(imported, versionMismatched, disabled) {
     const dialog = new Dialog("");
 
     dialog.setFillParent(true);
-    const { cont } = dialog;
+    const {cont} = dialog;
     cont.margin(15);
     cont.add(thisMod.meta.displayName).color(Pal.accent);
     cont.row();
