@@ -159,6 +159,7 @@ reinforcedForceProjector.buildType = prov(() => extend(ForceProjector.ForceBuild
     }
 }))
 reinforcedForceProjector.consumePower(2);
+exports.reinforcedForceProjector = reinforcedForceProjector;
 
 const reinforcedForceProjectorLarge = extend(ForceProjector, "reinforced-force-projector-large", {
     radius: 70.34 * 1.7725,
@@ -235,6 +236,7 @@ reinforcedForceProjectorLarge.buildType = prov(() => extend(ForceProjector.Force
     }
 }))
 reinforcedForceProjectorLarge.consumePower(6);
+exports.reinforcedForceProjectorLarge = reinforcedForceProjectorLarge;
 
 const forceProjectorCondenser = extend(Block, "force-projector-condenser", {
     update: true,
@@ -303,8 +305,7 @@ forceProjectorCondenser.buildType = prov(() => extend(Building, {
         return (liquid == Liquids.hydrogen && this.liquids.get(Liquids.hydrogen) < 15)
     }
 }))
-
-
+exports.forceProjectorCondenser = forceProjectorCondenser;
 
 const coagulantIngotWall = new Wall("coagulant-ingot-wall");
 exports.coagulantIngotWall = coagulantIngotWall;
