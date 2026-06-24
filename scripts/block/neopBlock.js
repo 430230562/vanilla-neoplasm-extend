@@ -23,7 +23,7 @@ const oppositeRotationArr = [2, 3, 0, 1],//0,1,2,3的反方向
         { x: -1, y: -1 }, { x: 0, y: -1 }, { x: 1, y: -1 },
     ];//3格方块盖住的9格
 
-var nodeConsume = 40, turretConsume = 100;
+var nodeConsume = 40, turretConsume = 60;
 
 function ConveyNeoplasm(giver, receiver, amount) {
     if (!giver.liquids && !receiver.liquids) return false
@@ -79,7 +79,7 @@ var neopNode = extend(Block, "neop-node", {
     replaceable: false,
     hasShadow: true,
     hasLiquids: true,
-    liquidCapacity: 60,
+    liquidCapacity: 120,
 })
 
 var neopTurret = extend(LiquidTurret, "neop-turret", {
