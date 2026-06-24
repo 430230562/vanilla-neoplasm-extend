@@ -122,12 +122,12 @@ addResearch(defense.oxideWall, {
         node(defense.explosive, () => { }),
         node(defense.siliconNitrideWall, () => {
             node(defense.siliconNitrideWallLarge, () => { }),
-            node(defense.reinforcedForceProjector,Seq.with(
-                Objectives.OnSector(sector.badland)
-            ), () => {
-                node(defense.reinforcedForceProjectorLarge, () => {}),
-                node(defense.forceProjectorCondenser , () => {})
-            })
+                node(defense.reinforcedForceProjector, Seq.with(
+                    Objectives.OnSector(sector.badland)
+                ), () => {
+                    node(defense.reinforcedForceProjectorLarge, () => { }),
+                        node(defense.forceProjectorCondenser, () => { })
+                })
         })
 });
 
@@ -294,7 +294,7 @@ addResearch(sector.fumarole, {
             ), () => {
                 node(sector.badland, Seq.with(
                     Objectives.SectorComplete(sector.sinkhole),
-                    objectives.Produce(Items.thorium)
+                    Objectives.Produce(Items.thorium)
                 ), () => { })
             })
         })
