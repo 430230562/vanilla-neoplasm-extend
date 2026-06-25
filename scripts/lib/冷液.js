@@ -42,14 +42,14 @@ const bullet1 = extend(ArtilleryBulletType, 3.4, 40, "shell", {
 });
 
 const testTurret = extend(PowerTurret, "test-turret", {
-    shoot: new ShootSpread(3, 20),
     shootType: extend(ShrapnelBulletType, {
         length: 100,
         damage: 105,
         ammoMultiplier: 5,
         toColor: Pal.thoriumPink,
         shootEffect: Fx.thoriumShoot,
-        smokeEffect: Fx.thoriumShoot
+        smokeEffect: Fx.thoriumShoot,
+        shootPattern: new ShootSpread(3, 20),
     }),
     reload: 30,
     range: 300,

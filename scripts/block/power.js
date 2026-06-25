@@ -118,12 +118,29 @@ oxidationChamber.buildType = prov(() => extend(ThermalGenerator.ThermalGenerator
 }))
 oxidationChamber.consumeLiquid(Liquids.ozone, 4 / 60);
 
+const slagDifferentialGenerator = ThermalGenerator('slag-differential-generator');
+exports.slagDifferentialGenerator = slagDifferentialGenerator
+Object.assign(slagDifferentialGenerator, {
+    generateEffect: Fx.redgeneratespark,
+    effectChance: 0.011,
+    size: 3,
+    floating: true,
+    ambientSound: Sounds.loopHum,
+    ambientSoundVolume: 0.06,
+    //矿渣热量为0.85
+    minEfficiency: 7.64,
+    displayEfficiencyScale: 1 / 7.65,
+    powerProduction: 6 / 7.65,
+    displayEfficiency: false,
+})
+slagDifferentialGenerator.consumeLiquid(Liquids.cryofluid, 5 / 60);
+
 const beyondReactor = extend(VariableReactor, "beyond-reactor", {
     maxHeat: 20,
     powerProduction: 36,
     unstableSpeed: 0,
     liquidCapacity: 40,
-    size:3,
+    size: 3,
     buildVisibility: BuildVisibility.shown,
     category: Category.power,
     requirements: ItemStack.with(
@@ -149,8 +166,8 @@ beyondReactor.buildType = prov(() => extend(VariableReactor.VariableReactorBuild
         }
     }
 }))
-beyondReactor.consumeLiquid(Liquids.cryofluid, 15 / 60);
-beyondReactor.consumeLiquid(Liquids.neoplasm, 20 / 60).optional = true;
+beyondReactor.consumeLiquid(Liquids.cryofluid, 30 / 60);
+beyondReactor.consumeLiquid(Liquids.neoplasm, 10 / 60).optional = true;
 
 const biomassReactor = extend(ConsumeGenerator, "biomass-reactor", {
     ambientSound: Sounds.loopBio,

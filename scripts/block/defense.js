@@ -788,7 +788,43 @@ defuse.ammo(
             let puddle = Puddles.get(tile);
             if (puddle != null && puddle.liquid == Liquids.neoplasm) {
                 puddle.remove();
-                //b.type.despawnEffect.at(b.x, b.y);
+                b.type.despawnEffect.at(b.x, b.y);
+            }
+        }
+    }),
+    item.siliconNitride, extend(BasicBulletType, {
+        speed: 4,
+        lifetime: 34,
+        damage: 5,
+        knockback: 8,
+        width: 25,
+        hitSize: 7,
+        height: 20,
+        rangeChange: 11,
+        shootEffect: Fx.shootBigColor,
+        smokeEffect: Fx.shootSmokeSquareSparse,
+        ammoMultiplier: 3,
+        hitColor: Color.valueOf("8D79C8"),
+        backColor: Color.valueOf("8D79C8"),
+        trailColor: Color.valueOf("8D79C8"),
+        frontColor: Color.white,
+        trailWidth: 6,
+        trailLength: 6,
+        removeAfterPierce: false,
+        pierce: true,
+        pierceBuilding: true,
+        hitEffect: Fx.hitSquaresColor,
+        despawnEffect: Fx.hitSquaresColor,
+        status: status.antagonistic,
+        statusDuration: 300,
+        update(b) {
+            this.super$update(b);
+
+            let tile = Vars.world.tileWorld(b.x, b.y);
+            let puddle = Puddles.get(tile);
+            if (puddle != null && puddle.liquid == Liquids.neoplasm) {
+                puddle.remove();
+                b.type.despawnEffect.at(b.x, b.y);
             }
         }
     })

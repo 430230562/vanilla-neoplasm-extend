@@ -23,11 +23,14 @@ const oppositeRotationArr = [2, 3, 0, 1],//0,1,2,3的反方向
         { x: -1, y: -1 }, { x: 0, y: -1 }, { x: 1, y: -1 },
     ];//3格方块盖住的9格
 
-var nodeConsume = 40, turretConsume = 60;
+var nodeConsume = 40, turretConsume = 100;
 
 function ConveyNeoplasm(giver, receiver, amount) {
-    if (!giver.liquids && !receiver.liquids) return false
-    let conveyAmount = Math.min(amount, giver.liquids.get(Liquids.neoplasm), receiver.block.liquidCapacity - receiver.liquids.get(Liquids.neoplasm))
+    if (!giver.liquids || !receiver.liquids) return false
+    let conveyAmount = Math.min(amount,
+        giver.liquids.get(Liquids.neoplasm),
+        receiver.block.liquidCapacity - receiver.liquids.get(Liquids.neoplasm)
+    )
 
     if (conveyAmount >= 0) {
         giver.liquids.remove(Liquids.neoplasm, conveyAmount);
@@ -54,7 +57,7 @@ var neopCore = extend(CoreBlock, "neop-core", {
     buildVisibility: BuildVisibility.editorOnly,
     category: Category.effect,
     update: true,
-    health: 4000,
+    health: 2500,
     armor: 9,
     size: 3,
     solid: true,
@@ -73,7 +76,7 @@ var neopNode = extend(Block, "neop-node", {
     update: true,
     rotate: true,
     //rotateDraw: false,
-    health: 180,
+    health: 75,
     size: 1,
     solid: false,
     replaceable: false,
@@ -130,7 +133,7 @@ var spawner = new Block("spawner");
 exports.spawner = spawner;
 Object.assign(spawner, {
     update: true,
-    health: 400,
+    health: 320,
     size: 3,
     solid: false,
     replaceable: false,
@@ -143,6 +146,7 @@ neopCore.buildType = prov(() => extend(CoreBlock.CoreBuild, neopCore, {
     child: [null, null, null, null],
     readPos: [-1, -1, -1, -1],
     _needsResolve: false,
+    randomNumber: 0,
     updateTile() {
         // 1. 原有的防原型链污染初始化
         if (!this.child) this.child = [null, null, null, null];
@@ -174,23 +178,32 @@ neopCore.buildType = prov(() => extend(CoreBlock.CoreBuild, neopCore, {
         //每秒一次
         if (Time.time % 60 < 1) {
             //i 为旋转方位
+            this.randomNumber = Math.random() * 100
             for (let i = 0; i < 4; i++) {
-                let PosTile = Vars.world.tile(this.tile.x + posArr[toPosArr[i]].x, this.tile.y + posArr[toPosArr[i]].y);
+
+                for (let Pos of posArr) {
+                    let Posbuild = Vars.world.tile(this.tile.x + Pos.x, this.tile.y + Pos.y).build;
+
+                    if (Posbuild != null && Posbuild.team == this.team) {
+                        ConveyNeoplasm(this, Posbuild, 10)
+                    }
+                }
+
+                if (this.child[i] != null) continue
+
+                let PosTile = Vars.world.tile(
+                    this.tile.x + posArr[toPosArr[i]].x,
+                    this.tile.y + posArr[toPosArr[i]].y
+                );
+
                 //ai指导: 蒙特卡洛
-                if (Mathf.chance(0.25) && PosTile != null && (PosTile.block() == Blocks.air || PosTile.block().alwaysReplace) && this.liquids.get(Liquids.neoplasm) >= nodeConsume) {
+                if (this.randomNumber % 4 < 1 && PosTile != null && (PosTile.block() == Blocks.air || PosTile.block().alwaysReplace) && this.liquids.get(Liquids.neoplasm) >= nodeConsume) {
                     PosTile.setBlock(neopNode, this.team, i);
                     this.liquids.remove(Liquids.neoplasm, nodeConsume);
 
                     this.child[i] = PosTile.build
                     //this.child[i].parent = this
-                }
-            }
-
-            for (let Pos of posArr) {
-                let Posbuild = Vars.world.tile(this.tile.x + Pos.x, this.tile.y + Pos.y).build;
-
-                if (Posbuild != null && Posbuild.team == this.team) {
-                    ConveyNeoplasm(this, Posbuild, 5)
+                    break
                 }
             }
         }
@@ -248,6 +261,7 @@ neopNode.buildType = prov(() => extend(Building, {
     parent: null,
     readPos: [-1, -1, -1, -1, -1],
     _needsResolve: false,
+    randomNumber: 0,
     unitOn(unit) {
         if (unit.team != this.team) {
             unit.apply(status.neoplasmSlow, 30)
@@ -284,45 +298,51 @@ neopNode.buildType = prov(() => extend(Building, {
         //每秒一次
         if (Time.time % 60 < 1) {
             //i 为旋转方位
+            this.randomNumber = Math.random() * 102
+
             for (let i = 0; i < 4; i++) {
-                let PosTile = this.tile.nearby(i), nodeChance = 0.05;
 
-                //以自身旋转方向的反方向的建筑为parent
-                //感觉不会太稳定
-                if (i == oppositeRotationArr[this.rotation]) {
-                    this.parent = PosTile.build
-                    this.child[4] = this.parent
-
-                    continue
-                } else if (i == this.rotation) {
-                    nodeChance = 0.25;
-                    //类似顶端抑制
-                }
-                //ai指导: 蒙特卡洛
-                if (this.parent != null && PosTile != null && (PosTile.block() == Blocks.air || PosTile.block().alwaysReplace)) {
-                    if (Mathf.chance(nodeChance) && this.liquids.get(Liquids.neoplasm) >= nodeConsume) {
-                        PosTile.setBlock(neopNode, this.team, i);
-                        this.liquids.remove(Liquids.neoplasm, nodeConsume);
-
-                        this.child[i] = PosTile.build
-                    } else if (Mathf.chance(0.01) && CanSpawnSize3(this.tile.x + posArr[toPosArr[i]].x, this.tile.y + posArr[toPosArr[i]].y) && this.liquids.get(Liquids.neoplasm) >= turretConsume) {
-                        Vars.world.tile(this.tile.x + posArr[toPosArr[i]].x, this.tile.y + posArr[toPosArr[i]].y).setBlock(spawner, this.team);
-                        this.liquids.remove(Liquids.neoplasm, turretConsume);
-                    } else if (Mathf.chance(0.005) && CanSpawnSize3(this.tile.x + posArr[toPosArr[i]].x, this.tile.y + posArr[toPosArr[i]].y) && this.liquids.get(Liquids.neoplasm) >= turretConsume) {
-                        Vars.world.tile(this.tile.x + posArr[toPosArr[i]].x, this.tile.y + posArr[toPosArr[i]].y).setBlock(neopTurret, this.team);
-                        this.liquids.remove(Liquids.neoplasm, turretConsume);
-                    }
-                }
-
-                if (this.liquids.get(Liquids.neoplasm) == NaN) this.liquids.reset(Liquids.neoplasm, 0)
-
-                if (this.child[i] != null) {
+                if (this.child[i] != null && this.child[i].team == this.team) {
                     if (!this.child[i].dead) {
                         ConveyNeoplasm(this, this.child[i], this.liquids.get(Liquids.neoplasm) / 2)
                     } else {
                         this.child[i] = null
                     }
                 }
+
+                if (this.child[i] != null) continue
+
+                let PosTile = this.tile.nearby(i);
+
+                //以自身旋转方向的反方向的建筑为parent
+                //感觉不会太稳定
+                if (i == oppositeRotationArr[this.rotation]) {
+                    this.parent = PosTile.build
+
+                    this.child[i] = this.parent
+                    this.child[4] = this.parent
+
+                    continue
+                }
+                //ai指导: 蒙特卡洛
+                if (this.parent != null && PosTile != null && (PosTile.block() == Blocks.air || PosTile.block().alwaysReplace)) {
+                    if (this.randomNumber % 17 < 1 && this.liquids.get(Liquids.neoplasm) >= nodeConsume) {
+                        PosTile.setBlock(neopNode, this.team, i);
+                        this.liquids.remove(Liquids.neoplasm, nodeConsume);
+
+                        this.child[i] = PosTile.build
+                        break
+
+                    } else if (this.randomNumber % 99 < 1 && CanSpawnSize3(this.tile.x + posArr[toPosArr[i]].x, this.tile.y + posArr[toPosArr[i]].y) && this.liquids.get(Liquids.neoplasm) >= turretConsume) {
+                        Vars.world.tile(this.tile.x + posArr[toPosArr[i]].x, this.tile.y + posArr[toPosArr[i]].y).setBlock(spawner, this.team);
+                        this.liquids.remove(Liquids.neoplasm, turretConsume);
+                    } else if (this.randomNumber % 101 < 1 && CanSpawnSize3(this.tile.x + posArr[toPosArr[i]].x, this.tile.y + posArr[toPosArr[i]].y) && this.liquids.get(Liquids.neoplasm) >= turretConsume) {
+                        Vars.world.tile(this.tile.x + posArr[toPosArr[i]].x, this.tile.y + posArr[toPosArr[i]].y).setBlock(neopTurret, this.team);
+                        this.liquids.remove(Liquids.neoplasm, turretConsume);
+                    }
+                }
+
+                if (this.liquids.get(Liquids.neoplasm) == NaN) this.liquids.reset(Liquids.neoplasm, 0)
             }
         }
 
@@ -416,8 +436,6 @@ neopTurret.buildType = prov(() => extend(LiquidTurret.LiquidTurretBuild, neopTur
             }
         }
 
-
-
         if (this.parent == null || this.parent.dead) {
             this.damage(4.5)
         }
@@ -506,7 +524,7 @@ spawner.buildType = prov(() => extend(Building, {
 
         if (this.working) {
             this.prog += Time.delta * Vars.state.rules.unitBuildSpeed(this.team)
-            if (this.prog >= 12 * 60) {
+            if (this.prog >= 20 * 60) {
                 this.prog = 0;
                 this.working = false;//有力气
                 this.list[this.plan].spawn(this.team, this.x, this.y);
