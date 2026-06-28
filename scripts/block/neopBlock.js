@@ -181,15 +181,14 @@ neopCore.buildType = prov(() => extend(CoreBlock.CoreBuild, neopCore, {
             this.randomNumber = Math.random() * 100
             for (let i = 0; i < 4; i++) {
 
-                for (let Pos of posArr) {
-                    let Posbuild = Vars.world.tile(this.tile.x + Pos.x, this.tile.y + Pos.y).build;
-
-                    if (Posbuild != null && Posbuild.team == this.team) {
-                        ConveyNeoplasm(this, Posbuild, 10)
+                if (this.child[i] != null) {
+                    if (!this.child[i].dead) {
+                        ConveyNeoplasm(this, this.child[i], 10)
+                        continue
+                    } else {
+                        this.child[i] == null
                     }
                 }
-
-                if (this.child[i] != null) continue
 
                 let PosTile = Vars.world.tile(
                     this.tile.x + posArr[toPosArr[i]].x,
@@ -302,15 +301,14 @@ neopNode.buildType = prov(() => extend(Building, {
 
             for (let i = 0; i < 4; i++) {
 
-                if (this.child[i] != null && this.child[i].team == this.team) {
+                if (this.child[i] != null) {
                     if (!this.child[i].dead) {
                         ConveyNeoplasm(this, this.child[i], this.liquids.get(Liquids.neoplasm) / 2)
+                        continue
                     } else {
                         this.child[i] = null
                     }
                 }
-
-                if (this.child[i] != null) continue
 
                 let PosTile = this.tile.nearby(i);
 
@@ -444,7 +442,7 @@ neopTurret.buildType = prov(() => extend(LiquidTurret.LiquidTurretBuild, neopTur
         let par = null
         for (let pos of posArr) {
             par = Vars.world.tile(this.tile.x + pos.x, this.tile.y + pos.y).build;
-            if (par != null) break
+            if (par != null && par.team == this.team) break
         }
         return par
     },
@@ -550,7 +548,7 @@ spawner.buildType = prov(() => extend(Building, {
         let par = null
         for (let pos of posArr) {
             par = Vars.world.tile(this.tile.x + pos.x, this.tile.y + pos.y).build;
-            if (par != null) break
+            if (par != null && par.team == this.team) break
         }
         return par
     },
