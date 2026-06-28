@@ -15,6 +15,7 @@ const env = require("vne/block/environment");
 const factory = require("vne/block/factory");
 const liquidBlock = require("vne/block/liquidBlock");
 const power = require("vne/block/power");
+const turret = require("vne/block/turret");
 const unitFactory = require("vne/block/unitFactory");
 
 const planet = require("vne/planet");
@@ -135,7 +136,7 @@ addResearch(defense.neoplasmCollecter, {
     parent: "radar",
 }, () => { })
 
-addResearch(defense.defuse, {
+addResearch(turret.defuse, {
     parent: "diffuse",
 }, () => { })
 

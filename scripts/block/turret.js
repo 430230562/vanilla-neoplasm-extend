@@ -691,6 +691,99 @@ Blocks.disperse.ammoTypes.put(
 function AddCoolant(turret, amount) {
     return turret.coolant = turret.consumeCoolant(amount);
 }
+//浩劫catastrophe
+//机炮，击中敌人会积攒充能，充能完毕后发射一枚榴弹，装填与机炮分离。
+const catastrophe = new PowerTurret('catastrophe');
+exports.catastrophe = catastrophe;
+Object.assign(catastrophe, {
+    reload: 10,
+    range: 30 * 8,
+    shootCone: 10,
+    shootY: 14,
+    shootX: -0.25,
+    health: 2740,
+    size: 4,
+    rotateSpeed: 5,
+    recoil: 1.75,
+    recoilTime: 8,
+    targetAir: true,
+    inaccuracy: 1,
+    coolantMultiplier: 1.25,
+    shootType: Object.assign(new BasicBulletType(6, 80), {
+        width: 6,
+        hitSize: 7,
+        height: 20,
+        shootEffect: new MultiEffect(Fx.shootBigColor, Fx.colorSparkBig),
+        hitEffect: Fx.hitBulletColor,
+        despawnEffect: Fx.hitBulletColor,
+        smokeEffect: Fx.shootBigSmoke,
+        knockback: 2,
+        lifetime: 40,
+        hitColor: Color.valueOf("f98f4a"),
+        //trailColor: Color.valueOf("f98f4"),
+        backColor: Color.valueOf("f98f4a"),
+        frontColor: Pal.plastaniumFront,
+        //trailWidth: 2.1,
+        //trailLength: 7,
+
+        trailEffect: Fx.colorSpark,
+        trailRotation: true,
+        trailInterval: 5,
+        rotationOffset: 180,
+
+        buildingDamageMultiplier: 0.3,
+        status: StatusEffects.slow,
+        statusDuration: 10,
+    }),
+    shootSound: Sounds.explosionArtilleryShockBig,
+    category: Category.turret,
+    buildVisibility: BuildVisibility.shown,
+})
+AddCoolant(catastrophe, 0.1);
+const grenade = new extend(ArtilleryBulletType, 4, 120, "shell", {
+    hitEffect: new MultiEffect(Fx.plasticExplosion, Fx.shockwave),
+    knockback: 1,
+    lifetime: 80,
+    width: 13,
+    height: 15,
+    collidesTiles: false,
+    splashDamageRadius: 40 * 0.75,
+    splashDamage: 110,
+    fragBullet: Object.assign(new BasicBulletType(3, 14, "bullet"), {
+        width: 10,
+        height: 12,
+        shrinkY: 1,
+        lifetime: 15,
+        backColor: Color.valueOf("d370d3"),
+        frontColor: Pal.plastaniumFront,
+        despawnEffect: Fx.none,
+        collidesAir: false,
+    }),
+    fragBullets: 15,
+    backColor: Color.valueOf("d370d3"),
+    frontColor: Pal.plastaniumFront,
+    lifeScaleRandMax: 1.08,
+    lifeScaleRandMin: 0.92,
+});
+catastrophe.buildType = prov(() => extend(PowerTurret.PowerTurretBuild, catastrophe, {
+    cshot: 0,
+    updateShooting() {
+        //解构是对的
+        let { reload, minWarmup, shootType } = this.block;
+
+        if (this.reloadCounter >= reload && this.shootWarmup >= minWarmup) {
+
+            if (this.cshot <= 8) {
+                this.shoot(shootType);
+                this.reloadCounter -= reload;
+                this.cshot += 1
+            } else {
+                this.shoot(grenade);
+                this.cshot = 0
+            }
+        }
+    }
+}));
 
 const skyfire = new ItemTurret("skyfire");
 exports.skyfire = skyfire;
@@ -702,7 +795,7 @@ Object.assign(skyfire, {
     health: 3300,
     size: 4,
     rotateSpeed: 3,
-    recoil: 0.5,
+    recoil: 1.5,
     recoilTime: 30,
     shake: 5,
     maxAmmo: 40,
@@ -721,6 +814,7 @@ Object.assign(skyfire, {
         item.organistal, 150,
     ),*/
 })
+AddCoolant(skyfire, 0.15)
 skyfire.ammo(
     Items.pyratite, Object.assign(new ArtilleryBulletType(3, 160, "shell"), {
         hitEffect: new MultiEffect(

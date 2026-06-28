@@ -19,6 +19,7 @@ require("vne/block/environment");
 require("vne/block/factory");
 require("vne/block/liquidBlock");
 require("vne/block/power");
+require("vne/block/turret");
 require("vne/block/unitFactory");
 
 require("vne/block/neopBlock")

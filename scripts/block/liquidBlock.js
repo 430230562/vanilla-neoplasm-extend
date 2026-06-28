@@ -351,12 +351,6 @@ const conduitBridge = extend(LiquidBridge, 'conduit-bridge', {
     // drawBase(tile) {
     //     Draw.rect(Core.atlas.find(this.name + "-base"), tile.worldx(), tile.worldy(), 0);
     // },
-    icons() {
-        return [
-            Core.atlas.find(this.name + "-base"),
-            Core.atlas.find(this.name),
-        ];
-    },
 })
 exports.conduitBridge = conduitBridge;
 conduitBridge.buildType = prov(() => extend(LiquidBridge.LiquidBridgeBuild, conduitBridge, {
@@ -475,11 +469,6 @@ conduitBridge.buildType = prov(() => extend(LiquidBridge.LiquidBridgeBuild, cond
 
         Draw.reset();
     },
-
-    drawLayer(tile) {
-        const entity = tile.ent();
-        Draw.rect(Core.atlas.find(this.name), tile.drawx(), tile.drawy(), entity.rotation - 90);
-    },
 }))
 conduitBridge.consumePowerBuffered(100)
 
@@ -543,15 +532,6 @@ const biomassConduitBridge = extend(LiquidBridge, 'biomass-conduit-bridge', {
             Draw.reset();
         }
         Drawf.dashCircle(x * Vars.tilesize, y * Vars.tilesize, (this.range) * Vars.tilesize, Pal.accent);
-    },
-    // drawBase(tile) {
-    //     Draw.rect(Core.atlas.find(this.name + "-base"), tile.worldx(), tile.worldy(), 0);
-    // },
-    icons() {
-        return [
-            Core.atlas.find(this.name + "-base"),
-            Core.atlas.find(this.name),
-        ];
     },
 })
 exports.biomassConduitBridge = biomassConduitBridge;
@@ -670,11 +650,6 @@ biomassConduitBridge.buildType = prov(() => extend(LiquidBridge.LiquidBridgeBuil
         }
 
         Draw.reset();
-    },
-
-    drawLayer(tile) {
-        const entity = tile.ent();
-        Draw.rect(Core.atlas.find(this.name), tile.drawx(), tile.drawy(), entity.rotation - 90);
     },
 }))
 biomassConduitBridge.consumePowerBuffered(250)

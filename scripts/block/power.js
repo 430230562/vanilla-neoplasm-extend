@@ -132,6 +132,12 @@ Object.assign(slagDifferentialGenerator, {
     displayEfficiencyScale: 1 / 7.65,
     powerProduction: 6 / 7.65,
     displayEfficiency: false,
+    buildVisibility: BuildVisibility.shown,
+    category: Category.power,
+    requirements: ItemStack.with(
+        Items.tungsten, 75,
+        Items.oxide, 85,
+    ),
 })
 slagDifferentialGenerator.consumeLiquid(Liquids.cryofluid, 5 / 60);
 
@@ -160,9 +166,9 @@ exports.beyondReactor = beyondReactor;
 beyondReactor.buildType = prov(() => extend(VariableReactor.VariableReactorBuild, beyondReactor, {
     updateEfficiencyMultiplier() {
         if (this.liquids.get(Liquids.cryofluid) > 0.0001) {
-            let efficiency = Mathf.clamp(this.heat / this.block.maxHeat)
+            this.efficiency = Math.min(this.heat / this.block.maxHeat, 1)
         } else {
-            let efficiency = 0
+            this.efficiency = 0
         }
     }
 }))
