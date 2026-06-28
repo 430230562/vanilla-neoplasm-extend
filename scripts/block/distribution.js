@@ -152,9 +152,7 @@ junction.buildType = prov(() => extend(Junction.JunctionBuild, junction, {
 }))
 junction.consumePowerBuffered(50)
 
-const nickelBridge = new ItemBridge("nickel-bridge");
-exports.nickelBridge = nickelBridge;
-Object.assign(nickelBridge, {
+const nickelBridge = extend(ItemBridge, "nickel-bridge", {
 	fadeIn: false,
 	moveArrows: false,
 	range: 6,
@@ -172,12 +170,68 @@ Object.assign(nickelBridge, {
 	consumesPower: true,
 	outputsPower: true,
 	conductivePower: true,
+	load() {
+		this.super$load();
+
+		Object.assign(this, {
+			endRegion: Core.atlas.find(this.name + "-end"),
+			bridgeRegion: Core.atlas.find(this.name + "-bridge"),
+			arrowRegion: Core.atlas.find(this.name + "-arrow")
+		});
+	},
+	linkValid(tile, other, checkDouble) {
+
+		if (other == null || other.build == null || tile == null || tile.build == null || other == tile) {
+			return false;
+		} else {
+			//应该是算距离
+			//if (Math.pow(other.x - tile.x, 2) + Math.pow(other.y - tile.y, 2) > Math.pow(this.range + 0.5, 2)) return false;
+			return tile.build.within(other.build, (this.range + 0.5) * Vars.tilesize)
+		}
+	},
+	drawPlace(x, y, rotation, valid) {
+		let link = this.findLink(x, y);
+
+		if (link != null) {
+			const sin = Mathf.absin(Time.time, 6, 1);
+			Tmp.v1.set(x * Vars.tilesize + this.offset(), y * Vars.tilesize + this.offset()).sub(link.drawx(), link.drawy()).limit((this.size / 2 + 1) * Vars.tilesize + sin + 0.5);
+			const x2 = x * Vars.tilesize - Tmp.v1.x;
+			const y2 = y * Vars.tilesize - Tmp.v1.y;
+			const x1 = link.drawx() + Tmp.v1.x;
+			const y1 = link.drawy() + Tmp.v1.y;
+			const segs = Math.floor(link.dst(x * Vars.tilesize, y * Vars.tilesize) / Vars.tilesize);
+
+			Lines.stroke(4, Pal.gray);
+			Lines.dashLine(x1, y1, x2, y2, segs);
+			Lines.stroke(2, Pal.placing);
+			Lines.dashLine(x1, y1, x2, y2, segs);
+			Drawf.circles(link.drawx(), link.drawy(), (this.size / 3 + 1) * Vars.tilesize + sin - 2, Pal.accent);
+			Drawf.arrow(link.drawx(), link.drawy(), x * Vars.tilesize + this.offset(), y * Vars.tilesize + this.offset(), this.size * Vars.tilesize + sin, 4 + sin, Pal.accent);
+			Draw.reset();
+		}
+		Drawf.dashCircle(x * Vars.tilesize, y * Vars.tilesize, (this.range) * Vars.tilesize, Pal.accent);
+	},
 })
+exports.nickelBridge = nickelBridge;
 nickelBridge.buildType = prov(() => extend(ItemBridge.ItemBridgeBuild, nickelBridge, {
 	status() {
 		if (Mathf.equal(this.power.status, 0, 0.001)) return BlockStatus.noInput;
 		if (Mathf.equal(this.power.status, 1, 0.001)) return BlockStatus.active;
 		return BlockStatus.noOutput;
+	},
+	updateTile() {
+		this.super$updateTile();
+
+		const other = Vars.world.tile(this.link);
+		if (other != null && this.block.linkValid(this.tile, other) && other.build != null) {
+
+			if (Vars.world.tile(other.build.link) != null) {
+				//不理解
+				other.build.rotation = Mathf.slerpDelta(other.build.rotation, other.build.angleTo(this), 0.125 * other.build.power.status);
+				this.rotation = Mathf.slerpDelta(this.rotation, this.angleTo(other.build), 0.125 * this.power.status);
+			}
+		}
+
 	},
 	updateTransport(other) {
 		this.super$updateTransport(other);
@@ -187,12 +241,98 @@ nickelBridge.buildType = prov(() => extend(ItemBridge.ItemBridgeBuild, nickelBri
 			this.power.graph.addGraph(other.power.graph)
 		}
 	},
+	drawSelect() {
+		this.super$drawSelect();
+
+		const sin = Mathf.absin(Time.time, 6, 1);
+
+		Draw.color(Pal.accent);
+		Lines.stroke(1);
+		Drawf.circles(this.x, this.y, (this.block.size / 2 + 1) * Vars.tilesize + sin - 2, Pal.accent);
+		if (this.link != -1) {
+			const other = Vars.world.tile(this.link);
+			if (other != null && other.build != null) {
+				Drawf.circles(other.build.x, other.build.y, (this.block.size / 3 + 1) * Vars.tilesize + sin - 2, Pal.place);
+				Drawf.arrow(this.x, this.y, other.build.x, other.build.y, this.block.size * Vars.tilesize + sin, 4 + sin, Pal.accent);
+			}
+		}
+		Drawf.dashCircle(this.x, this.y, this.block.range * Vars.tilesize, Pal.accent);
+	},
+
+	draw() {
+		const { block, x, y } = this;
+		if (block.variants == 0 || block.variantRegions == null) {
+			Draw.rect(block.region, x, y, this.drawrot());
+		} else {
+			Draw.rect(block.variantRegions[Mathf.randomSeed(this.tile.pos(), 0, Math.max(0, block.variantRegions.length - 1))], x, y, this.drawrot());
+		}
+
+		this.drawTeamTop();
+
+		const other = Vars.world.tile(this.link);
+		if (!block.linkValid(this.tile, other)) return;
+
+		if (Mathf.zero(Renderer.bridgeOpacity)) return;
+
+		const angleDeg = this.angleTo(other.build);
+
+		const {
+			pulse, hasPower, fadeIn,
+			bridgeWidth, arrowSpacing, arrowOffset, arrowPeriod, arrowTimeScl,
+			endRegion, bridgeRegion, arrowRegion
+		} = block;
+
+		const { time } = this;
+
+		if (pulse) {
+			Draw.color(Color.white, Color.black, Mathf.absin(Time.time, 6, 0.07));
+		}
+
+		const warmup = hasPower ? this.warmup : 1;
+
+		Draw.alpha((fadeIn ? Math.max(warmup, 0.25) : 1) * Renderer.bridgeOpacity);
+
+		Draw.rect(endRegion, x, y, angleDeg + 90);
+		Draw.rect(endRegion, other.drawx(), other.drawy(), angleDeg + 270);
+
+		Lines.stroke(bridgeWidth);
+
+		Tmp.v1.set(x, y).sub(other.worldx(), other.worldy()).setLength(Vars.tilesize / 2).scl(-1);
+
+		Lines.line(
+			bridgeRegion,
+			x + Tmp.v1.x,
+			y + Tmp.v1.y,
+			other.worldx() - Tmp.v1.x,
+			other.worldy() - Tmp.v1.y,
+			false
+		);
+
+		const dist = this.dst(other.build);
+
+		Draw.color();
+
+		const arrows = Math.floor((dist - arrowSpacing) / arrowSpacing);
+		const vec = Tmp.v1.set(other).sub(this).nor();
+
+		for (let a = 0; a < arrows; a++) {
+			Draw.alpha(
+				Mathf.absin(a - time / arrowTimeScl, arrowPeriod, 1) * warmup * Renderer.bridgeOpacity
+			);
+			Draw.rect(
+				arrowRegion,
+				x + vec.x * (Vars.tilesize / 2 + a * arrowSpacing + arrowOffset),
+				y + vec.y * (Vars.tilesize / 2 + a * arrowSpacing + arrowOffset),
+				angleDeg
+			);
+		}
+
+		Draw.reset();
+	},
 }))
 nickelBridge.consumePowerBuffered(75)
 
-const stackBridge = new ItemBridge("stack-bridge");
-exports.stackBridge = stackBridge;
-Object.assign(stackBridge, {
+const stackBridge = extend(ItemBridge, "stack-bridge", {
 	fadeIn: false,
 	moveArrows: false,
 	range: 10,
@@ -211,7 +351,49 @@ Object.assign(stackBridge, {
 	consumesPower: true,
 	outputsPower: true,
 	conductivePower: true,
-})
+	load() {
+		this.super$load();
+
+		Object.assign(this, {
+			endRegion: Core.atlas.find(this.name + "-end"),
+			bridgeRegion: Core.atlas.find(this.name + "-bridge"),
+			arrowRegion: Core.atlas.find(this.name + "-arrow")
+		});
+	},
+	linkValid(tile, other, checkDouble) {
+
+		if (other == null || other.build == null || tile == null || tile.build == null || other == tile) {
+			return false;
+		} else {
+			//应该是算距离
+			//if (Math.pow(other.x - tile.x, 2) + Math.pow(other.y - tile.y, 2) > Math.pow(this.range + 0.5, 2)) return false;
+			return tile.build.within(other.build, (this.range + 0.5) * Vars.tilesize)
+		}
+	},
+	drawPlace(x, y, rotation, valid) {
+		let link = this.findLink(x, y);
+
+		if (link != null) {
+			const sin = Mathf.absin(Time.time, 6, 1);
+			Tmp.v1.set(x * Vars.tilesize + this.offset(), y * Vars.tilesize + this.offset()).sub(link.drawx(), link.drawy()).limit((this.size / 2 + 1) * Vars.tilesize + sin + 0.5);
+			const x2 = x * Vars.tilesize - Tmp.v1.x;
+			const y2 = y * Vars.tilesize - Tmp.v1.y;
+			const x1 = link.drawx() + Tmp.v1.x;
+			const y1 = link.drawy() + Tmp.v1.y;
+			const segs = Math.floor(link.dst(x * Vars.tilesize, y * Vars.tilesize) / Vars.tilesize);
+
+			Lines.stroke(4, Pal.gray);
+			Lines.dashLine(x1, y1, x2, y2, segs);
+			Lines.stroke(2, Pal.placing);
+			Lines.dashLine(x1, y1, x2, y2, segs);
+			Drawf.circles(link.drawx(), link.drawy(), (this.size / 3 + 1) * Vars.tilesize + sin - 2, Pal.accent);
+			Drawf.arrow(link.drawx(), link.drawy(), x * Vars.tilesize + this.offset(), y * Vars.tilesize + this.offset(), this.size * Vars.tilesize + sin, 4 + sin, Pal.accent);
+			Draw.reset();
+		}
+		Drawf.dashCircle(x * Vars.tilesize, y * Vars.tilesize, (this.range) * Vars.tilesize, Pal.accent);
+	},
+});
+exports.stackBridge = stackBridge;
 stackBridge.buildType = prov(() => extend(ItemBridge.ItemBridgeBuild, stackBridge, {
 	status() {
 		if (Mathf.equal(this.power.status, 0, 0.001)) return BlockStatus.noInput;
@@ -237,6 +419,104 @@ stackBridge.buildType = prov(() => extend(ItemBridge.ItemBridgeBuild, stackBridg
 				other.cooldown = 1
 			}
 		}
+
+		const other = Vars.world.tile(this.link);
+		if (other != null && this.block.linkValid(this.tile, other) && other.build != null) {
+
+			if (Vars.world.tile(other.build.link) != null) {
+				//不理解
+				other.build.rotation = Mathf.slerpDelta(other.build.rotation, other.build.angleTo(this), 0.125 * other.build.power.status);
+				this.rotation = Mathf.slerpDelta(this.rotation, this.angleTo(other.build), 0.125 * this.power.status);
+			}
+		}
+	},
+	drawSelect() {
+		this.super$drawSelect();
+
+		const sin = Mathf.absin(Time.time, 6, 1);
+
+		Draw.color(Pal.accent);
+		Lines.stroke(1);
+		Drawf.circles(this.x, this.y, (this.block.size / 2 + 1) * Vars.tilesize + sin - 2, Pal.accent);
+		if (this.link != -1) {
+			const other = Vars.world.tile(this.link);
+			if (other != null && other.build != null) {
+				Drawf.circles(other.build.x, other.build.y, (this.block.size / 3 + 1) * Vars.tilesize + sin - 2, Pal.place);
+				Drawf.arrow(this.x, this.y, other.build.x, other.build.y, this.block.size * Vars.tilesize + sin, 4 + sin, Pal.accent);
+			}
+		}
+		Drawf.dashCircle(this.x, this.y, this.block.range * Vars.tilesize, Pal.accent);
+	},
+
+	draw() {
+		const { block, x, y } = this;
+		if (block.variants == 0 || block.variantRegions == null) {
+			Draw.rect(block.region, x, y, this.drawrot());
+		} else {
+			Draw.rect(block.variantRegions[Mathf.randomSeed(this.tile.pos(), 0, Math.max(0, block.variantRegions.length - 1))], x, y, this.drawrot());
+		}
+
+		this.drawTeamTop();
+
+		const other = Vars.world.tile(this.link);
+		if (!block.linkValid(this.tile, other)) return;
+
+		if (Mathf.zero(Renderer.bridgeOpacity)) return;
+
+		const angleDeg = this.angleTo(other.build);
+
+		const {
+			pulse, hasPower, fadeIn,
+			bridgeWidth, arrowSpacing, arrowOffset, arrowPeriod, arrowTimeScl,
+			endRegion, bridgeRegion, arrowRegion
+		} = block;
+
+		const { time } = this;
+
+		if (pulse) {
+			Draw.color(Color.white, Color.black, Mathf.absin(Time.time, 6, 0.07));
+		}
+
+		const warmup = hasPower ? this.warmup : 1;
+
+		Draw.alpha((fadeIn ? Math.max(warmup, 0.25) : 1) * Renderer.bridgeOpacity);
+
+		Draw.rect(endRegion, x, y, angleDeg + 90);
+		Draw.rect(endRegion, other.drawx(), other.drawy(), angleDeg + 270);
+
+		Lines.stroke(bridgeWidth);
+
+		Tmp.v1.set(x, y).sub(other.worldx(), other.worldy()).setLength(Vars.tilesize / 2).scl(-1);
+
+		Lines.line(
+			bridgeRegion,
+			x + Tmp.v1.x,
+			y + Tmp.v1.y,
+			other.worldx() - Tmp.v1.x,
+			other.worldy() - Tmp.v1.y,
+			false
+		);
+
+		const dist = this.dst(other.build);
+
+		Draw.color();
+
+		const arrows = Math.floor((dist - arrowSpacing) / arrowSpacing);
+		const vec = Tmp.v1.set(other).sub(this).nor();
+
+		for (let a = 0; a < arrows; a++) {
+			Draw.alpha(
+				Mathf.absin(a - time / arrowTimeScl, arrowPeriod, 1) * warmup * Renderer.bridgeOpacity
+			);
+			Draw.rect(
+				arrowRegion,
+				x + vec.x * (Vars.tilesize / 2 + a * arrowSpacing + arrowOffset),
+				y + vec.y * (Vars.tilesize / 2 + a * arrowSpacing + arrowOffset),
+				angleDeg
+			);
+		}
+
+		Draw.reset();
 	}
 }))
 stackBridge.consumePowerBuffered(350)
