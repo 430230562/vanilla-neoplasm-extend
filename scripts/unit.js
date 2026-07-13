@@ -1,21 +1,22 @@
 const status = require('vne/status');
 const liquid = require('vne/liquid');
+const item = require("vne/item");
 const {
-    Acid, ReduceArmorBulletType
+    Acid, ReduceArmorBulletType, BounceBulletType
 } = require('vne/lib/bulletType');
 const {
     DeathNeoplasmAbility, MoveLiquidAbility, DamageDownAbility
 } = require("vne/lib/ability")
 
-function StatWeapon(name, stat, num){
-	return extend(Weapon, {
-		name: name,
-		addStats(u, t){
-			this.super$addStats(u, t);
-			t.row();
-			t.add(Core.bundle.format(stat, num));
-		}
-	});
+function StatWeapon(name, stat, num) {
+    return extend(Weapon, {
+        name: name,
+        addStats(u, t) {
+            this.super$addStats(u, t);
+            t.row();
+            t.add(Core.bundle.format(stat, num));
+        }
+    });
 }
 
 function Insect(name) {
@@ -46,6 +47,72 @@ function Insect(name) {
     })
 }
 exports.Insect = Insect;
+
+const adventitiousRoot = new Insect("adventitious-root");
+exports.adventitiousRoot = adventitiousRoot;
+Object.assign(adventitiousRoot, {
+    targetPriority: -0.5,
+
+    speed: 12 * 8 / 60,
+    accel: 0.06,
+    drag: 0.017,
+
+    health: 100,
+    armor: 2,
+    hitSize: 8,
+    itemCapacity: 40,
+    mineTier: 5,
+    mineSpeed: 4,
+    mineRange: 24,
+    engineSize: 0,
+    engineOffset: 0,
+    mineWalls: true,
+    buildSpeed: 0.25,
+    controller: UnitTypes.mono.controller,
+    defaultCommand: UnitTypes.mono.defaultCommand,
+    flying: true,
+    constructor: () => new UnitEntity.create()
+})
+adventitiousRoot.mineItems.addAll(
+Items.graphite,
+Items.beryllium,
+Items.tungsten,
+Items.oxide,
+item.nickel,
+item.manganese, );
+
+const midrib = new Insect("midrib");
+exports.midrib = midrib;
+Object.assign(midrib, {
+    targetPriority: -0.5,
+
+    speed: 15 * 8 / 60,
+    accel: 0.06,
+    drag: 0.017,
+    engineOffset: 5,
+
+    health: 100,
+    armor: 2,
+    hitSize: 8,
+    itemCapacity: 30,
+    mineTier: 5,
+    mineSpeed: 1,
+    mineWalls: true,
+    buildSpeed: 1,
+    controller: UnitTypes.poly.controller,
+    defaultCommand: UnitTypes.poly.defaultCommand,
+    flying: true,
+    constructor: () => new UnitEntity.create()
+})
+midrib.mineItems.addAll(
+Items.graphite,
+Items.beryllium,
+Items.tungsten,
+Items.oxide,
+item.nickel,
+item.manganese);
+midrib.abilities.add(
+new RepairFieldAbility(15, 60 * 10, 8 * 10))
 
 /*
 const alter = new UnitType("alter");
@@ -127,6 +194,7 @@ Object.assign(new StatWeapon("vne-alter-weapon","alter",100), {
 )
 */
 
+//陆军T1
 const haploid = new Insect("haploid");
 exports.haploid = haploid;
 Object.assign(haploid, {
@@ -197,6 +265,7 @@ Object.assign(new Weapon("vne-haploid-weapon"), {
     })
 }))
 
+//陆军T2
 const diploid = new Insect("diploid")
 exports.diploid = diploid;
 Object.assign(diploid, {
@@ -313,6 +382,7 @@ Object.assign(new Weapon(), {
 polarBody.abilities.add(
 new DeathNeoplasmAbility(16, 150))
 
+//陆军T3
 const triploid = new Insect("triploid");
 exports.triploid = triploid;
 Object.assign(triploid, {
@@ -376,6 +446,7 @@ new Weapon("vne-triploid-weapon"), {
     shootStatusDuration: 130,
 }))
 
+//陆军T4
 const bivalents = new Insect("bivalents");
 exports.bivalents = bivalents;
 Object.assign(bivalents, {
@@ -383,7 +454,7 @@ Object.assign(bivalents, {
     drag: 0.1,
     hitSize: 26,
     rotateSpeed: 3,
-    health: 6000,
+    health: 5000,
     armor: 6,
     targetPriority: 1,
 
@@ -451,6 +522,99 @@ Object.assign(new Weapon("vne-bivalents-weapon"), {
     })
 }))
 
+//陆军T5
+const tetraploid = new Insect("tetraploid");
+exports.tetraploid = tetraploid;
+Object.assign(tetraploid, {
+    speed: 0.7,
+    drag: 0.08,
+    hitSize: 38,
+    rotateSpeed: 2.5,
+    health: 8000,
+    armor: 10,
+    targetPriority: 2,
+
+    fogRadius: 60,
+    stepShake: 1.5,
+    mechFrontSway: 2.5,
+    mechSideSway: 1.0,
+    stepSound: Sounds.mechStepHeavy,
+    stepSoundPitch: 0.7,
+    stepSoundVolume: 0.5,
+
+    hovering: true,
+    canDrown: false,
+    constructor: () => new MechUnit.create(),
+})
+tetraploid.weapons.add(
+Object.assign(new Weapon("vne-tetraploid-weapon0"), {
+    mirror: true,
+    top: false,
+    x: 18,
+    y: -6,
+    shootY: 20,
+    shootSound: Sounds.shootFlame,
+    reload: 8,
+    recoil: 2,
+    rotate: false,
+    ejectEffect: Fx.none,
+    bullet: extend(BulletType, 12, 120, {
+        hitSize: 16,
+        lifetime: 14,
+        pierce: true,
+        pierceBuilding: true,
+        pierceCap: 4,
+        statusDuration: 60 * 3,
+        status: status.neoplasmSlow,
+        shootEffect: new Effect(40, 100, e => {
+            Draw.color(Color.valueOf("e8803f"), Color.valueOf("c33e2b"), Color.gray, e.fin());
+            Angles.randLenVectors(e.id, 24, e.finpow() * 80, e.rotation, 15, (x, y) => {
+                Fill.circle(e.x + x, e.y + y, 0.8 + e.fout() * 2.5);
+            })
+        }),
+        hitEffect: new Effect(20, e => {
+            Draw.color(Color.valueOf("e8803f"), Color.valueOf("c33e2b"), e.fin());
+            Lines.stroke(0.8 + e.fout());
+            Angles.randLenVectors(e.id, 4, 1 + e.fin() * 25, e.rotation, 60, (x, y) => {
+                let ang = Mathf.angle(x, y);
+                Lines.lineAngle(e.x + x, e.y + y, ang, e.fout() * 5 + 2);
+            })
+        }),
+        despawnEffect: Fx.none,
+        keepVelocity: false,
+        hittable: false
+    })
+}),
+Object.assign(new Weapon("vne-tetraploid-weapon1"), {
+    mirror: true,
+    top: false,
+    x: -16,
+    y: 0,
+    shootY: 12,
+    reload: 40,
+    shootSound: Sounds.shootMissileLarge,
+    bullet: Object.assign(new MissileBulletType(5, 45), {
+        lifetime: 70,
+        homingRange: 120,
+        homingPower: 0.08,
+        width: 12,
+        height: 12,
+        backColor: Color.valueOf("84a94b"),
+        frontColor: Color.valueOf("84a94b"),
+        trailColor: Color.valueOf("84a94b"),
+        trailWidth: 2,
+        trailLength: 20,
+        fragBullets: 4,
+        fragBullet: new Acid(25),
+        status: StatusEffects.corroded,
+        statusDuration: 80,
+    })
+}))
+//死亡时分裂为2个T4
+tetraploid.abilities.add(
+new SpawnDeathAbility(bivalents, 2, 30))
+
+//空军T1
 const ribosome = new Insect("ribosome");
 exports.ribosome = ribosome;
 Object.assign(ribosome, {
@@ -511,6 +675,7 @@ Object.assign(new RegionPart("-wing"), {
     progress: DrawPart.PartProgress.smoothReload.sin(1, 5)
 }))
 
+//空军T2
 const lysosome = new Insect("lysosome");
 exports.lysosome = lysosome;
 Object.assign(lysosome, {
@@ -573,6 +738,7 @@ Object.assign(new RegionPart("-wing"), {
     progress: DrawPart.PartProgress.smoothReload.sin(1, 5)
 }))
 
+//空军T3
 const trichocyst = new Insect("trichocyst");
 exports.trichocyst = trichocyst;
 Object.assign(trichocyst, {
@@ -642,6 +808,7 @@ Object.assign(new RegionPart("-wing"), {
     progress: DrawPart.PartProgress.smoothReload.sin(1, 5)
 }))
 
+//空军T4
 const centrosome = Insect("centrosome");
 exports.centrosome = centrosome;
 Object.assign(centrosome, {
@@ -747,6 +914,105 @@ centrosome.weapons.add(Object.assign(new Weapon("vne-centrosome-weapon"), {
     })
 }))
 
+const nucleus = new Insect("nucleus");
+exports.nucleus = nucleus;
+Object.assign(nucleus, {
+    aiController: () => new FlyingFollowAI(),
+    flying: true,
+    drag: 0.04,
+    speed: 1.0,
+    rotateSpeed: 2.8,
+    accel: 0.08,
+    health: 7000,
+    armor: 6,
+    hitSize: 28,
+    engineSize: 6.5,
+    engineOffset: 16,
+    constructor: () => new UnitEntity.create(),
+    targetFlags: [BlockFlag.turret, BlockFlag.core, null],
+    range: 200,
+})
+nucleus.parts.add(
+Object.assign(new RegionPart("-wing"), {
+    mirror: true,
+    x: 2,
+    y: 0,
+    rotation: -45,
+    moveX: 0,
+    moveY: 0,
+    moveRot: 30,
+    progress: DrawPart.PartProgress.smoothReload.sin(1, 5)
+}),
+Object.assign(new RegionPart("-wing"), {
+    mirror: true,
+    x: -2,
+    y: 4,
+    rotation: 45,
+    moveX: 0,
+    moveY: 0,
+    moveRot: -30,
+    progress: DrawPart.PartProgress.smoothReload.sin(1, 5)
+}))
+nucleus.weapons.add(
+Object.assign(new Weapon("vne-nucleus-weapon"), {
+    x: 0,
+    y: 0,
+    shootY: 0,
+    reload: 180,
+    layerOffset: 0.01,
+    rotate: true,
+    rotateSpeed: 2.5,
+    shootCone: 10,
+    shootSound: Sounds.plantBreak,
+    bullet: Object.assign(new BounceBulletType(8, 900, 40), {
+        ammoMultiplier: 1,
+        width: 7,
+        height: 21,
+        lifetime: 33.4,
+        hitSize: 4,
+        hitColor: Color.valueOf("84a94b"),
+        backColor: Color.valueOf("84a94b"),
+        trailColor: Color.valueOf("84a94b"),
+        frontColor: Color.white,
+        trailWidth: 2,
+        trailLength: 5,
+
+        hitEffect: Fx.flakExplosionBig,
+
+        pierce: true,
+        pierceBuilding: true,
+        collidesAir: true,
+        pierceCap: 4,
+
+        knockback: 12,
+        recoil: 2,
+
+        intervalBullets: 3,
+        bulletInterval: 1,
+        intervalBullet: new Acid(18),
+        fragBullets: 13,
+        fragBullet: new Acid(18)
+    })
+}),
+Object.assign(new PointDefenseWeapon("vne-nucleus-pd"), {
+    mirror: true,
+    x: 8,
+    y: -6,
+    reload: 4,
+    targetInterval: 8,
+    targetSwitchInterval: 10,
+    shootSound: Sounds.shootMerui,
+    bullet: Object.assign(new BulletType(), {
+        shootEffect: Fx.shootSmall,
+        hitEffect: Fx.pointHit,
+        despawnEffect: Fx.none,
+        maxRange: 120,
+        damage: 8,
+        pierce: false,
+    })
+}))
+
+//辅助T1
 const bomber = new UnitType("bomber");
 exports.bomber = bomber;
 Object.assign(bomber, {
@@ -786,6 +1052,7 @@ Object.assign(new Weapon(), {
     bullet: new ExplosionBulletType(110, 48),
 }))
 
+//辅助T2
 const cytoderm = new Insect("cytoderm");
 exports.cytoderm = cytoderm;
 Object.assign(cytoderm, {
@@ -843,6 +1110,7 @@ new DamageDownAbility(24, 120),
 new ForceFieldAbility(40, 0.2, 400, 60 * 6))
 
 //unit.vne-adenoma.name = 腺瘤
+//辅助T3
 const adenoma = new Insect("adenoma");
 exports.adenoma = adenoma;
 Object.assign(adenoma, {
@@ -857,7 +1125,7 @@ Object.assign(adenoma, {
     itemCapacity: 0,
     constructor: () => new UnitEntity.create(),
     aiController: () => new extend(FlyingFollowAI, {
-        
+
         updateMovement() {
             this.unloadPayloads();
 
@@ -887,7 +1155,7 @@ Object.assign(adenoma, {
                 );
                 //很奇怪,原版没有unit.dead()这个function
             }
-            
+
             if (this.following != null) {
                 this.moveTo(this.following, 40);
             } else if (this.target != null && this.unit.hasWeapons()) {
@@ -936,13 +1204,131 @@ Object.assign(new Weapon("vne-adenoma-weapon"), {
         puddles: 1,
         puddleRange: 0,
         puddleAmount: 70,
-        puddleLiquid: Liquids.neoplasm
+        puddleLiquid: Liquids.neoplasm,
+        status: status.neoplasmSlow,
+        statusDuration: 120,
     })
 }))
 adenoma.abilities.add(
 new StatusFieldAbility(status.stimulated, 450, 300, 60))
 
+const papilloma = new Insect("papilloma");
+exports.papilloma = papilloma;
+Object.assign(papilloma, {
+    health: 1600,
+    speed: 2.2,
+    flying: true,
+    hitSize: 18,
+    engineOffset: 12,
+    armor: 4,
+    accel: 0.07,
+    drag: 0.014,
+    constructor: () => new UnitEntity.create(),
+    aiController: () => new FlyingFollowAI(),
+})
+papilloma.abilities.add(
+new ForceFieldAbility(120, 0.25, 700, 60 * 8),
+extend(Ability, {
+    update(unit) {
+        Units.nearby(unit.team, unit.x, unit.y, 120, u => {
+            if (u != unit && u.type.outlineColor == Pal.neoplasmOutline) {
+                Puddles.deposit(u.tileOn(), Liquids.neoplasm, 0.15)
+            }
+        });
+    }
+}),
+new DeathNeoplasmAbility(30, 1500))
+papilloma.immunities.add(status.neoplasmSlow)
+
+const boltBrain = new MissileUnitType("bolt-brain");
+exports.boltBrain = boltBrain;
+Object.assign(boltBrain, {
+    hitSize: 4,
+    constructor: () => new TimedKillUnit.create(),
+    trailColor: Color.valueOf("e05438"),
+    engineColor: Color.valueOf("e05438"),
+    engineSize: 1.75,
+    engineLayer: Layer.effect,
+    healColor: Color.valueOf("00000000"),
+    speed: 2,
+    lightOpacity: 0,
+    maxRange: 6,
+    lifetime: 160,
+    outlineColor: Pal.neoplasmOutline,
+    health: 1000,
+    lowAltitude: true,
+})
+boltBrain.abilities.add(
+Object.assign(new RegenAbility(), {
+    amount: -1 / 60,
+}),
+Object.assign(new EnergyFieldAbility(50,20,80), {
+    status: StatusEffects.shocked,
+    healEffect: Fx.none,
+    healPercent: 0,
+    displayHeal: false,
+    color: Pal.lancerLaser,
+}))
+boltBrain.weapons.add(
+Object.assign(new Weapon(), {
+    shootCone: 360,
+    mirror: false,
+    reload: 1,
+    shootOnDeath: true,
+    bullet: Object.assign(new ExplosionBulletType(200, 35), {
+        shootEffect: new MultiEffect(
+        Fx.massiveExplosion,
+        new WrapEffect(
+        Fx.dynamicSpikes,
+        Pal.lancerLaser, 24),
+        Object.assign(new WaveEffect(), {
+            colorFrom: Pal.lancerLaser,
+            colorTo: Pal.lancerLaser,
+            sizeTo: 40,
+            lifetime: 12,
+            strokeFrom: 4,
+        }))
+    })
+}))
+
+const carcinoma = new Insect("carcinoma");
+exports.carcinoma = carcinoma;
+Object.assign(carcinoma, {
+    health: 2500,
+    speed: 2.0,
+    flying: true,
+    hitSize: 24,
+    engineOffset: 14,
+    armor: 5,
+    accel: 0.06,
+    drag: 0.012,
+    itemCapacity: 0,
+    constructor: () => new UnitEntity.create(),
+
+})
+carcinoma.weapons.add(
+Object.assign(new Weapon(), {
+    shootSound: Sounds.shootMissileLarge,
+    x: 4,
+    y: -11 / 4,
+    mirror: true,
+    alternate: false,
+    shootY: 1.5,
+    reload: 150,
+    layerOffset: 0.01,
+    rotate: false,
+    bullet: Object.assign(new BulletType(), {
+        spawnUnit: boltBrain,
+        smokeEffect: Fx.shootBigSmoke2,
+        speed: 0,
+        keepVelocity: false,
+    }),
+    shootStatus: StatusEffects.slow,
+    shootStatusDuration: 180,
+}))
+carcinoma.immunities.add(status.neoplasmSlow);
 //unit.vne-polyp.name = 息肉
+//爬爬T1
 const polyp = new UnitType("polyp");
 exports.polyp = polyp;
 Object.assign(polyp, {
@@ -978,6 +1364,7 @@ new MoveLiquidAbility(Liquids.neoplasm, 12, 5, 1))
 polyp.immunities.add(status.neoplasmSlow)
 
 //unit.vne-sarcoma.name = 肉瘤
+//爬爬T2
 const sarcoma = new UnitType("sarcoma");
 exports.sarcoma = sarcoma;
 Object.assign(sarcoma, {
@@ -1204,6 +1591,7 @@ Object.assign(sac, {
 })
 sac.immunities.addAll(StatusEffects.corroded);
 
+//爬爬T3
 const metastasis = new UnitType("metastasis");
 exports.metastasis = metastasis;
 Object.assign(metastasis, {
@@ -1246,8 +1634,11 @@ extend(Ability, {
         this.super$update(unit);
 
         unit.heal(0.5)
-        unit.maxHealth = Math.floor(Math.min(40000, Math.max(unit.health + 10, unit.maxHealth)))
-        unit.hitSize = Math.pow(unit.maxHealth / 500, 0.5) * 8
+        if (unit.maxHealth < 6000) {
+            unit.maxHealth = Math.min(6000, unit.maxHealth + 10);
+        } else {
+            unit.kill()
+        }
     },
     death(unit) {
         unit.tileOn()
@@ -1263,17 +1654,73 @@ extend(Ability, {
                 mycelium.spawn(unit.team, unit.x, unit.y);
                 if (Mathf.chance(0.4)) sarcoma.spawn(unit.team, unit.x, unit.y)
             }
-
-            if (Mathf.chance(0.2)) {
-                i -= 1
-            }
         }
     },
-    localized(){
-		return Core.bundle.format("ability.infinityGrowth");
-	},
+    localized() {
+        return Core.bundle.format("ability.infinityGrowth");
+    },
 }))
 metastasis.immunities.add(status.neoplasmSlow)
+
+const invasive = new UnitType("invasive");
+exports.invasive = invasive;
+Object.assign(invasive, {
+    constructor: () => new CrawlUnit.create(),
+    speed: 0.75,
+    hitSize: 18,
+    targetPriority: 2,
+    health: 2000,
+    omniMovement: false,
+    rotateSpeed: 2.0,
+    segments: 4,
+    drawBody: false,
+    aiController: () => new HugAI(),
+    segmentScl: 3.5,
+    segmentPhase: 5,
+    segmentMag: 1.2,
+    crushDamage: 1.0,
+    outlineColor: Pal.neoplasmOutline,
+    envDisabled: Env.none,
+    healFlash: true,
+    healColor: Pal.neoplasm1,
+    lightRadius: 0,
+    researchCostMultiplier: 0,
+    playerControllable: false,
+    logicControllable: false,
+    allowedInPayloads: false,
+    useUnitCap: false,
+})
+invasive.abilities.add(
+Object.assign(new LiquidRegenAbility(), {
+    liquid: Liquids.neoplasm,
+    slurpEffect: Fx.neoplasmHeal,
+    slurpSpeed: 15,
+    regenPerSlurp: 30,
+}),
+extend(Ability, {
+    update(unit) {
+        unit.heal(0.5);
+        if (unit.maxHealth < 8000) {
+            unit.maxHealth = Math.min(8000, unit.maxHealth + 10);
+        } else {
+            unit.kill()
+        }
+    },
+    death(unit) {
+        unit.tileOn()
+            .circle(unit.hitSize * 0.1875, cons(tile => {
+            if (tile != null) Puddles.deposit(tile, Liquids.neoplasm, 70);
+        }))
+
+        for (let i = 0; i < unit.maxHealth / 2000; i++) {
+            metastasis.spawn(unit.team, unit.x, unit.y);
+        }
+    },
+    localized() {
+        return Core.bundle.format("ability.infinityGrowth");
+    }
+}))
+invasive.immunities.add(status.neoplasmSlow)
 
 UnitTypes.renale.hidden = false;
 UnitTypes.renale.outlineColor = Pal.neoplasmOutline;
@@ -1414,4 +1861,3 @@ meiosis.abilities.addAll(
 		regenPerSlurp: 3.2
 	})
 );*/
-

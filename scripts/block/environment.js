@@ -150,6 +150,11 @@ Object.assign(neoplasm, {
 	liquidMultiplier: 0.5,
 })
 
+Items.oxide.hardness = 5;
+
+new OreBlock("ore-oxide",Items.oxide)//5
+extend(OreBlock,"wall-ore-oxide",Items.oxide,{wallOre: true})
+
 new OreBlock("ore-nickel",item.nickel);//2
 new OreBlock("ore-manganese",item.manganese);//3
 //new OreBlock("ore-chromium", item.chromium);//4

@@ -15,26 +15,21 @@ exports.unitIncubator = unitIncubator;
 Object.assign(unitIncubator, {
     size: 3,
     plans: Seq.with(
-        new UnitPlan(unit.haploid, 60 * 15, ItemStack.with(
-            Items.silicon, 5,
-            item.protein, 15,
-        )),
-        new UnitPlan(unit.ribosome, 60 * 18, ItemStack.with(
-            Items.silicon, 5,
-            item.protein, 20,
-        )),
-        new UnitPlan(unit.bomber, 60 * 8, ItemStack.with(
-            Items.silicon, 3,
-            item.protein, 10,
-        )),
-    ),
+    new UnitPlan(unit.haploid, 60 * 15, ItemStack.with(
+    Items.silicon, 5,
+    item.protein, 15, )),
+    new UnitPlan(unit.ribosome, 60 * 18, ItemStack.with(
+    Items.silicon, 5,
+    item.protein, 20, )),
+    new UnitPlan(unit.bomber, 60 * 8, ItemStack.with(
+    Items.silicon, 3,
+    item.protein, 10, )), ),
     buildVisibility: BuildVisibility.shown,
     category: Category.units,
     requirements: ItemStack.with(
-        Items.graphite, 60,
-        Items.silicon, 70,
-        Items.beryllium, 100,
-    ),
+    Items.graphite, 60,
+    Items.silicon, 70,
+    Items.beryllium, 100, ),
 })
 unitIncubator.consumePower(1.2);
 unitIncubator.buildType = prov(() => extend(UnitFactory.UnitFactoryBuild, unitIncubator, {
@@ -65,52 +60,65 @@ unitIncubator.buildType = prov(() => extend(UnitFactory.UnitFactoryBuild, unitIn
         if (this.progress >= 60) unit.polyp.spawn(this.team, this.x, this.y);
     },
     onDeconstructed() {
-        this.onDestroyed();
+        if (this.progress >= 60) unit.polyp.spawn(this.team, this.x, this.y);
     }
 }))
 
-const shaper = new UnitFactory("shaper");
-exports.shaper = shaper;
-Object.assign(shaper, {
+const shaper = extend(UnitFactory, "shaper", {
     size: 3,
     plans: Seq.with(
-        new UnitPlan(unit.haploid, 60 * 10, ItemStack.with(
-            Items.silicon, 5,
-            item.protein, 15,
-        )),
-        new UnitPlan(unit.ribosome, 60 * 12, ItemStack.with(
-            Items.silicon, 5,
-            item.protein, 20,
-        )),
-        new UnitPlan(unit.bomber, 60 * 5, ItemStack.with(
-            Items.silicon, 3,
-            item.protein, 10,
-        )),
-        new UnitPlan(unit.diploid, 60 * 20, ItemStack.with(
-            Items.silicon, 12,
-            item.protein, 35,
-        )),
-        new UnitPlan(unit.lysosome, 60 * 25, ItemStack.with(
-            Items.silicon, 12,
-            item.protein, 45,
-        )),
-        new UnitPlan(unit.cytoderm, 60 * 25, ItemStack.with(
-            Items.silicon, 20,
-            item.protein, 35,
-        )),
-    ),
+    new UnitPlan(unit.haploid, 60 * 10, ItemStack.with(
+    Items.silicon, 5,
+    item.protein, 15, )),
+    new UnitPlan(unit.ribosome, 60 * 12, ItemStack.with(
+    Items.silicon, 5,
+    item.protein, 20, )),
+    new UnitPlan(unit.bomber, 60 * 5, ItemStack.with(
+    Items.silicon, 3,
+    item.protein, 10, )),
+    new UnitPlan(unit.diploid, 60 * 20, ItemStack.with(
+    Items.silicon, 12,
+    item.protein, 35, )),
+    new UnitPlan(unit.lysosome, 60 * 25, ItemStack.with(
+    Items.silicon, 12,
+    item.protein, 45, )),
+    new UnitPlan(unit.cytoderm, 60 * 25, ItemStack.with(
+    Items.silicon, 20,
+    item.protein, 35, )), ),
     buildVisibility: BuildVisibility.shown,
     category: Category.units,
     requirements: ItemStack.with(
-        Items.beryllium, 150,
-        Items.tungsten, 75,
-        Items.silicon, 100
-    ),
-})
-shaper.consumePower(2.1);
-//shaper.consumeLiquid(liquid.ammonia, 4 / 60);
+    Items.beryllium, 150,
+    Items.tungsten, 75,
+    Items.silicon, 100),
+
+    setStats() {
+        this.super$setStats();
+
+        let consumer = this.findConsumer(f => f instanceof ConsumeLiquidBase);
+        if (consumer instanceof ConsumeLiquidBase) {
+            let consBase = consumer;
+
+            this.stats.remove(Stat.input);
+            this.stats.add(Stat.booster,
+            StatValues.speedBoosters("{0}" + StatUnit.timesSpeed.localized(),
+            consBase.amount, 2.5,
+            false, liquid => consBase.consumes(liquid)))
+        }
+    }
+});
+exports.shaper = shaper;
+shaper.consumePower(2);
+shaper.consumeLiquid(liquid.ammonia, 4 / 60).optional = true;
 shaper.buildType = prov(() => extend(UnitFactory.UnitFactoryBuild, shaper, {
     a: 0,
+    updateTile(){
+        this.super$updateTile();
+        
+        if(this.liquids.get(liquid.ammonia) >= 0.001){
+            this.progress += Time.delta * Vars.state.rules.unitBuildSpeed(this.team) * this.power.status * 1.5
+        }
+    },
     draw() {
         this.super$draw()
 
@@ -141,7 +149,65 @@ shaper.buildType = prov(() => extend(UnitFactory.UnitFactoryBuild, shaper, {
         }
     },
     onDeconstructed() {
-        this.onDestroyed();
+        if (this.currentPlan < 3 && this.progress >= 45) {
+            unit.polyp.spawn(this.team, this.x, this.y);
+        } else if (this.progress >= 90) {
+            unit.sarcoma.spawn(this.team, this.x, this.y);
+        }
+    }
+}))
+
+const assistIncubator = new UnitFactory("assist-incubator");
+exports.assistIncubator = assistIncubator;
+Object.assign(assistIncubator, {
+    size: 3,
+    plans: Seq.with(
+    new UnitPlan(unit.adventitiousRoot, 60 * 45, ItemStack.with(
+    Items.silicon, 10,
+    item.protein, 25,
+    item.siliconNitride, 15, )),
+    new UnitPlan(unit.midrib, 60 * 45, ItemStack.with(
+    Items.silicon, 10,
+    item.protein, 25,
+    item.siliconNitride, 15, ))),
+    buildVisibility: BuildVisibility.shown,
+    category: Category.units,
+    requirements: ItemStack.with(
+    Items.silicon, 60,
+    Items.oxide, 75,
+    item.siliconNitride, 120),
+})
+assistIncubator.consumePower(1.5);
+assistIncubator.consumeLiquid(liquid.naturalGas, 5 / 60);
+assistIncubator.buildType = prov(() => extend(UnitFactory.UnitFactoryBuild, unitIncubator, {
+    a: 0,
+    draw() {
+        this.super$draw()
+
+        if (this.currentPlan != -1) {
+            var plan = this.block.plans.get(this.currentPlan);
+        }
+
+        if (this.progress <= 60) {
+            this.a = (this.progress / 60)
+        } else if (this.progress >= plan.time - 60) {
+            this.a = (plan.time - this.progress) / 60
+        } else {
+            this.a = 1
+        }
+
+        Draw.z(35.05);
+        LiquidBlock.drawTiledFrames(2, this.x, this.y, 0, Liquids.neoplasm, this.a * 0.7)
+
+        Draw.reset();
+    },
+    onDestroyed() {
+        this.super$onDestroyed();
+
+        if (this.progress >= 60) unit.polyp.spawn(this.team, this.x, this.y);
+    },
+    onDeconstructed() {
+        if (this.progress >= 60) unit.polyp.spawn(this.team, this.x, this.y);
     }
 }))
 
@@ -154,11 +220,10 @@ Object.assign(evolver, {
     buildVisibility: BuildVisibility.shown,
     category: Category.units,
     requirements: ItemStack.with(
-        Items.thorium, 150,
-        Items.silicon, 300,
-        Items.tungsten, 150,
-        item.siliconNitride, 200,
-    )
+    Items.thorium, 150,
+    Items.silicon, 300,
+    Items.tungsten, 150,
+    item.siliconNitride, 200, )
 })
 evolver.addUpgrade(unit.diploid, unit.triploid);
 evolver.addUpgrade(unit.lysosome, unit.trichocyst);
@@ -166,8 +231,7 @@ evolver.addUpgrade(unit.cytoderm, unit.adenoma)
 evolver.consumePower(2.7);
 evolver.consumeLiquid(liquid.ammonia, 8 / 60);
 evolver.consumeItems(ItemStack.with(
-    Items.dormantCyst, 20
-));
+Items.dormantCyst, 20));
 evolver.buildType = prov(() => extend(Reconstructor.ReconstructorBuild, evolver, {
     a: 0,
     draw() {
@@ -199,20 +263,17 @@ exports.laboratory = laboratory;
 Object.assign(laboratory, {
     size: 3,
     plans: Seq.with(
-        new UnitPlan(UnitTypes.renale, 60 * 30, ItemStack.with()),
-        new UnitPlan(unit.polyp, 60 * 45, ItemStack.with()),
-        new UnitPlan(unit.sarcoma, 60 * 90, ItemStack.with()),
-        new UnitPlan(unit.metastasis, 60 * 120, ItemStack.with())
-    ),
-    //目前仅敌方可用
+    new UnitPlan(UnitTypes.renale, 60 * 30, ItemStack.with()),
+    new UnitPlan(unit.polyp, 60 * 45, ItemStack.with()),
+    new UnitPlan(unit.sarcoma, 60 * 90, ItemStack.with()),
+    new UnitPlan(unit.metastasis, 60 * 120, ItemStack.with())),
     buildVisibility: BuildVisibility.shown,
     category: Category.units,
     requirements: ItemStack.with(
-        Items.carbide, 120,
-        Items.dormantCyst, 75,
-        item.siliconNitride, 75,
-        item.biomassSteel, 25,
-    ),
+    Items.carbide, 120,
+    Items.dormantCyst, 75,
+    item.siliconNitride, 75,
+    item.biomassSteel, 25, ),
 })
 laboratory.consumeLiquid(Liquids.neoplasm, 20 / 60)
 laboratory.consumePower(3);
@@ -259,21 +320,22 @@ Object.assign(geneForgeAlpha, {
     size: 5,
     areaSize: 13,
     plans: Seq.with(
-        new AssemblerUnitPlan(unit.bivalents, 60 * 30, PayloadStack.list(
-            unit.haploid, 4,
-            unit.polyp, 3
-        ))
-    ),
+    new AssemblerUnitPlan(unit.bivalents, 60 * 30, PayloadStack.list(
+    unit.haploid, 4,
+    unit.polyp, 3)),
+    new AssemblerUnitPlan(unit.tetraploid, 60 * 60, PayloadStack.list(
+    unit.diploid, 2,
+    unit.sarcoma, 4, ))),
     buildVisibility: BuildVisibility.shown,
     category: Category.units,
     requirements: ItemStack.with(
-        Items.carbide, 120,
-        Items.thorium, 200,
-        item.siliconNitride, 125,
-        item.biomassSteel, 75,
-    ),
+    Items.carbide, 120,
+    Items.thorium, 200,
+    item.siliconNitride, 125,
+    item.biomassSteel, 75, ),
 })
 geneForgeAlpha.consumePower(3)
+geneForgeAlpha.consumeLiquid(liquid.ammonia, 8 / 60);
 
 const geneForgeBeta = new UnitAssembler("gene-forge-beta");
 exports.geneForgeBeta = geneForgeBeta;
@@ -281,21 +343,71 @@ Object.assign(geneForgeBeta, {
     size: 5,
     areaSize: 13,
     plans: Seq.with(
-        new AssemblerUnitPlan(unit.centrosome, 60 * 45, PayloadStack.list(
-            unit.ribosome, 4,
-            UnitTypes.renale, 3
-        ))
+    new AssemblerUnitPlan(unit.centrosome, 60 * 45, PayloadStack.list(
+    unit.ribosome, 4,
+    UnitTypes.renale, 3)),
+    new AssemblerUnitPlan(unit.nucleus, 60 * 70, PayloadStack.list(
+    unit.lysosome, 2,
+    unit.sarcoma, 4)), ),
+    buildVisibility: BuildVisibility.shown,
+    category: Category.units,
+    requirements: ItemStack.with(
+    Items.carbide, 120,
+    Items.thorium, 200,
+    item.siliconNitride, 125,
+    item.biomassSteel, 75, ),
+})
+geneForgeBeta.consumePower(3)
+geneForgeBeta.consumeLiquid(liquid.ammonia, 8 / 60);
+
+const geneForgeGamma = new UnitAssembler("gene-forge-gamma");
+exports.geneForgeGamma = geneForgeGamma;
+Object.assign(geneForgeGamma, {
+    size: 5,
+    areaSize: 13,
+    plans: Seq.with(
+    new AssemblerUnitPlan(unit.papilloma, 60 * 45, PayloadStack.list(
+        unit.cytoderm, 1,
+        unit.polyp, 4
+    )),
+    new AssemblerUnitPlan(unit.carcinoma,60 * 70, PayloadStack.list(
+        unit.lysosome, 2,
+        unit.sarcoma, 4
+    ))
     ),
     buildVisibility: BuildVisibility.shown,
     category: Category.units,
     requirements: ItemStack.with(
-        Items.carbide, 120,
-        Items.thorium, 200,
-        item.siliconNitride, 125,
-        item.biomassSteel, 75,
-    ),
+    Items.carbide, 120,
+    Items.thorium, 200,
+    item.siliconNitride, 125,
+    item.biomassSteel, 75, ),
 })
-geneForgeBeta.consumePower(3)
+geneForgeGamma.consumePower(3)
+geneForgeGamma.consumeLiquid(liquid.ammonia, 8 / 60);
+
+const geneForgeOmega = new UnitAssembler("gene-forge-omega");
+exports.geneForgeOmega = geneForgeOmega;
+Object.assign(geneForgeOmega, {
+    size: 5,
+    areaSize: 13,
+    plans: Seq.with(
+    new AssemblerUnitPlan(unit.invasive, 60 * 45, PayloadStack.list(
+    UnitTypes.renale, 4,
+    unit.sarcoma, 2)),
+    new AssemblerUnitPlan(UnitTypes.latum, 60 * 90, PayloadStack.list(
+    UnitTypes.renale, 8,
+    unit.metastasis, 2)), ),
+    buildVisibility: BuildVisibility.shown,
+    category: Category.units,
+    requirements: ItemStack.with(
+    Items.carbide, 120,
+    Items.thorium, 200,
+    item.siliconNitride, 125,
+    item.biomassSteel, 75, ),
+})
+geneForgeOmega.consumePower(3)
+geneForgeOmega.consumeLiquid(liquid.ammonia, 8 / 60);
 
 /*const reincubator = new Reconstructor("reincubator");
 exports.reincubator = reincubator;

@@ -3,7 +3,7 @@ const internalMods = require("internal-mod");
 if (internalMods.tryInstallInternalMods()) {
     // 这里能确保所有内置mod都已安装
     Log.info("[@] MultiCrafter JavaScript loaded.", modName)
-    Log.info("[@] 所有内置mod已安装", modName);
+    Log.info("[@] 原版瘤液拓展的所有内置mod已安装", modName);
 }
 
 require("vne/item");

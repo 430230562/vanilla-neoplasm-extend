@@ -94,6 +94,37 @@ Object.assign(incubator, {
 incubator.consumePower(1.2);
 incubator.consumeLiquid(Liquids.water, 15 / 60);
 
+const incubatorLarge = new AttributeCrafter("incubator-large");
+exports.incubatorLarge = incubatorLarge;
+Object.assign(incubatorLarge, {
+    craftEffect: Fx.none,
+    outputItem: new ItemStack(item.protein, 1),
+    craftTime: 30,
+    size: 4,
+    hasPower: true,
+    hasLiquids: true,
+    hasItems: true,
+    attribute: Attribute.get("biomass"),
+    boostScale: 1 / 16,
+    maxBoost: 2,
+    drawer: new DrawMulti(
+        new DrawRegion("-bottom"),
+        new DrawLiquidTile(Liquids.water),
+        Object.assign(new DrawCultivator(), {}),
+        new DrawDefault(),
+        new DrawRegion("-top")),
+    buildVisibility: BuildVisibility.shown,
+    category: Category.crafting,
+    requirements: ItemStack.with(
+        Items.graphite, 160,
+        Items.silicon, 150,
+        Items.oxide, 75,
+        item.siliconNitride, 120
+    ),
+})
+incubatorLarge.consumePower(4);
+incubatorLarge.consumeLiquid(Liquids.water, 1);
+
 const activator = new GenericCrafter("activator");
 exports.activator = activator;
 Object.assign(activator, {
@@ -257,53 +288,12 @@ irradiationChamber.buildType = prov(() => extend(GenericCrafter.GenericCrafterBu
     }
 }))
 
-const cyanidePlant = new MultiCrafter("cyanide-plant");
-exports.cyanidePlant = cyanidePlant;
-Object.assign(cyanidePlant, {
-    craftEffect: Fx.none,
-    size: 3,
-    liquidCapacity: 30,
-    hasPower: true,
-    hasLiquids: true,
-    hasItems: true,
-    configurable: true,
-    drawer: new DrawMulti(
-        new DrawRegion("-bottom"),
-        new DrawLiquidTile(Liquids.neoplasm),
-        new DrawRegion("-rotator0", 0.5, true),
-        new DrawRegion("-rotator1", -0.5, true),
-        Object.assign(new DrawLiquidTile(Liquids.cyanogen), {
-            alpha: 0.5,
-        }),
-        new DrawDefault()
-    ),
-    buildVisibility: BuildVisibility.shown,
-    category: Category.crafting,
-    requirements: ItemStack.with(
-        Items.graphite, 70,
-        Items.silicon, 50,
-        Items.oxide, 35,
-        item.siliconNitride, 45),
-})
-cyanidePlant.addRecipe(ItemStack.with(), LiquidStack.with(Liquids.cyanogen, 0.05, Liquids.neoplasm, 10 / 60), 1,
-    ItemStack.with(item.protein, 1), LiquidStack.with(), 0,
-    50
-);
-cyanidePlant.addRecipe(ItemStack.with(), LiquidStack.with(Liquids.cyanogen, 0.05, Liquids.neoplasm, 10 / 60), 1,
-    ItemStack.with(Items.dormantCyst, 1), LiquidStack.with(), 0,
-    150
-);
-cyanidePlant.addRecipe(ItemStack.with(Items.oxide, 2), LiquidStack.with(Liquids.cyanogen, 0.05, Liquids.water, 10 / 60), 1.5,
-    ItemStack.with(item.cyanide, 1), LiquidStack.with(), 0,
-    120
-)
-
 const mixer = new GenericCrafter("mixer");
 exports.mixer = mixer;
 Object.assign(mixer, {
     craftEffect: Fx.none,
     outputLiquid: new LiquidStack(Liquids.cryofluid, 15 / 60),
-    craftTime: 40,
+    craftTime: 50,
     size: 3,
     hasPower: true,
     hasLiquids: true,
@@ -636,6 +626,7 @@ Object.assign(BMAStove, {
     drawer: new DrawMulti(
         new DrawRegion("-bottom"),
         new DrawArcSmelt(),
+        new DrawRegion("-rotator", 4, true),
         Object.assign(new DrawLiquidTile(liquid.naturalGas), {
             alpha: 0.5,
         }),
@@ -698,7 +689,7 @@ const nonventCondenser = extend(AttributeCrafter, "nonvent-condenser", {
     hasLiquids: true,
     boostScale: 1 / 9,
     itemCapacity: 0,
-    outputLiquid: new LiquidStack(Liquids.water, 80 / 60),
+    outputLiquid: new LiquidStack(Liquids.water, 60 / 60),
     liquidCapacity: 240,
 
     buildVisibility: BuildVisibility.shown,

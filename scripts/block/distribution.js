@@ -11,6 +11,7 @@ Object.assign(ductJunction, {
 	),
 	speed: 1,
 	capacity: 1,
+	displayedSpeed: 15,
 	health: 55,
 })
 

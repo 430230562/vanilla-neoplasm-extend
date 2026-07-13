@@ -1,5 +1,5 @@
 let mod = Vars.modDirectory.child("vne").child("version.txt");
-let version = 0.40;
+let version = 0.42;
 mod.exists() || mod.writeString("-1");
 let currentVersion = parseFloat(mod.readString());
 
@@ -57,5 +57,5 @@ Events.on(EventType.ClientLoadEvent, () => {
 		}
 	})
 	
-	if(currentVersion < version) remind.show();
+	if(currentVersion != version) remind.show();
 })

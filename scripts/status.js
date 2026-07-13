@@ -22,6 +22,9 @@ const stimulated = extend(StatusEffect,"stimulated",{
         if(unit.type.outlineColor != Pal.neoplasmOutline){
             unit.unapply(this)
         }
+    },
+    init(){
+        this.opposite(antagonistic)
     }
 })
 exports.stimulated = stimulated;
@@ -30,28 +33,10 @@ const antagonistic = extend(StatusEffect,"antagonistic",{
     speedMultiplier: 0.98,
     color: Color.valueOf("d1efff"),
     init(){
-	    this.opposite(StatusEffects.burning, neoplasmSlow)
+	    this.opposite(StatusEffects.burning, neoplasmSlow, stimulated)
 	}
 });
 exports.antagonistic = antagonistic;
-
-const poisoned = extend(StatusEffect,"poisoned",{
-    speedMultiplier: 0.8,
-    color: Color.valueOf("89e8b6"),
-    init(){
-	    this.opposite(neoplasmSlow, stimulated)
-	},
-	update(unit, entry){
-        this.super$update(unit, entry);
-        
-        //仅瘤液单位有如下效果
-        if(unit.type.outlineColor == Pal.neoplasmOutline){
-            unit.damageContinuousPierce(0.5)
-            unit.healthMultiplier = Math.min(0.8,unit.healthMultiplier);
-        }
-    }
-})
-exports.poisoned = poisoned;
 
 /*let scope = new Packages.rhino.TopLevel();
 new Packages.rhino.ClassCache().associate(scope);
