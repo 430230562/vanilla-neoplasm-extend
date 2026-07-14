@@ -184,7 +184,7 @@ const nickelBridge = extend(ItemBridge, "nickel-bridge", {
 
 		if (other == null || other.build == null || tile == null || tile.build == null || other == tile) {
 			return false;
-		} else {
+		} else if(other.build.team == tile.build.team && other.block() == this) {
 			//应该是算距离
 			//if (Math.pow(other.x - tile.x, 2) + Math.pow(other.y - tile.y, 2) > Math.pow(this.range + 0.5, 2)) return false;
 			return tile.build.within(other.build, (this.range + 0.5) * Vars.tilesize)
@@ -365,7 +365,7 @@ const stackBridge = extend(ItemBridge, "stack-bridge", {
 
 		if (other == null || other.build == null || tile == null || tile.build == null || other == tile) {
 			return false;
-		} else {
+		} else if(other.build.team == tile.build.team && other.block() == this) {
 			//应该是算距离
 			//if (Math.pow(other.x - tile.x, 2) + Math.pow(other.y - tile.y, 2) > Math.pow(this.range + 0.5, 2)) return false;
 			return tile.build.within(other.build, (this.range + 0.5) * Vars.tilesize)
