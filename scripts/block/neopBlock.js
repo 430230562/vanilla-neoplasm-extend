@@ -164,12 +164,12 @@ neopCore.buildType = prov(() => extend(CoreBlock.CoreBuild, neopCore, {
 
 
         if (this.liquids.get(Liquids.neoplasm) <= this.block.liquidCapacity) {
-            this.liquids.add(Liquids.neoplasm, 3 / 6);
+            this.liquids.add(Liquids.neoplasm, 3 / 6 * Vars.state.rules.unitBuildSpeed(this.team));
         }
 
         if (this.damaged()) {
-            this.heal(0.2)
-            this.liquids.remove(Liquids.neoplasm, 0.1)
+            this.heal(0.2 * Vars.state.rules.unitBuildSpeed(this.team))
+            this.liquids.remove(Liquids.neoplasm, 0.1 * Vars.state.rules.unitBuildSpeed(this.team))
             if (Mathf.chance(0.1)) {
                 Fx.neoplasmHeal.at(this.x + Mathf.range(3), this.y + Mathf.range(3));
             }
@@ -183,7 +183,7 @@ neopCore.buildType = prov(() => extend(CoreBlock.CoreBuild, neopCore, {
 
                 if (this.child[i] != null) {
                     if (!this.child[i].dead) {
-                        ConveyNeoplasm(this, this.child[i], 10)
+                        ConveyNeoplasm(this, this.child[i], 10 * Vars.state.rules.unitBuildSpeed(this.team))
                         continue
                     } else {
                         this.child[i] == null
@@ -283,7 +283,7 @@ neopNode.buildType = prov(() => extend(Building, {
         }
 
         if (this.liquids.get(Liquids.neoplasm) <= this.block.liquidCapacity) {
-            this.liquids.add(Liquids.neoplasm, 2 / 60);
+            this.liquids.add(Liquids.neoplasm, 2 / 60 * Vars.state.rules.unitBuildSpeed(this.team));
         }
 
         if (this.damaged() && this.parent != null && !this.parent.dead) {
@@ -426,8 +426,8 @@ neopTurret.buildType = prov(() => extend(LiquidTurret.LiquidTurretBuild, neopTur
         if (this.parent != null && !this.parent.dead) {
             ConveyNeoplasm(this.parent, this, 2);
             if (this.damaged()) {
-                this.heal(0.2)
-                this.liquids.remove(Liquids.neoplasm, 0.05)
+                this.heal(0.2 * Vars.state.rules.unitBuildSpeed(this.team))
+                this.liquids.remove(Liquids.neoplasm, 0.05 * Vars.state.rules.unitBuildSpeed(this.team))
                 if (Mathf.chance(0.1)) {
                     Fx.neoplasmHeal.at(this.x + Mathf.range(11), this.y + Mathf.range(11));
                 }
@@ -510,8 +510,8 @@ spawner.buildType = prov(() => extend(Building, {
         if (this.parent != null && !this.parent.dead) {
             ConveyNeoplasm(this.parent, this, 2);
             if (this.damaged()) {
-                this.heal(0.2)
-                this.liquids.remove(Liquids.neoplasm, 0.05)
+                this.heal(0.2 * Vars.state.rules.unitBuildSpeed(this.team))
+                this.liquids.remove(Liquids.neoplasm, 0.05 * Vars.state.rules.unitBuildSpeed(this.team))
                 if (Mathf.chance(0.1)) {
                     Fx.neoplasmHeal.at(this.x + Mathf.range(11), this.y + Mathf.range(11));
                 }

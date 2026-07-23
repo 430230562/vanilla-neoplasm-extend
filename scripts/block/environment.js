@@ -111,6 +111,12 @@ roughNeoplasmStone.variants = 4;
 roughNeoplasmStone.attributes.set(Attribute.get("biomass"), 1.25);
 roughNeoplasmStone.attributes.set(Attribute.water, -1);
 
+const neoplasmBoulder = new Prop("neoplasm-boulder");
+neoplasmBoulder.variants = 2;
+
+const neoplasmTree = new Prop("neoplasm-tree");
+neoplasmTree.variants = 0;
+
 const neoplasmVent = new SteamVent("neoplasm-vent");
 Object.assign(neoplasmVent,{
     parent: neoplasmStone,

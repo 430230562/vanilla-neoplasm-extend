@@ -115,8 +115,8 @@ shaper.buildType = prov(() => extend(UnitFactory.UnitFactoryBuild, shaper, {
     updateTile(){
         this.super$updateTile();
         
-        if(this.liquids.get(liquid.ammonia) >= 0.001){
-            this.progress += Time.delta * Vars.state.rules.unitBuildSpeed(this.team) * this.power.status * 1.5
+        if(this.liquids.get(liquid.ammonia) >= 0.0001 && this.efficiency >= 0.0001){
+            this.progress += Time.delta * this.efficiency * Vars.state.rules.unitBuildSpeed(this.team) * 1.5
         }
     },
     draw() {

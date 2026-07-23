@@ -139,6 +139,15 @@ Object.assign(slagDifferentialGenerator, {
         Items.oxide, 85,
     ),
 })
+slagDifferentialGenerator.buildType = prov(() => extend(ThermalGenerator.ThermalGeneratorBuild, slagDifferentialGenerator, {
+    updateTile() {
+        if (this.liquids.get(Liquids.cryofluid) > 0) {
+                this.super$updateTile()
+            }else {
+                this.productionEfficiency = 0
+            }
+        }
+}))
 slagDifferentialGenerator.consumeLiquid(Liquids.cryofluid, 5 / 60);
 
 const beyondReactor = extend(VariableReactor, "beyond-reactor", {
