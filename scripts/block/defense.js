@@ -253,6 +253,11 @@ const forceProjectorCondenser = extend(Block, "force-projector-condenser", {
     coolingAmount: 20,
     buildVisibility: BuildVisibility.shown,
     category: Category.effect,
+    
+    requirements: ItemStack.with(
+        Items.silicon, 25,
+        item.siliconNitride, 40
+    ),
 
     setStats() {
         this.super$setStats();

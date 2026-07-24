@@ -392,5 +392,5 @@ planet.seltis.techTree = nodeRoot("seltis", planet.seltis, () => {
     node(sector.mesa, Seq.with(
     Objectives.SectorComplete(sector.sinkhole),
     Objectives.Research(Blocks.copperWall),
-    Objectives.Research(planet.seltis)), () => {})
+    ), () => {})
 })

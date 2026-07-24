@@ -193,9 +193,9 @@ const biomassReactor = extend(ConsumeGenerator, "biomass-reactor", {
     itemCapacity: 20,
     powerProduction: 3000 / 60,
 
-    liquidCapacity: 24 * 5,
+    liquidCapacity: 24 * 10,
     outputLiquid: new LiquidStack(Liquids.neoplasm, 10 / 60),
-    explodeOnFull: true,
+    explodeOnFull: false,
     canOverdrive: false,
     fuelItem: item.protein,
 
@@ -272,7 +272,7 @@ biomassReactor.buildType = prov(() => extend(ConsumeGenerator.ConsumeGeneratorBu
             }
         }
 
-        if (this.volatility >= 0.999) {
+        if ((this.volatility >= 0.999 || this.liquids.get(Liquids.neoplasm) == this.block.liquidCapacity) && this.team != Vars.state.rules.waveTeam) {
             this.kill();
         }
     },

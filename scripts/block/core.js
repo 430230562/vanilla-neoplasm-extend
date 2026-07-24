@@ -187,7 +187,7 @@ function PowerCore(name, powerProduction) {
 const ash = new PowerCore("ash", 5);
 exports.ash = ash
 Object.assign(ash, {
-    alwaysUnlocked: false,
+    alwaysUnlocked: true,
     isFirstTier: true,
     unitType: election,
     health: 1200,
@@ -244,7 +244,7 @@ Object.assign(annular, {
     )
 })*/
 
-/*const coreFix = new Block("core-fix");
+const coreFix = new Block("core-fix");
 Object.assign(coreFix,{
     buildVisibility: BuildVisibility.editorOnly,
     category: Category.effect,
@@ -263,4 +263,4 @@ coreFix.buildType = prov(() => extend(Building,{
     	
         this.tile.setBlock(Blocks.air)
     }
-}))*/
+}))

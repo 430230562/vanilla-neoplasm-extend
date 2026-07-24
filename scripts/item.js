@@ -21,6 +21,7 @@ exports.nickel = nickel
 Object.assign(nickel, {
     hardness: 2,
     cost: 0.5,
+    alwaysUnlocked: true,
 })
 
 const manganese = new Item("manganese", Color.valueOf("ecaae2"))

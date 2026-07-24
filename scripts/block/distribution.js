@@ -32,6 +32,7 @@ Object.assign(nickelConveyor, {
 	consumesPower: true,
 	outputsPower: true,
 	conductivePower: true,
+	alwaysUnlocked: true,
 })
 nickelConveyor.buildType = prov(() => extend(Conveyor.ConveyorBuild, nickelConveyor, {
 	status() {

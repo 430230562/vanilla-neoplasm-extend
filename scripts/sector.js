@@ -37,7 +37,7 @@ Object.assign(mesa,{
     addStartingItems: true,
 })
 
-Events.on(EventType.SectorCaptureEvent, e => {
+/*Events.on(EventType.SectorCaptureEvent, e => {
     if(e.sector == sinkhole){
         planet.seltis.unlock();
         mesa.unlock();
@@ -46,4 +46,4 @@ Events.on(EventType.SectorCaptureEvent, e => {
         drill.nickelDrill.unlock();
         factory.compressor.unlock();
     }
-})
+})*/

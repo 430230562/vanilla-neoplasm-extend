@@ -57,10 +57,15 @@ unitIncubator.buildType = prov(() => extend(UnitFactory.UnitFactoryBuild, unitIn
     onDestroyed() {
         this.super$onDestroyed();
 
-        if (this.progress >= 60) unit.polyp.spawn(this.team, this.x, this.y);
+        let unitTeam = this.team == Team.derelict ? this.team : Vars.state.rules.waveTeam;
+
+        if (this.progress >= 60) unit.polyp.spawn(unitTeam, this.x, this.y);
     },
     onDeconstructed() {
-        if (this.progress >= 60) unit.polyp.spawn(this.team, this.x, this.y);
+
+        let unitTeam = this.team == Team.derelict ? this.team : Vars.state.rules.waveTeam;
+
+        if (this.progress >= 60) unit.polyp.spawn(unitTeam, this.x, this.y);
     }
 }))
 
@@ -109,13 +114,14 @@ const shaper = extend(UnitFactory, "shaper", {
 });
 exports.shaper = shaper;
 shaper.consumePower(2);
-shaper.consumeLiquid(liquid.ammonia, 4 / 60).optional = true;
+shaper.consumeLiquid(liquid.ammonia, 4 / 60)
+    .optional = true;
 shaper.buildType = prov(() => extend(UnitFactory.UnitFactoryBuild, shaper, {
     a: 0,
-    updateTile(){
+    updateTile() {
         this.super$updateTile();
-        
-        if(this.liquids.get(liquid.ammonia) >= 0.0001 && this.efficiency >= 0.0001){
+
+        if (this.liquids.get(liquid.ammonia) >= 0.0001 && this.efficiency >= 0.0001) {
             this.progress += Time.delta * this.efficiency * Vars.state.rules.unitBuildSpeed(this.team) * 1.5
         }
     },
@@ -142,17 +148,21 @@ shaper.buildType = prov(() => extend(UnitFactory.UnitFactoryBuild, shaper, {
     onDestroyed() {
         this.super$onDestroyed();
 
+        let unitTeam = this.team == Team.derelict ? this.team : Vars.state.rules.waveTeam;
+
         if (this.currentPlan < 3 && this.progress >= 45) {
-            unit.polyp.spawn(this.team, this.x, this.y);
+            unit.polyp.spawn(unitTeam, this.x, this.y);
         } else if (this.progress >= 90) {
-            unit.sarcoma.spawn(this.team, this.x, this.y);
+            unit.sarcoma.spawn(unitTeam, this.x, this.y);
         }
     },
     onDeconstructed() {
+        let unitTeam = this.team == Team.derelict ? this.team : Vars.state.rules.waveTeam;
+
         if (this.currentPlan < 3 && this.progress >= 45) {
-            unit.polyp.spawn(this.team, this.x, this.y);
+            unit.polyp.spawn(unitTeam, this.x, this.y);
         } else if (this.progress >= 90) {
-            unit.sarcoma.spawn(this.team, this.x, this.y);
+            unit.sarcoma.spawn(unitTeam, this.x, this.y);
         }
     }
 }))
@@ -179,7 +189,7 @@ Object.assign(assistIncubator, {
 })
 assistIncubator.consumePower(1.5);
 assistIncubator.consumeLiquid(liquid.naturalGas, 5 / 60);
-assistIncubator.buildType = prov(() => extend(UnitFactory.UnitFactoryBuild, unitIncubator, {
+assistIncubator.buildType = prov(() => extend(UnitFactory.UnitFactoryBuild, assistIncubator, {
     a: 0,
     draw() {
         this.super$draw()
@@ -204,10 +214,14 @@ assistIncubator.buildType = prov(() => extend(UnitFactory.UnitFactoryBuild, unit
     onDestroyed() {
         this.super$onDestroyed();
 
-        if (this.progress >= 60) unit.polyp.spawn(this.team, this.x, this.y);
+        let unitTeam = this.team == Team.derelict ? this.team : Vars.state.rules.waveTeam;
+
+        if (this.progress >= 60) unit.polyp.spawn(unitTeam, this.x, this.y);
     },
     onDeconstructed() {
-        if (this.progress >= 60) unit.polyp.spawn(this.team, this.x, this.y);
+        let unitTeam = this.team == Team.derelict ? this.team : Vars.state.rules.waveTeam;
+
+        if (this.progress >= 60) unit.polyp.spawn(unitTeam, this.x, this.y);
     }
 }))
 
@@ -367,14 +381,11 @@ Object.assign(geneForgeGamma, {
     areaSize: 13,
     plans: Seq.with(
     new AssemblerUnitPlan(unit.papilloma, 60 * 45, PayloadStack.list(
-        unit.cytoderm, 1,
-        unit.polyp, 4
-    )),
-    new AssemblerUnitPlan(unit.carcinoma,60 * 70, PayloadStack.list(
-        unit.lysosome, 2,
-        unit.sarcoma, 4
-    ))
-    ),
+    unit.cytoderm, 1,
+    unit.polyp, 4)),
+    new AssemblerUnitPlan(unit.carcinoma, 60 * 70, PayloadStack.list(
+    unit.lysosome, 2,
+    unit.sarcoma, 4))),
     buildVisibility: BuildVisibility.shown,
     category: Category.units,
     requirements: ItemStack.with(

@@ -673,7 +673,7 @@ const nonventCondenser = extend(AttributeCrafter, "nonvent-condenser", {
     minEfficiency: 9 - 0.0001,
     baseEfficiency: 0,
     displayEfficiency: false,
-    craftEffect: ammoniaTurbine,
+    craftEffect: Fx.turbinegenerate,
     drawer: new DrawMulti(
         new DrawRegion("-bottom"),
         new DrawBlurSpin("-rotator", 3.6),
