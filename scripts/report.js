@@ -1,5 +1,5 @@
 let mod = Vars.modDirectory.child("vne").child("version.txt");
-let version = 0.42;
+let version = 0.50;
 mod.exists() || mod.writeString("-1");
 let currentVersion = parseFloat(mod.readString());
 

@@ -29,6 +29,12 @@ Object.assign(badland,{
     difficulty: 6
 })
 
+const infection = new SectorPreset("[Neop5]infection",Planets.erekir,64);
+exports.infection = infection;
+Object.assign(infection,{
+    difficulty: 8
+})
+
 const mesa = new SectorPreset("[NeopI]mesa", planet.seltis, 88);
 exports.mesa = mesa;
 Object.assign(mesa,{

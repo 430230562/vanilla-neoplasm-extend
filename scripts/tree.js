@@ -326,7 +326,13 @@ addResearch(sector.fumarole, {
         Objectives.Research(turret.defuse)), () => {
             node(sector.badland, Seq.with(
             Objectives.SectorComplete(sector.sinkhole),
-            ), () => {})
+            ), () => {
+                node(sector.infection, Seq.with(
+                Objectives.SectorComplete(sector.badland),
+                Objectives.SectorComplete(sector.mesa),
+                Objectives.Research(Blocks.afflict)
+                ), () => {})
+            })
         })
     })
 });
