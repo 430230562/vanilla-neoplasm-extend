@@ -330,6 +330,18 @@ Object.assign(new Weapon(), {
 const polarBody = extend(MissileUnitType, "polar-body", {
     update(unit) {
         this.super$update(unit);
+
+        if (unit.getDuration(status.antagonistic) > 0) {
+            Object.assign(new WaveEffect(), {
+                colorFrom: Color.valueOf("e05438"),
+                colorTo: Color.valueOf("e05438"),
+                sizeTo: 40,
+                lifetime: 12,
+                strokeFrom: 4,
+            }).at(unit.x, unit.y)
+
+            unit.remove();
+        }
     }
 })
 Object.assign(polarBody, {
@@ -546,6 +558,7 @@ Object.assign(tetraploid, {
     canDrown: false,
     constructor: () => new MechUnit.create(),
 })
+//shieldDamageMultiplier
 tetraploid.weapons.add(
 Object.assign(new Weapon("vne-tetraploid-weapon0"), {
     mirror: true,
@@ -553,62 +566,62 @@ Object.assign(new Weapon("vne-tetraploid-weapon0"), {
     x: 18,
     y: -6,
     shootY: 20,
-    shootSound: Sounds.shootFlame,
-    reload: 8,
+    shootSound: Sounds.shootSalvo,
+    reload: 60,
+    shoot: Object.assign(new ShootPattern(), {
+        shots: 4,
+        shotDelay: 3
+    }),
     recoil: 2,
     rotate: false,
     ejectEffect: Fx.none,
-    bullet: extend(BulletType, 12, 120, {
-        hitSize: 16,
-        lifetime: 14,
-        pierce: true,
-        pierceBuilding: true,
-        pierceCap: 4,
-        statusDuration: 60 * 3,
-        status: status.neoplasmSlow,
-        shootEffect: new Effect(40, 100, e => {
-            Draw.color(Color.valueOf("e8803f"), Color.valueOf("c33e2b"), Color.gray, e.fin());
-            Angles.randLenVectors(e.id, 24, e.finpow() * 80, e.rotation, 15, (x, y) => {
-                Fill.circle(e.x + x, e.y + y, 0.8 + e.fout() * 2.5);
-            })
-        }),
-        hitEffect: new Effect(20, e => {
-            Draw.color(Color.valueOf("e8803f"), Color.valueOf("c33e2b"), e.fin());
-            Lines.stroke(0.8 + e.fout());
-            Angles.randLenVectors(e.id, 4, 1 + e.fin() * 25, e.rotation, 60, (x, y) => {
-                let ang = Mathf.angle(x, y);
-                Lines.lineAngle(e.x + x, e.y + y, ang, e.fout() * 5 + 2);
-            })
-        }),
-        despawnEffect: Fx.none,
-        keepVelocity: false,
-        hittable: false
+    bullet: Object.assign(new ReduceArmorBulletType(8, 120, 1), {
+        width: 6,
+        hitSize: 7,
+        height: 20,
+        shootEffect: new MultiEffect(Fx.shootBigColor, Fx.colorSparkBig),
+        hitEffect: Fx.hitBulletColor,
+        despawnEffect: Fx.hitBulletColor,
+        smokeEffect: Fx.shootBigSmoke,
+        knockback: 2,
+        lifetime: 40,
+        hitColor: Color.valueOf("84a94b"),
+        backColor: Color.valueOf("84a94b"),
+        frontColor: Pal.plastaniumFront,
+
+        trailEffect: Fx.colorSpark,
+        trailRotation: true,
+        trailInterval: 5,
+        rotationOffset: 180,
+
+        shieldDamageMultiplier: 2,
+        status: StatusEffects.slow,
+        statusDuration: 10,
+
+        fragBullets: 2,
+        fragBullet: new Acid(18)
     })
 }),
-Object.assign(new Weapon("vne-tetraploid-weapon1"), {
-    mirror: true,
-    top: false,
-    x: -16,
-    y: 0,
-    shootY: 12,
-    reload: 40,
+Object.assign(
+new Weapon("vne-tetraploid-weapon1"), {
     shootSound: Sounds.shootMissileLarge,
-    bullet: Object.assign(new MissileBulletType(5, 45), {
-        lifetime: 70,
-        homingRange: 120,
-        homingPower: 0.08,
-        width: 12,
-        height: 12,
-        backColor: Color.valueOf("84a94b"),
-        frontColor: Color.valueOf("84a94b"),
-        trailColor: Color.valueOf("84a94b"),
-        trailWidth: 2,
-        trailLength: 20,
-        fragBullets: 4,
-        fragBullet: new Acid(25),
-        status: StatusEffects.corroded,
-        statusDuration: 80,
-    })
+    x: 29 / 4,
+    y: -11 / 4,
+    shootY: 1.5,
+    reload: 100,
+    layerOffset: 0.01,
+    rotateSpeed: 2,
+    rotate: true,
+    shoot: Object.assign(new ShootPattern(), {
+        shots: 3,
+        shotDelay: 7
+    }),
+    bullet: Object.assign(new BulletType(), {
+        spawnUnit: polarBody,
+        smokeEffect: Fx.shootBigSmoke2,
+        speed: 0,
+        keepVelocity: false,
+    }),
 }))
 //死亡时分裂为2个T4
 tetraploid.abilities.add(
@@ -1262,7 +1275,7 @@ boltBrain.abilities.add(
 Object.assign(new RegenAbility(), {
     amount: -1 / 60,
 }),
-Object.assign(new EnergyFieldAbility(50,20,80), {
+Object.assign(new EnergyFieldAbility(50, 20, 80), {
     status: StatusEffects.shocked,
     healEffect: Fx.none,
     healPercent: 0,
@@ -1275,7 +1288,7 @@ Object.assign(new Weapon(), {
     mirror: false,
     reload: 1,
     shootOnDeath: true,
-    bullet: Object.assign(new ExplosionBulletType(200, 35), {
+    bullet: Object.assign(new ExplosionBulletType(400, 35), {
         shootEffect: new MultiEffect(
         Fx.massiveExplosion,
         new WrapEffect(
