@@ -972,7 +972,7 @@ nucleus.weapons.add(
         shootY: 0,
         reload: 180,
         layerOffset: 0.01,
-        rotate: true,
+        rotate: false,
         rotateSpeed: 2.5,
         shootCone: 10,
         shootSound: Sounds.plantBreak,

@@ -144,9 +144,12 @@ addResearch(turret.defuse, {
 //factory
 addResearch(factory.incubator, {
     parent: "silicon-arc-furnace",
-    objectives: Seq.with(Objectives.OnSector(SectorPresets.intersect))
+    objectives: Seq.with(
+        Objectives.OnSector(sector.fumarole)
+    )
 }, () => {
     node(factory.incubatorLarge, () => {}),
+    node(factory.watergasStove, () => {}),
     node(factory.arkyciteRefinery,Seq.with(
     Objectives.SectorComplete(SectorPresets.marsh),
     Objectives.SectorComplete(sector.faultline)
@@ -163,12 +166,10 @@ addResearch(factory.incubator, {
 });
 
 addResearch(factory.ammoniaPlant, {
-    parent: "oxidation-chamber",
+    parent: "atmospheric-concentrator",
     objectives: Seq.with(Objectives.Produce(Liquids.nitrogen),
     Objectives.SectorComplete(SectorPresets.caldera))
-}, () => {
-    node(factory.watergasStove, () => {})
-});
+}, () => {});
 
 addResearch(factory.adsorbent, {
     parent: "oxidation-chamber",
@@ -181,6 +182,10 @@ addResearch(factory.laserIncinerator, {
 
 addResearch(factory.ammoniaCollector, {
     parent: "vent-condenser",
+    objectives: Seq.with(
+        Objectives.OnSector(sector.infection),
+        Objectives.Research(factory.ammoniaPlant)
+    )
 }, () => {
     node(power.oxidationChamber,() => {})
 })
@@ -194,10 +199,12 @@ addResearch(factory.atmosphericCondenser, {
 
 addResearch(factory.mixer, {
     parent: "vent-condenser",
+    objectives: Seq.with(Objectives.OnSector(sector.badland))
 }, () => {})
 
 addResearch(factory.siliconNitrideFurnace, {
     parent: "atmospheric-concentrator",
+    objectives: Seq.with(Objectives.OnSector(sector.faultline))
 }, () => {
     node(factory.biomassSmelter, () => {
         node(factory.stableBiomassSmelter, () => {})
@@ -243,13 +250,14 @@ addResearch(power.biomassReactor, {
     parent: "chemical-combustion-chamber",
     objectives: Seq.with(
     Objectives.Research(factory.ammoniaPlant),
-    Objectives.SectorComplete(sector.faultline))
+    Objectives.OnSector(sector.faultline))
 }, () => {});
 
 addResearch(power.slagDifferentialGenerator,{
     parent: "chemical-combustion-chamber",
     objectives: Seq.with(
     Objectives.Research(factory.mixer),
+    Objectives.OnSector(sector.badland)
     )
 },() => {
     node(power.beyondReactor,() => {})
@@ -266,18 +274,18 @@ addResearch(unitFactory.unitIncubator, {
     node(unit.bomber, () => {}),
     node(unitFactory.shaper, Seq.with(
     Objectives.Research(factory.ammoniaPlant),
-    Objectives.SectorComplete(sector.faultline)), () => {
+    Objectives.OnSector(sector.faultline)), () => {
         node(unit.diploid, () => {}),
         node(unit.lysosome, () => {}),
         node(unit.cytoderm, () => {}),
         node(unitFactory.evolver, Seq.with(
         Objectives.Produce(Items.dormantCyst),
-        Objectives.SectorComplete(sector.sinkhole)), () => {
+        Objectives.OnSector(sector.sinkhole)), () => {
             node(unit.triploid, () => {}),
             node(unit.trichocyst, () => {}),
             node(unit.adenoma, () => {}),
             node(unitFactory.laboratory, Seq.with(
-            Objectives.SectorComplete(sector.badland)), () => {
+            Objectives.OnSector(sector.badland)), () => {
                 node(unit.polyp, Seq.with(
                 Objectives.Research(unitFactory.laboratory)), () => {}),
                 node(UnitTypes.renale, Seq.with(
@@ -326,11 +334,14 @@ addResearch(sector.fumarole, {
         Objectives.Research(turret.defuse)), () => {
             node(sector.badland, Seq.with(
             Objectives.SectorComplete(sector.sinkhole),
+            Objectives.Research(defense.neoplasmCollecter)
             ), () => {
                 node(sector.infection, Seq.with(
                 Objectives.SectorComplete(sector.badland),
                 Objectives.SectorComplete(sector.mesa),
-                Objectives.Research(Blocks.afflict)
+                Objectives.Research(power.slagDifferentialGenerator),
+                Objectives.Research(Blocks.afflict),
+                Objectives.Research(factory.biomassSmelter)
                 ), () => {})
             })
         })

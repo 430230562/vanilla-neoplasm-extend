@@ -761,12 +761,12 @@ Object.assign(pneumaticCondenser, {
     craftEffect: ammoniaTurbine,
     drawer: new DrawMulti(
         new DrawRegion("-bottom"),
-        new DrawBlurSpin("-rotator", 3.6),
-        Object.assign(new DrawLiquidTile(Liquids.water), {
+        new DrawRegion("-rotator", 3.6),
+        new DrawRegion("-rotator", -3.6),
+        Object.assign(new DrawLiquidTile(Liquids.water, 2), {
             alpha: 0.75
         }),
-        new DrawDefault(),
-        new DrawRegion("-top"),),
+        new DrawDefault()),
     craftTime: 60,
     size: 3,
     ambientSound: Sounds.loopHum,

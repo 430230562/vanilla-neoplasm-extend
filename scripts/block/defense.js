@@ -663,12 +663,21 @@ explosive.buildType = prov(() => extend(Building, {
         return (item == this.exploreItem && this.items.get(this.exploreItem) < 36)
     },
     onDestroyed() {
-        this.super$onDestroyed();
-
+        //this.super$onDestroyed();
+        
+        const {tile, items, exploreItem , x, y} = this;
         //很奇怪,即使puddle.amount为0,地块依旧判断为存在血浆
-        if (this.tile != null && this.items.get(this.exploreItem) > 0) this.tile.circle(5, cons(other => {
-            Puddles.deposit(other, Liquids.neoplasm, this.items.get(this.exploreItem) * 5);
+        if (tile != null && items.get(this.exploreItem) > 0) tile.circle(5, cons(other => {
+            Puddles.deposit(other, Liquids.neoplasm, items.get(exploreItem) * 5);
         }))
+        
+        for(let i = 0; i < 5; i ++){
+        Damage.damage(null, x, y, i * 8 + 8, 400, false);
+        Fx.blockExplosionSmoke.at(x + Mathf.range(i * 8 + 8), y + Mathf.range(i * 8 + 8));
+        }
+        Fx.bigShockwave.at(x, y);
+        Effect.shake(12, 12, x, y);
+        Fx.dynamicExplosion.at(x, y, 2);
     },
     onDeconstructed() {
         if (this.items.get(this.exploreItem) > 0) Puddles.deposit(this.tile, Liquids.neoplasm, 60 * this.items.get(this.exploreItem));
