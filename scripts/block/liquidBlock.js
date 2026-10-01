@@ -391,7 +391,7 @@ conduitBridge.buildType = prov(() => extend(LiquidBridge.LiquidBridgeBuild, cond
         Drawf.circles(this.x, this.y, (this.block.size / 2 + 1) * Vars.tilesize + sin - 2, Pal.accent);
         if (this.link != -1) {
             const other = Vars.world.tile(this.link);
-            if (other != null && other.build != null) {
+            if (other != null && other.build != null && this.block.linkValid(this.tile, other)) {
                 Drawf.circles(other.build.x, other.build.y, (this.block.size / 3 + 1) * Vars.tilesize + sin - 2, Pal.place);
                 Drawf.arrow(this.x, this.y, other.build.x, other.build.y, this.block.size * Vars.tilesize + sin, 4 + sin, Pal.accent);
             }
@@ -573,7 +573,7 @@ biomassConduitBridge.buildType = prov(() => extend(LiquidBridge.LiquidBridgeBuil
         Drawf.circles(this.x, this.y, (this.block.size / 2 + 1) * Vars.tilesize + sin - 2, Pal.accent);
         if (this.link != -1) {
             const other = Vars.world.tile(this.link);
-            if (other != null && other.build != null) {
+            if (other != null && other.build != null && this.block.linkValid(this.tile, other)) {
                 Drawf.circles(other.build.x, other.build.y, (this.block.size / 3 + 1) * Vars.tilesize + sin - 2, Pal.place);
                 Drawf.arrow(this.x, this.y, other.build.x, other.build.y, this.block.size * Vars.tilesize + sin, 4 + sin, Pal.accent);
             }

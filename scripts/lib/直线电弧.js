@@ -26,49 +26,52 @@ Object.assign(new Weapon("改进工业-弧电1"), {
     shootSound: Vars.tree.loadSound("1010"),
     ejectEffect: Fx.casing4,
     bullet: extend(RailBulletType, {
-        despawnHit: true,
         length: 160,
-        lightningColor: Color.red,
-        speed: 1,
-        update(b){
-            let {length, pierceCap, lightningColor} = this;
-            
-            b.fdata = length;
+        lightningColor: Color.valueOf("f97171aa"),
+        speed:1,//千万不要改成0
+        
+        init(b) {
+            // init(); here
+            if (!b) {
+                this.super$init();
+                return;
+            }
+
+            // init(Bullet b); here
+            let {
+                length, pierceCap, lightningColor
+            } = this;
+
             Damage.collideLine(b, b.team, b.x, b.y, b.rotation(), length, false, true, pierceCap);
-            let resultLen = b.fdata;
-            
-            //方向向量
-            let DirVec = Vec2(b.vel.x, b.vel.y);
-            //单位法向量
-            let UnitVec = getUnitNormal(DirVec);
-            
-            var office = [], sum = 0, 
-            px = 0, py = 0, 
-            lx = 0, ly = 0;
-            
-            Draw.reset();
-            
-            for(let i = 0; i < resultLen / 2;i++){
-                office[i] = Mathf.range(2);
-                sum += office[i]
+            const resultLen = b.fdata = Damage.findLength(b, length, true, pierceCap);
+
+            const vec = Tmp.v1.set(b.vel)
+                .setLength(resultLen);
+            const offsetVec = Tmp.v2.set(vec)
+                .rotate90(1)
+                .nor();
+
+            const lines = new Seq();
+            lines.add(new Vec2(b.x, b.y));
+
+            const fract = [];
+            for (let i = 0; i < resultLen / 8; i++) {
+                fract.push(Mathf.random(0, 1));
             }
-            
-            sum /= office.length
-            
-            for(let i = 0; i < resultLen / 2;i++){
-                office[i] += sum
-                
-                lx = px,
-                ly = py,
-                px = b.x + DirVec.x / DirVec.len() * i * 2 + UnitVec.x * office[i];
-                py = b.y + DirVec.y / DirVec.len() * i * 2 + UnitVec.y * office[i];
-                
-                
-                Drawf.line(lightningColor,px,py,lx,ly)
+            fract.sort((a, b) => a - b);
+
+            for (let i = 0; i < fract.length; i++) {
+                let posFraction = fract[i];
+
+                lines.add(new Vec2(
+                b.x + vec.x * posFraction + offsetVec.x * Mathf.random(-1, 1) * 4,
+                b.y + vec.y * posFraction + offsetVec.y * Mathf.random(-1, 1) * 4));
             }
-            
-            Draw.reset();
-            b.remove();
+
+            lines.add(new Vec2(b.x, b.y)
+                .add(vec));
+
+            Fx.chainLightning.at(b.x, b.y, vec.angle(), lightningColor, lines);
         }
     })
 }))

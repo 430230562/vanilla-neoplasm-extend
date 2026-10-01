@@ -31,4 +31,6 @@ require("vne/tree");
 
 require("vne/report");
 
+//require("vne/lib/状态盾")
+
 Log.info("[@] 原版瘤液拓展已正确加载", modName);
